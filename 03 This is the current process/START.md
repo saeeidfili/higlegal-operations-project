@@ -69,6 +69,17 @@ Lawyers wait **3–7 days in the intake queue** before anyone looks at their req
 
 **The paragraph to keep on the slide:** the team behaves as **one processing unit** — videos are held start-to-finish, so pickups happen only at completion boundaries (no preemption) — modeled as M/M/1 with μ ≈ 23.5/month, which reproduces the reported **3–7 day wait across the observed demand range** (2.3–7.5 d), its workload-dependence, and a checkable prediction: the inbox holds ≈ 2–5 parked requests (Little's Law). The alternative two-server model (Erlang C) agrees within ~15%, so the conclusions depend on utilization, not on the server count.
 
+## Rework and the queue (full-process simulation → `Rework/`)
+
+Rework is usually managed as extra *work*; operationally it is mostly extra *queue*. The `Rework/` folder simulates the **whole 12-step process** (two producers, three looping gates) and isolates the effect:
+
+- Baseline (~90% of videos loop) vs. no rework: **+114 min of hands-on work but +12.3 days of lead time** — the queue cost of rework is ~30× its work cost [E]
+- At 17.5 videos/month, work-in-process rises **6.2 → 13.7 → 24.0** videos from no-rework to baseline to heavy — and lead time = WIP ÷ throughput (Little's Law)
+- Rework lowers the effective capacity ceiling: **~27.5 → ~22.4 → ~18.5 videos/month** (no rework → baseline → heavy, at realistic dedication); at 20/month with heavy rework the queue becomes unstable
+- Calibration checks: baseline 23.2 d lead (14–28 d [C]), 630 min work (~10 h [C]), 89% rework (~90% [E]), 17.2 videos/month (15–20 [C])
+
+Files: `rework_simulation.py`, `rework-impact.svg`, `queue-sample-path.svg`, `rework-vs-demand.svg`, `gantt-rework.svg`, and `Rework/START.md` (model card + chart guide + the five mechanisms by which rework inflates a queue).
+
 ## Where each number comes from (the audit trail)
 
 | Figure | Status | Source |
@@ -89,6 +100,7 @@ Lawyers wait **3–7 days in the intake queue** before anyone looks at their req
 - `queue-cliff.svg` — **THE chart**: expected intake wait vs. utilization ρ, observed 3–7 d band, baseline markers, the ρ = 1 wall, Iteration-3 dot
 - `why-one-server.svg` — **the model-choice slide**: textbook M/M/c vs. HiLegal's one order rail; bottom band carries the M/M/2 test (1.8/3.3/6.9 d vs. 2.3/3.8/7.5 d)
 - `queueing-model.md` — **the single queueing document (everything in one place)**: model from zero → calibration → predictions → Kingman → simulation → persuasion pack → chart gallery (Part C explains every SVG) → cheat sheet + Q&A
+- `Rework/` — **whole-process rework simulation**: `rework_simulation.py` + 4 SVG charts + model card (`Rework/START.md`); headline: +114 min work ↔ +12.3 days lead time
 - `order-timeline.svg` — Lawyer Chen's 12 steps as a work-vs-wait timeline (the 3–7 d intake block in red)
 - `demand-sweep.svg` — wait vs. demand at constant team; asymptote at μ ≈ 23.5, unstable region beyond
 - `process-map.png` — still to produce: export of the mermaid/slide version (green transformational, white coordination, red loops)
