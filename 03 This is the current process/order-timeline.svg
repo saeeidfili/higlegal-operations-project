@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 620" font-family="sans-serif">
+<rect width="1080" height="620" fill="white"/>
+<text x="248.0" y="94.0" font-size="13" text-anchor="end" fill="#0F2A43" font-weight="normal">1  Request submitted</text>
+<rect x="260.0" y="76.0" width="8.0" height="24.0" fill="#1565C0" fill-opacity="1.0"/>
+<text x="248.0" y="134.0" font-size="13" text-anchor="end" fill="#C62828" font-weight="bold">2  INTAKE QUEUE</text>
+<rect x="268.0" y="116.0" width="200.0" height="24.0" fill="#C62828" fill-opacity="1.0"/>
+<text x="274.0" y="134.0" font-size="11" text-anchor="start" fill="white" font-weight="bold">5 d</text>
+<text x="248.0" y="174.0" font-size="13" text-anchor="end" fill="#0F2A43" font-weight="normal">3  Clarification ×3</text>
+<rect x="468.0" y="156.0" width="120.0" height="24.0" fill="#F9A825" fill-opacity="1.0"/>
+<text x="474.0" y="174.0" font-size="11" text-anchor="start" fill="white" font-weight="bold">3 d</text>
+<text x="248.0" y="214.0" font-size="13" text-anchor="end" fill="#0F2A43" font-weight="normal">4  Content brief</text>
+<rect x="588.0" y="196.0" width="24.0" height="24.0" fill="#2E7D32" fill-opacity="1.0"/>
+<text x="248.0" y="254.0" font-size="13" text-anchor="end" fill="#0F2A43" font-weight="normal">5  Script drafting</text>
+<rect x="612.0" y="236.0" width="60.0" height="24.0" fill="#2E7D32" fill-opacity="1.0"/>
+<text x="618.0" y="254.0" font-size="11" text-anchor="start" fill="white" font-weight="bold">1.5 d</text>
+<text x="248.0" y="294.0" font-size="13" text-anchor="end" fill="#0F2A43" font-weight="normal">6  AI refinement</text>
+<rect x="672.0" y="276.0" width="20.0" height="24.0" fill="#2E7D32" fill-opacity="1.0"/>
+<text x="248.0" y="334.0" font-size="13" text-anchor="end" fill="#C62828" font-weight="normal">7  Script approval</text>
+<rect x="692.0" y="316.0" width="80.0" height="24.0" fill="#C62828" fill-opacity="1.0"/>
+<text x="698.0" y="334.0" font-size="11" text-anchor="start" fill="white" font-weight="bold">2 d</text>
+<text x="248.0" y="374.0" font-size="13" text-anchor="end" fill="#0F2A43" font-weight="normal">9  Video generation</text>
+<rect x="772.0" y="356.0" width="40.0" height="24.0" fill="#2E7D32" fill-opacity="1.0"/>
+<text x="778.0" y="374.0" font-size="11" text-anchor="start" fill="white" font-weight="bold">1 d</text>
+<text x="248.0" y="414.0" font-size="13" text-anchor="end" fill="#0F2A43" font-weight="normal">10 Audio generation</text>
+<rect x="812.0" y="396.0" width="20.0" height="24.0" fill="#2E7D32" fill-opacity="1.0"/>
+<text x="248.0" y="454.0" font-size="13" text-anchor="end" fill="#0F2A43" font-weight="normal">11 AV sync (bottleneck)</text>
+<rect x="832.0" y="436.0" width="60.0" height="24.0" fill="#2E7D32" fill-opacity="1.0"/>
+<text x="838.0" y="454.0" font-size="11" text-anchor="start" fill="white" font-weight="bold">1.5 d</text>
+<text x="248.0" y="494.0" font-size="13" text-anchor="end" fill="#C62828" font-weight="normal">12a Final approval</text>
+<rect x="892.0" y="476.0" width="80.0" height="24.0" fill="#C62828" fill-opacity="1.0"/>
+<text x="898.0" y="494.0" font-size="11" text-anchor="start" fill="white" font-weight="bold">2 d</text>
+<text x="248.0" y="534.0" font-size="13" text-anchor="end" fill="#0F2A43" font-weight="normal">12b Publish + adapt</text>
+<rect x="972.0" y="516.0" width="40.0" height="24.0" fill="#2E7D32" fill-opacity="1.0"/>
+<text x="978.0" y="534.0" font-size="11" text-anchor="start" fill="white" font-weight="bold">1 d</text>
+<line x1="260.0" y1="60.0" x2="260.0" y2="550.0" stroke="#E3E6EA" stroke-width="1"/>
+<text x="260.0" y="54.0" font-size="11" text-anchor="middle" fill="#9AA5B1" font-weight="normal">0</text>
+<line x1="340.0" y1="60.0" x2="340.0" y2="550.0" stroke="#E3E6EA" stroke-width="1"/>
+<text x="340.0" y="54.0" font-size="11" text-anchor="middle" fill="#9AA5B1" font-weight="normal">2</text>
+<line x1="420.0" y1="60.0" x2="420.0" y2="550.0" stroke="#E3E6EA" stroke-width="1"/>
+<text x="420.0" y="54.0" font-size="11" text-anchor="middle" fill="#9AA5B1" font-weight="normal">4</text>
+<line x1="500.0" y1="60.0" x2="500.0" y2="550.0" stroke="#E3E6EA" stroke-width="1"/>
+<text x="500.0" y="54.0" font-size="11" text-anchor="middle" fill="#9AA5B1" font-weight="normal">6</text>
+<line x1="580.0" y1="60.0" x2="580.0" y2="550.0" stroke="#E3E6EA" stroke-width="1"/>
+<text x="580.0" y="54.0" font-size="11" text-anchor="middle" fill="#9AA5B1" font-weight="normal">8</text>
+<line x1="660.0" y1="60.0" x2="660.0" y2="550.0" stroke="#E3E6EA" stroke-width="1"/>
+<text x="660.0" y="54.0" font-size="11" text-anchor="middle" fill="#9AA5B1" font-weight="normal">10</text>
+<line x1="740.0" y1="60.0" x2="740.0" y2="550.0" stroke="#E3E6EA" stroke-width="1"/>
+<text x="740.0" y="54.0" font-size="11" text-anchor="middle" fill="#9AA5B1" font-weight="normal">12</text>
+<line x1="820.0" y1="60.0" x2="820.0" y2="550.0" stroke="#E3E6EA" stroke-width="1"/>
+<text x="820.0" y="54.0" font-size="11" text-anchor="middle" fill="#9AA5B1" font-weight="normal">14</text>
+<line x1="900.0" y1="60.0" x2="900.0" y2="550.0" stroke="#E3E6EA" stroke-width="1"/>
+<text x="900.0" y="54.0" font-size="11" text-anchor="middle" fill="#9AA5B1" font-weight="normal">16</text>
+<line x1="980.0" y1="60.0" x2="980.0" y2="550.0" stroke="#E3E6EA" stroke-width="1"/>
+<text x="980.0" y="54.0" font-size="11" text-anchor="middle" fill="#9AA5B1" font-weight="normal">18</text>
+<text x="650.0" y="34.0" font-size="15" text-anchor="middle" fill="#222" font-weight="bold">Lawyer Chen's video — 18.8 days end-to-end [within the reported 2–4 weeks [C]]</text>
+<text x="650.0" y="54.0" font-size="13" text-anchor="middle" fill="#555" font-weight="normal">active work ≈ 10 h ≈ 6% of elapsed time — everything red is waiting</text>
+<rect x="260.0" y="574.0" width="14.0" height="14.0" fill="#C62828" fill-opacity="1.0"/>
+<text x="280.0" y="586.0" font-size="12" text-anchor="start" fill="#333" font-weight="normal">waiting</text>
+<rect x="450.0" y="574.0" width="14.0" height="14.0" fill="#2E7D32" fill-opacity="1.0"/>
+<text x="470.0" y="586.0" font-size="12" text-anchor="start" fill="#333" font-weight="normal">active work</text>
+<rect x="640.0" y="574.0" width="14.0" height="14.0" fill="#F9A825" fill-opacity="1.0"/>
+<text x="660.0" y="586.0" font-size="12" text-anchor="start" fill="#333" font-weight="normal">mostly waiting</text>
+<rect x="830.0" y="574.0" width="14.0" height="14.0" fill="#1565C0" fill-opacity="1.0"/>
+<text x="850.0" y="586.0" font-size="12" text-anchor="start" fill="#333" font-weight="normal">lawyer (client)</text>
+</svg>
