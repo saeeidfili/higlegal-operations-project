@@ -150,9 +150,9 @@ def video_steps(sim, video, p):
             break
 
     yield work(45, "content brief")
+    yield work(70, "script drafting")
+    yield work(35, "AI refinement")
     while True:
-        yield work(70, "script drafting")
-        yield work(35, "AI refinement")
         yield wait(sim.rng.uniform(1, 3), "script approval")
         if sim.rng.random() >= p["p_script"]:
             break
@@ -218,9 +218,10 @@ def run_scenario(name, params, lam=17.5, months=MONTHS, seed=7,
     sim.run(months * WD_MONTH)
 
     t0 = warmup * WD_MONTH
+    cutoff = months * WD_MONTH - 3 * WD_MONTH   # avoid end-of-run censoring
     window = [v for v in sim.finished
-              if v.arrival >= t0 and v.delivered is not None]
-    window_months = months - warmup
+              if t0 <= v.arrival <= cutoff and v.delivered is not None]
+    window_months = months - warmup - 3
 
     leads = [(v.delivered - v.arrival) * CAL for v in window]
     intake_waits = [((v.first_work or v.arrival) - v.arrival) * CAL
@@ -236,6 +237,8 @@ def run_scenario(name, params, lam=17.5, months=MONTHS, seed=7,
     return dict(
         name=name, leads=leads, intake_waits=intake_waits, works=works,
         loops=loops, util=util, mean_wip=mean_wip,
+        capacity=(2 * WD_MONTH * MIN_PER_DAY / statistics.mean(works)
+                  if works else float("nan")),
         throughput=len(window) / window_months,
         mean_lead=statistics.mean(leads) if leads else float("nan"),
         p90_lead=(sorted(leads)[int(0.9 * len(leads))] if leads else float("nan")),
@@ -264,7 +267,7 @@ def main():
 
     results = []
     header = (f"{'scenario':<26}{'lead d':>8}{'P90 d':>8}{'intake d':>10}"
-              f"{'work min':>10}{'rework':>8}{'out/mo':>8}{'util':>7}")
+              f"{'work min':>10}{'rework':>8}{'cap/mo':>8}{'util':>7}")
     print(header)
     print("-" * len(header))
     for name, params in SCENARIOS:
@@ -272,7 +275,7 @@ def main():
         results.append(r)
         print(f"{name:<26}{r['mean_lead']:>8.1f}{r['p90_lead']:>8.1f}"
               f"{r['mean_wait']:>10.1f}{r['mean_work']:>10.0f}"
-              f"{r['rework_share']:>7.0%}{r['throughput']:>8.1f}"
+              f"{r['rework_share']:>7.0%}{r['capacity']:>8.1f}"
               f"{r['util']:>7.0%}")
 
     print("\nInterpretation:")

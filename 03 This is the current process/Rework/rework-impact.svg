@@ -5,42 +5,30 @@
 <text x="60.0" y="96.0" font-size="13" text-anchor="start" fill="#222" font-weight="normal">lead time (calendar days)</text>
 <line x1="54.0" y1="470.0" x2="60.0" y2="470.0" stroke="#C9CED6" stroke-width="1"/>
 <text x="50.0" y="474.0" font-size="11" text-anchor="end" fill="#9AA5B1" font-weight="normal">0</text>
-<line x1="54.0" y1="439.2" x2="60.0" y2="439.2" stroke="#C9CED6" stroke-width="1"/>
-<text x="50.0" y="443.2" font-size="11" text-anchor="end" fill="#9AA5B1" font-weight="normal">10</text>
-<line x1="54.0" y1="408.3" x2="60.0" y2="408.3" stroke="#C9CED6" stroke-width="1"/>
-<text x="50.0" y="412.3" font-size="11" text-anchor="end" fill="#9AA5B1" font-weight="normal">20</text>
-<line x1="54.0" y1="377.5" x2="60.0" y2="377.5" stroke="#C9CED6" stroke-width="1"/>
-<text x="50.0" y="381.5" font-size="11" text-anchor="end" fill="#9AA5B1" font-weight="normal">30</text>
-<line x1="54.0" y1="346.7" x2="60.0" y2="346.7" stroke="#C9CED6" stroke-width="1"/>
-<text x="50.0" y="350.7" font-size="11" text-anchor="end" fill="#9AA5B1" font-weight="normal">40</text>
-<line x1="54.0" y1="315.9" x2="60.0" y2="315.9" stroke="#C9CED6" stroke-width="1"/>
-<text x="50.0" y="319.9" font-size="11" text-anchor="end" fill="#9AA5B1" font-weight="normal">50</text>
-<line x1="54.0" y1="285.0" x2="60.0" y2="285.0" stroke="#C9CED6" stroke-width="1"/>
-<text x="50.0" y="289.0" font-size="11" text-anchor="end" fill="#9AA5B1" font-weight="normal">60</text>
-<line x1="54.0" y1="254.2" x2="60.0" y2="254.2" stroke="#C9CED6" stroke-width="1"/>
-<text x="50.0" y="258.2" font-size="11" text-anchor="end" fill="#9AA5B1" font-weight="normal">70</text>
-<line x1="54.0" y1="223.4" x2="60.0" y2="223.4" stroke="#C9CED6" stroke-width="1"/>
-<text x="50.0" y="227.4" font-size="11" text-anchor="end" fill="#9AA5B1" font-weight="normal">80</text>
-<line x1="54.0" y1="192.5" x2="60.0" y2="192.5" stroke="#C9CED6" stroke-width="1"/>
-<text x="50.0" y="196.5" font-size="11" text-anchor="end" fill="#9AA5B1" font-weight="normal">90</text>
-<line x1="54.0" y1="161.7" x2="60.0" y2="161.7" stroke="#C9CED6" stroke-width="1"/>
-<text x="50.0" y="165.7" font-size="11" text-anchor="end" fill="#9AA5B1" font-weight="normal">100</text>
-<line x1="54.0" y1="130.9" x2="60.0" y2="130.9" stroke="#C9CED6" stroke-width="1"/>
-<text x="50.0" y="134.9" font-size="11" text-anchor="end" fill="#9AA5B1" font-weight="normal">110</text>
-<rect x="83.6" y="436.1" width="57.8" height="33.9" fill="#9AA5B1" fill-opacity="1.0"/>
-<text x="112.5" y="428.1" font-size="12" text-anchor="middle" fill="#222" font-weight="bold">11.0</text>
-<line x1="83.6" y1="429.9" x2="141.4" y2="429.9" stroke="#7B1F1F" stroke-width="2"/>
+<line x1="54.0" y1="404.5" x2="60.0" y2="404.5" stroke="#C9CED6" stroke-width="1"/>
+<text x="50.0" y="408.5" font-size="11" text-anchor="end" fill="#9AA5B1" font-weight="normal">10</text>
+<line x1="54.0" y1="338.9" x2="60.0" y2="338.9" stroke="#C9CED6" stroke-width="1"/>
+<text x="50.0" y="342.9" font-size="11" text-anchor="end" fill="#9AA5B1" font-weight="normal">20</text>
+<line x1="54.0" y1="273.4" x2="60.0" y2="273.4" stroke="#C9CED6" stroke-width="1"/>
+<text x="50.0" y="277.4" font-size="11" text-anchor="end" fill="#9AA5B1" font-weight="normal">30</text>
+<line x1="54.0" y1="207.9" x2="60.0" y2="207.9" stroke="#C9CED6" stroke-width="1"/>
+<text x="50.0" y="211.9" font-size="11" text-anchor="end" fill="#9AA5B1" font-weight="normal">40</text>
+<line x1="54.0" y1="142.4" x2="60.0" y2="142.4" stroke="#C9CED6" stroke-width="1"/>
+<text x="50.0" y="146.4" font-size="11" text-anchor="end" fill="#9AA5B1" font-weight="normal">50</text>
+<rect x="83.6" y="397.6" width="57.8" height="72.4" fill="#9AA5B1" fill-opacity="1.0"/>
+<text x="112.5" y="389.6" font-size="12" text-anchor="middle" fill="#222" font-weight="bold">11.0</text>
+<line x1="83.6" y1="384.2" x2="141.4" y2="384.2" stroke="#7B1F1F" stroke-width="2"/>
 <text x="112.5" y="504.0" font-size="11" text-anchor="middle" fill="#333" font-weight="normal">no rework</text>
-<rect x="188.6" y="422.0" width="57.8" height="48.0" fill="#2E7D32" fill-opacity="1.0"/>
-<text x="217.5" y="414.0" font-size="12" text-anchor="middle" fill="#222" font-weight="bold">15.6</text>
-<line x1="188.6" y1="406.9" x2="246.4" y2="406.9" stroke="#7B1F1F" stroke-width="2"/>
+<rect x="188.6" y="378.0" width="57.8" height="92.0" fill="#2E7D32" fill-opacity="1.0"/>
+<text x="217.5" y="370.0" font-size="12" text-anchor="middle" fill="#222" font-weight="bold">14.0</text>
+<line x1="188.6" y1="334.8" x2="246.4" y2="334.8" stroke="#7B1F1F" stroke-width="2"/>
 <text x="217.5" y="520.0" font-size="11" text-anchor="middle" fill="#333" font-weight="normal">rework halved</text>
-<rect x="293.6" y="398.3" width="57.8" height="71.7" fill="#C9A227" fill-opacity="1.0"/>
-<text x="322.5" y="390.3" font-size="12" text-anchor="middle" fill="#222" font-weight="bold">23.2</text>
-<line x1="293.6" y1="353.4" x2="351.4" y2="353.4" stroke="#7B1F1F" stroke-width="2"/>
+<rect x="293.6" y="334.1" width="57.8" height="135.9" fill="#C9A227" fill-opacity="1.0"/>
+<text x="322.5" y="326.1" font-size="12" text-anchor="middle" fill="#222" font-weight="bold">20.7</text>
+<line x1="293.6" y1="260.5" x2="351.4" y2="260.5" stroke="#7B1F1F" stroke-width="2"/>
 <text x="322.5" y="504.0" font-size="11" text-anchor="middle" fill="#333" font-weight="normal">baseline</text>
-<rect x="398.6" y="266.7" width="57.8" height="203.3" fill="#C62828" fill-opacity="1.0"/>
-<text x="427.5" y="258.7" font-size="12" text-anchor="middle" fill="#222" font-weight="bold">65.9</text>
+<rect x="398.6" y="281.3" width="57.8" height="188.7" fill="#C62828" fill-opacity="1.0"/>
+<text x="427.5" y="273.3" font-size="12" text-anchor="middle" fill="#222" font-weight="bold">28.8</text>
 <line x1="398.6" y1="157.0" x2="456.4" y2="157.0" stroke="#7B1F1F" stroke-width="2"/>
 <text x="427.5" y="520.0" font-size="11" text-anchor="middle" fill="#333" font-weight="normal">heavy rework</text>
 <text x="60.0" y="548.0" font-size="11" text-anchor="start" fill="#9AA5B1" font-weight="normal">bar = mean lead time · tick = P90</text>
@@ -48,14 +36,14 @@
 <rect x="560.0" y="140.0" width="264.3" height="30.0" fill="#9AA5B1" fill-opacity="1.0"/>
 <text x="568.0" y="160.0" font-size="12" text-anchor="start" fill="white" font-weight="bold">516 min · rework 0%</text>
 <text x="560.0" y="132.0" font-size="12" text-anchor="start" fill="#333" font-weight="normal">no rework</text>
-<rect x="560.0" y="218.0" width="287.8" height="30.0" fill="#2E7D32" fill-opacity="1.0"/>
-<text x="568.0" y="238.0" font-size="12" text-anchor="start" fill="white" font-weight="bold">562 min · rework 66%</text>
+<rect x="560.0" y="218.0" width="280.7" height="30.0" fill="#2E7D32" fill-opacity="1.0"/>
+<text x="568.0" y="238.0" font-size="12" text-anchor="start" fill="white" font-weight="bold">548 min · rework 63%</text>
 <text x="560.0" y="210.0" font-size="12" text-anchor="start" fill="#333" font-weight="normal">rework halved</text>
-<rect x="560.0" y="296.0" width="322.6" height="30.0" fill="#C9A227" fill-opacity="1.0"/>
-<text x="568.0" y="316.0" font-size="12" text-anchor="start" fill="white" font-weight="bold">630 min · rework 89%</text>
+<rect x="560.0" y="296.0" width="301.4" height="30.0" fill="#C9A227" fill-opacity="1.0"/>
+<text x="568.0" y="316.0" font-size="12" text-anchor="start" fill="white" font-weight="bold">588 min · rework 87%</text>
 <text x="560.0" y="288.0" font-size="12" text-anchor="start" fill="#333" font-weight="normal">baseline</text>
-<rect x="560.0" y="374.0" width="390.9" height="30.0" fill="#C62828" fill-opacity="1.0"/>
-<text x="568.0" y="394.0" font-size="12" text-anchor="start" fill="white" font-weight="bold">763 min · rework 95%</text>
+<rect x="560.0" y="374.0" width="350.4" height="30.0" fill="#C62828" fill-opacity="1.0"/>
+<text x="568.0" y="394.0" font-size="12" text-anchor="start" fill="white" font-weight="bold">684 min · rework 97%</text>
 <text x="560.0" y="366.0" font-size="12" text-anchor="start" fill="#333" font-weight="normal">heavy rework</text>
 <text x="560.0" y="474.0" font-size="11" text-anchor="start" fill="#9AA5B1" font-weight="normal">10 h ≈ 600 min (company-reported baseline [C])</text>
 <text x="560.0" y="496.0" font-size="11" text-anchor="start" fill="#9AA5B1" font-weight="normal">rework adds minutes AND loops that add waits —</text>

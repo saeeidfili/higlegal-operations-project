@@ -73,12 +73,12 @@ Lawyers wait **3–7 days in the intake queue** before anyone looks at their req
 
 Rework is usually managed as extra *work*; operationally it is mostly extra *queue*. The `Rework/` folder simulates the **whole 12-step process** (two producers, three looping gates) and isolates the effect:
 
-- Baseline (~90% of videos loop) vs. no rework: **+114 min of hands-on work but +12.3 days of lead time** — the queue cost of rework is ~30× its work cost [E]
-- At 17.5 videos/month, work-in-process rises **6.2 → 13.7 → 24.0** videos from no-rework to baseline to heavy — and lead time = WIP ÷ throughput (Little's Law)
-- Rework lowers the effective capacity ceiling: **~27.5 → ~22.4 → ~18.5 videos/month** (no rework → baseline → heavy, at realistic dedication); at 20/month with heavy rework the queue becomes unstable
-- Calibration checks: baseline 23.2 d lead (14–28 d [C]), 630 min work (~10 h [C]), 89% rework (~90% [E]), 17.2 videos/month (15–20 [C])
+- Baseline (~90% of videos loop) vs. no rework: **+72 min of hands-on work but +9.7 days of lead time** — the queue cost of rework is ~30× its work cost [E]
+- At 17.5 videos/month, work-in-process rises **6.2 → 12.5 → 20.4** videos from no-rework to baseline to heavy — and lead time = WIP ÷ throughput (Little's Law)
+- Rework lowers the effective capacity ceiling: **~27.4 → ~24.0 → ~20.7 videos/month** (no rework → baseline → heavy, at realistic dedication); at 22/month with heavy rework the process is past capacity (WIP ~72, ~100 days)
+- Calibration checks: baseline 20.7 d lead (14–28 d [C]), 588 min work (~10 h [C]), 87% rework (~90% [E]), capacity ~24/month (demand 15–20 [C])
 
-Files: `rework_simulation.py`, `rework-impact.svg`, `queue-sample-path.svg`, `rework-vs-demand.svg`, `gantt-rework.svg`, and `Rework/START.md` (model card + chart guide + the five mechanisms by which rework inflates a queue).
+Files: `rework_simulation.py`, `rework-impact.svg`, `queue-sample-path.svg`, `rework-vs-demand.svg`, `gantt-rework.svg`, `rework-explained.md` (step-by-step guide), and `Rework/START.md` (model card + chart guide + the five mechanisms by which rework inflates a queue).
 
 ## Where each number comes from (the audit trail)
 
