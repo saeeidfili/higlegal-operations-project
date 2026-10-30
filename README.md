@@ -60,6 +60,7 @@ Each iteration's API additions consume the previous iteration's outputs. Nothing
 | `07 Let's run and compare the processes` | 7 | Simulation/animation spec, scenarios, inputs & assumptions |
 | `08 This is the organizational impact` | 8 | Scaling, profitability, released capacity, assumptions |
 | `09 This is how HiLegal can implement it` | 9 | Phased rollout, responsibilities, costs, pilot, monitoring |
+| `single source of truth/` | all | **Canonical reference for every figure in the project** — company facts [C], assumptions [E], derived figures [D], targets [T], implementation numbers. Take slide numbers from here. |
 
 Each folder contains a `START.md` with suggestions, ready-to-use tables, and (where useful) Mermaid diagrams you can paste into slides or docs. Iteration folders additionally contain `ux-flow.md` — a self-contained prompt you can paste into another AI to generate a clickable software demo of that iteration.
 
