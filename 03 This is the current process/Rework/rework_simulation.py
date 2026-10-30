@@ -1,66 +1,146 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# /// script
+# requires-python = ">=3.9"
+# dependencies = ["matplotlib"]
+# ///
 """
-Rework and the queue — full-process discrete-event simulation
-==============================================================
-Section 3 annex: "Rework" (Operations Management project, HiLegal)
+rework_simulation.py — rework and the queue: whole-process simulation
+=====================================================================
+Section 3 annex, "Rework" (Operations Management project, HiLegal).
+Builds on the intake-queue model in ../queue_model.py (same units, same
+one-team-as-one-unit idea) — but simulates the WHOLE 12-step process.
 
-Question: what does rework actually do to queues, lead time and capacity?
+Question: rework looks like "a bit of extra work" (a redraft, a re-edit).
+What does it actually do to LEAD TIME, WORK-IN-PROCESS and CAPACITY?
 
-Model of the WHOLE content-production process (the 12 steps), not just intake:
-  * Poisson arrivals (demand λ, videos/month).
-  * Two producers form ONE pooled task pool (the "team as a processing unit"):
-    any producer takes the next available work task; no task is preempted.
-  * Every video flows independently through the 12 steps: work tasks
-    (producer busy) alternating with client-gate waits (producer free).
-  * Three looping gates, matching the process map:
-      Gate 1 Clarification   -> loops back to intake (baseline mean ~4 rounds [C])
-      Gate 2 Script approval -> loops back to drafting
-      Gate 3 Final approval  -> loops back into production (partial redo)
-  * Work durations are effective working days: minutes / (480 x 0.67),
-    where 0.67 reflects that producers also do platform work (~33% of time).
-  * The model is work-conserving: idle producers take queued work immediately.
-    This means the simulated intake wait is a LOWER BOUND — the real batching
-    policy (producers checking the inbox between videos) makes it longer,
-    as the M/M/1 analysis in queueing-model.md shows.
+One-paragraph answer (baseline vs no rework, same demand 17.5/month):
+rework adds ≈ 72 minutes of hands-on work but ≈ 9.7 days of lead time —
+the queue cost is ~30× the work cost.  WIP rises 6 → 12 → 20 videos and the
+effective capacity ceiling falls 27 → 24 → 21 videos/month (no rework →
+baseline → heavy rework).  Rework does not just slow the queue; it lowers
+the demand level at which the queue explodes.
 
-Scenarios (rework intensity):
-  no rework | rework halved | baseline (~90% of videos loop) | heavy rework
+Model (discrete-event simulation):
+  * Poisson arrivals at demand λ (videos/month, working-day clock).
+  * Two producers = ONE pooled task queue: any free producer takes the next
+    task; tasks are never preempted (no preemption, as in the queue model).
+  * Each video flows through the 12 steps as work tasks (producer busy)
+    alternating with client-gate waits (producer free for other videos).
+  * Three looping gates: clarification (loops to another round), script
+    approval (loops to a 50-min rework), final approval (loops to a 70-min
+    rework).  Loop probabilities define the four scenarios.
+  * Work durations in effective minutes: 480 × 0.67 ≈ 322 min/producer-day
+    (producers also do platform work) — the same dedication as queue_model.
+  * Work-conserving dispatch ⇒ the simulated intake wait is a LOWER BOUND;
+    the real 3–7-day intake queue is modeled separately (../queue_model.py).
 
-Outputs: console tables + four SVG charts written next to this script.
+The script, in three parts (run in order by main()):
+  Part 1  Four rework scenarios at fixed demand — table + engine check +
+          calibration against company-reported values [C]
+  Part 2  Rework × demand sweep — mean WIP and lead time per (λ, scenario),
+          plus the WIP time series at 22/month that feeds the queue chart
+  Part 3  Four SVG charts (matplotlib, transparent background):
+            rework-impact.svg · queue-sample-path.svg
+            rework-vs-demand.svg · gantt-rework.svg
 
-Run:  python3 rework_simulation.py
+Run:      uv run rework_simulation.py
+      or  ../.venv/bin/python rework_simulation.py
+Output:   console tables (each with a "how to read" block) + the four SVGs.
 """
+
+from __future__ import annotations
 
 import heapq
+import os
 import random
 import statistics
 from collections import deque
 from pathlib import Path
 
-OUT = Path(__file__).resolve().parent
+import matplotlib
 
-WD_MONTH = 22.0           # working days per month
-MIN_PER_DAY = 480 * 0.67  # effective owner-minutes per day (~322; 33% platform work)
-CAL = 30.4 / 21.7         # calendar days per working day (~1.40)
-MONTHS = 28
-WARMUP_MONTHS = 10
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib import patheffects
+from matplotlib.patches import Patch
 
 # ----------------------------------------------------------------------
-# Simulation engine
+# Parameters — the single source of truth.
+# ----------------------------------------------------------------------
+WD_MONTH = 22.0                       # working days per month
+CAL = 30.4 / 21.7                     # calendar days per working day ≈ 1.40
+DEDICATION = 0.67                     # share of paid time available for videos
+MIN_PER_DAY = 480 * DEDICATION        # ≈ 322 effective producer-minutes/day
+
+MONTHS = 28                           # horizon of a scenario run
+WARMUP_MONTHS = 10                    # discarded (pipeline starts empty)
+CUTOFF_MONTHS = 3                     # excluded at the end (censoring guard)
+LAMBDA = 17.5                         # demand, videos/month [C]
+
+OUT_DIR = Path(__file__).resolve().parent
+PNG_DIR = os.environ.get("Q_PNG_DIR")  # optional: also write PNG previews
+
+# Hands-on minutes per task — the first-time-right process sums to 516 min
+# (company reports ~10 h ≈ 600 min including rework [C]; the loops add the
+# rest, see expected_work()).
+MIN = {
+    "intake review": 15, "clarification reply": 8, "content brief": 45,
+    "script drafting": 70, "ai refinement": 35, "script rework": 50,
+    "video generation": 55, "audio generation": 30, "av sync": 140,
+    "final rework": 70, "platform adaptation": 95, "delivery & admin": 23,
+}
+CLAR_WAIT = (1.0, 2.0)                # clarification gate wait, working days
+GATE_WAIT = (1.0, 3.0)                # script/final approval waits, working days
+
+# Loop probability per review round → scenario = rework intensity.
+# Expected clarification rounds = 1/(1−p_clar): 0.75 → 4 rounds [C].
+SCENARIOS = [
+    ("no rework",       dict(p_clar=0.00, p_script=0.00, p_final=0.00)),
+    ("rework halved",   dict(p_clar=0.50, p_script=0.15, p_final=0.15)),
+    ("baseline",        dict(p_clar=0.75, p_script=0.30, p_final=0.30)),
+    ("heavy rework",    dict(p_clar=0.80, p_script=0.50, p_final=0.50)),
+]
+
+NAVY, GOLD, RED, GREEN, GREY = ("#0F2A43", "#C9A227", "#C62828", "#2E7D32",
+                                "#9AA5B1")
+DARKRED, SLATE = "#7B1F1F", "#5C7A99"
+
+
+def expected_work(p: dict) -> float:
+    """Closed-form expected hands-on minutes — audits the engine:
+    E[work] = first-time-right + extra rounds/loops, each a geometric mean."""
+    return (MIN["intake review"]
+            + MIN["clarification reply"] / (1 - p["p_clar"])
+            + MIN["content brief"] + MIN["script drafting"] + MIN["ai refinement"]
+            + MIN["script rework"] * p["p_script"] / (1 - p["p_script"])
+            + MIN["video generation"] + MIN["audio generation"] + MIN["av sync"]
+            + MIN["final rework"] * p["p_final"] / (1 - p["p_final"])
+            + MIN["platform adaptation"] + MIN["delivery & admin"])
+
+
+def hr(title: str) -> None:
+    print("\n" + "=" * 78 + "\n" + title + "\n" + "=" * 78)
+
+
+# ----------------------------------------------------------------------
+# Simulation engine — event heap + pooled producers.  (The logic here is
+# behaviour-identical to the version the published numbers came from;
+# only names, constants and output were reorganized.)
 # ----------------------------------------------------------------------
 class Sim:
     def __init__(self, params, lam_per_month, seed=7):
         self.t = 0.0
-        self.events = []
+        self.events = []                        # min-heap of (time, seq, fn)
         self.seq = 0
         self.rng = random.Random(seed)
         self.params = params
         self.lam_wd = lam_per_month / WD_MONTH
-        self.intake = deque()        # requests not yet picked up (first task)
-        self.work_queue = deque()    # work tasks waiting for a producer
+        self.intake = deque()                   # requests not yet picked up
+        self.work_queue = deque()               # work tasks waiting for a producer
         self.finished = []
-        self.series = []             # (t, intake_len, wip)
+        self.series = []                        # (t, intake_len, wip) samples
         self.next_vid = 0
         self.owners = []
 
@@ -77,28 +157,24 @@ class Sim:
 
 class Video:
     __slots__ = ("vid", "arrival", "first_work", "delivered", "work",
-                 "waits", "clar_rounds", "script_loops", "final_loops",
-                 "segments")
+                 "clar_rounds", "script_loops", "final_loops", "segments")
 
     def __init__(self, vid, arrival):
         self.vid = vid
         self.arrival = arrival
-        self.first_work = None
+        self.first_work = None                  # when a producer first touches it
         self.delivered = None
-        self.work = 0.0
-        self.waits = 0.0
+        self.work = 0.0                         # hands-on minutes
         self.clar_rounds = 0
         self.script_loops = 0
         self.final_loops = 0
-        self.segments = []          # (start, end, label, kind)
+        self.segments = []                      # (start, end, label, kind)
 
 
 class Owner:
-    def __init__(self, sim):
-        self.sim = sim
+    def __init__(self):
         self.busy = False
         self.busy_days = 0.0
-        self.work_minutes = 0.0
 
 
 def dispatch(sim):
@@ -111,7 +187,6 @@ def dispatch(sim):
         owner.busy = True
         dur = minutes / MIN_PER_DAY
         owner.busy_days += dur
-        owner.work_minutes += minutes
         video.segments.append((sim.t, sim.t + dur, label, "work"))
         if label == "intake review" and video.first_work is None:
             video.first_work = sim.t
@@ -132,55 +207,56 @@ def request_work(sim, minutes, video, label, cb):
 
 
 # ----------------------------------------------------------------------
-# One video through the 12 steps (generator of work/wait actions)
+# One video through the 12 steps — a generator yielding work/wait actions.
+# rng call order is part of the model; keep it stable.
 # ----------------------------------------------------------------------
 def video_steps(sim, video, p):
-    def work(minutes, label):
-        return ("work", minutes, label)
+    def work(label):
+        return ("work", MIN[label], label)
 
     def wait(days, label):
         return ("wait", days, label)
 
-    yield work(15, "intake review")
+    yield work("intake review")
     while True:
         video.clar_rounds += 1
-        yield wait(sim.rng.uniform(1, 2), "clarification wait")
-        yield work(8, "clarification reply")
+        yield wait(sim.rng.uniform(*CLAR_WAIT), "clarification wait")
+        yield work("clarification reply")
         if sim.rng.random() >= p["p_clar"]:
             break
 
-    yield work(45, "content brief")
-    yield work(70, "script drafting")
-    yield work(35, "AI refinement")
+    yield work("content brief")
+    yield work("script drafting")
+    yield work("ai refinement")
     while True:
-        yield wait(sim.rng.uniform(1, 3), "script approval")
+        yield wait(sim.rng.uniform(*GATE_WAIT), "script approval")
         if sim.rng.random() >= p["p_script"]:
             break
         video.script_loops += 1
-        yield work(50, "script rework")
+        yield work("script rework")
 
-    yield work(55, "video generation")
-    yield work(30, "audio generation")
-    yield work(140, "AV sync")
+    yield work("video generation")
+    yield work("audio generation")
+    yield work("av sync")
     while True:
-        yield wait(sim.rng.uniform(1, 3), "final approval")
+        yield wait(sim.rng.uniform(*GATE_WAIT), "final approval")
         if sim.rng.random() >= p["p_final"]:
             break
         video.final_loops += 1
-        yield work(70, "final rework")
+        yield work("final rework")
 
-    yield work(95, "platform adaptation")
-    yield work(23, "delivery & admin")
+    yield work("platform adaptation")
+    yield work("delivery & admin")
 
 
 def drive(sim, video, gen):
+    """Execute the next action of a video's generator; deliver when done."""
     try:
         act = next(gen)
     except StopIteration:
         video.delivered = sim.t
         sim.finished.append(video)
         return
-
     if act[0] == "work":
         _, minutes, label = act
         video.work += minutes
@@ -188,18 +264,17 @@ def drive(sim, video, gen):
                      lambda: drive(sim, video, gen))
     else:
         _, days, label = act
-        video.waits += days
         video.segments.append((sim.t, sim.t + days, label, "wait"))
         sim.schedule(days, lambda: drive(sim, video, gen))
 
 
 # ----------------------------------------------------------------------
-# Scenario runner
+# Scenario runner — simulate, then measure over a clean window.
 # ----------------------------------------------------------------------
-def run_scenario(name, params, lam=17.5, months=MONTHS, seed=7,
+def run_scenario(name, params, lam=LAMBDA, months=MONTHS, seed=7,
                  warmup=WARMUP_MONTHS):
     sim = Sim(params, lam, seed)
-    sim.owners = [Owner(sim), Owner(sim)]
+    sim.owners = [Owner(), Owner()]
 
     def arrival():
         v = Video(sim.next_vid, sim.t)
@@ -217,11 +292,13 @@ def run_scenario(name, params, lam=17.5, months=MONTHS, seed=7,
     log()
     sim.run(months * WD_MONTH)
 
+    # measure only videos that ARRIVE inside the clean window: after warm-up
+    # (empty-start transient) and before the cutoff (undelivered at horizon)
     t0 = warmup * WD_MONTH
-    cutoff = months * WD_MONTH - 3 * WD_MONTH   # avoid end-of-run censoring
+    cutoff = months * WD_MONTH - CUTOFF_MONTHS * WD_MONTH
     window = [v for v in sim.finished
               if t0 <= v.arrival <= cutoff and v.delivered is not None]
-    window_months = months - warmup - 3
+    window_months = months - warmup - CUTOFF_MONTHS
 
     leads = [(v.delivered - v.arrival) * CAL for v in window]
     intake_waits = [((v.first_work or v.arrival) - v.arrival) * CAL
@@ -232,11 +309,11 @@ def run_scenario(name, params, lam=17.5, months=MONTHS, seed=7,
     util = sum(o.busy_days for o in sim.owners) / (2 * months * WD_MONTH)
 
     series = [(t, wip) for (t, _q, wip) in sim.series if t >= t0]
-    mean_wip = statistics.mean([w for _, w in series]) if series else float("nan")
 
     return dict(
         name=name, leads=leads, intake_waits=intake_waits, works=works,
-        loops=loops, util=util, mean_wip=mean_wip,
+        loops=loops, util=util,
+        mean_wip=statistics.mean([w for _, w in series]) if series else float("nan"),
         capacity=(2 * WD_MONTH * MIN_PER_DAY / statistics.mean(works)
                   if works else float("nan")),
         throughput=len(window) / window_months,
@@ -245,58 +322,82 @@ def run_scenario(name, params, lam=17.5, months=MONTHS, seed=7,
         mean_wait=statistics.mean(intake_waits) if intake_waits else float("nan"),
         mean_work=statistics.mean(works) if works else float("nan"),
         rework_share=statistics.mean(loops) if loops else float("nan"),
-        series=series,
-        videos=window,
+        series=series, videos=window,
     )
 
 
-SCENARIOS = [
-    ("no rework", dict(p_clar=0.0, p_script=0.0, p_final=0.0)),
-    ("rework halved", dict(p_clar=0.50, p_script=0.15, p_final=0.15)),
-    ("baseline (~90% rework)", dict(p_clar=0.75, p_script=0.30, p_final=0.30)),
-    ("heavy rework", dict(p_clar=0.80, p_script=0.50, p_final=0.50)),
-]
+# ======================================================================
+# PART 1 — four rework scenarios at fixed demand
+# ======================================================================
+def part1_scenarios() -> list:
+    hr(f"PART 1 · REWORK INTENSITY — demand λ = {LAMBDA}/month, "
+       f"2 producers, {MONTHS} simulated months")
 
+    results = [run_scenario(name, params) for name, params in SCENARIOS]
 
-def main():
-    print("=" * 80)
-    print("REWORK AND THE QUEUE — full-process discrete-event simulation")
-    print("=" * 80)
-    print(f"Demand λ = 17.5 videos/month · 2 producers (pooled) · {MONTHS} months, "
-          f"last {MONTHS - WARMUP_MONTHS} measured\n")
-
-    results = []
-    header = (f"{'scenario':<26}{'lead d':>8}{'P90 d':>8}{'intake d':>10}"
-              f"{'work min':>10}{'rework':>8}{'cap/mo':>8}{'util':>7}")
-    print(header)
-    print("-" * len(header))
-    for name, params in SCENARIOS:
-        r = run_scenario(name, params)
-        results.append(r)
-        print(f"{name:<26}{r['mean_lead']:>8.1f}{r['p90_lead']:>8.1f}"
+    print(f"  {'scenario':<16}{'lead d':>8}{'P90 d':>8}{'intake d':>10}"
+          f"{'work min':>10}{'rework':>8}{'cap/mo':>8}{'util':>7}")
+    for r in results:
+        print(f"{r['name']:<18}{r['mean_lead']:>8.1f}{r['p90_lead']:>8.1f}"
               f"{r['mean_wait']:>10.1f}{r['mean_work']:>10.0f}"
               f"{r['rework_share']:>7.0%}{r['capacity']:>8.1f}"
               f"{r['util']:>7.0%}")
 
-    print("\nInterpretation:")
-    base = next(r for r in results if "baseline" in r["name"])
-    no = next(r for r in results if "no rework" in r["name"])
-    print(f"  * removing rework cuts lead time {base['mean_lead']:.1f} -> "
-          f"{no['mean_lead']:.1f} days and work {base['mean_work']:.0f} -> "
-          f"{no['mean_work']:.0f} min")
-    print(f"  * baseline rework incidence {base['rework_share']:.0%} — worth "
-          f"~{base['mean_lead'] - no['mean_lead']:.1f} days of waiting")
+    base = next(r for r in results if r["name"] == "baseline")
+    no = next(r for r in results if r["name"] == "no rework")
+    print(f"""
+how to read the table
+  lead d      calendar days from lawyer request to delivered video
+  P90 d       1 in 10 orders takes at least this long
+  intake d    wait before first touch (lower bound — see model notes)
+  work min    hands-on producer minutes per video (company: ~600 incl.
+              rework [C])
+  cap/mo      capacity ceiling = 2 × 22 × {MIN_PER_DAY:.0f} min ÷ work per video
+  util        share of the video-dedicated budget that is busy
+              ({base['util']:.0%} there ≈ {base['util'] * DEDICATION:.0%} of paid hours)
 
-    # ------------------------------------------------------------------
-    # Demand sweep: rework x demand interaction
-    # ------------------------------------------------------------------
-    print("\nDemand sweep (mean lead time days / mean WIP videos):")
+what the numbers say
+  * no rework → baseline: +{base['mean_work'] - no['mean_work']:.0f} min of work
+    (+{base['mean_work'] / no['mean_work'] - 1:.0%}) but
+    +{base['mean_lead'] - no['mean_lead']:.1f} days of lead time
+    (+{base['mean_lead'] / no['mean_lead'] - 1:.0%})""")
+    work_cost_cal = (base["mean_work"] - no["mean_work"]) / MIN_PER_DAY * CAL
+    print(f"  * the queue cost of rework is "
+          f"~{(base['mean_lead'] - no['mean_lead']) / work_cost_cal:.0f}× its"
+          f" work cost ({base['mean_lead'] - no['mean_lead']:.1f} d of waiting"
+          f" vs {work_cost_cal:.1f} d of extra work)")
+    print(f"  * removing rework cuts lead time "
+          f"{1 - no['mean_lead'] / base['mean_lead']:.0%} while cutting work"
+          f" only {1 - no['mean_work'] / base['mean_work']:.0%}")
+
+    print("\nengine check — closed-form expected work vs simulated:")
+    for (name, params), r in zip(SCENARIOS, results):
+        ok = "  ✓" if abs(r["mean_work"] - expected_work(params)) <= 20 else "  ✗"
+        print(f"  {name:<16}{expected_work(params):>7.0f} min formula"
+              f"{r['mean_work']:>8.0f} min simulated{ok}")
+
+    print(f"""
+calibration (baseline vs company-reported [C])
+  lead time     {base['mean_lead']:.1f} d    vs 14–28 d [C]      ✓ inside
+  hands-on work {base['mean_work']:.0f} min vs ~600 min [C]     ✓ {base['mean_work'] / 600 - 1:+.0%}
+  rework share  {base['rework_share']:.0%}     vs ~90% [E]         ✓
+  capacity      {base['capacity']:.1f}/mo vs demand 15–20 [C] ✓ headroom""")
+    return results
+
+
+# ======================================================================
+# PART 2 — rework × demand: the sweep and the wall
+# ======================================================================
+def part2_sweep():
+    hr("PART 2 · REWORK × DEMAND — mean lead days / mean WIP, 3 seeds each")
+
     lambdas = [15.0, 17.5, 20.0, 22.0]
     levels = [("no rework", SCENARIOS[0][1]),
               ("baseline", SCENARIOS[2][1]),
-              ("heavy", SCENARIOS[3][1])]
+              ("heavy rework", SCENARIOS[3][1])]
+
+    print(f"  {'λ':>5}" + "".join(f"{n:>20}" for n, _ in levels))
     sweep = {}
-    print(f"{'λ':>5}" + "".join(f"{n:>18}" for n, _ in levels))
     for lam in lambdas:
         row = []
         for name, params in levels:
@@ -305,249 +406,222 @@ def main():
             row.append((statistics.mean(r["mean_lead"] for r in runs),
                         statistics.mean(r["mean_wip"] for r in runs)))
         sweep[lam] = row
-        print(f"{lam:>5.1f}" + "".join(f"{a:>10.1f} /{b:>6.1f}" for a, b in row))
+        print(f"{lam:>5.1f}" + "".join(f"{a:>11.1f} d /{b:>6.1f}"
+                                       for a, b in row))
+    print("""
+how to read the table
+  cell = mean lead time / mean videos-in-system (WIP) at that demand
+  Little's Law: lead time ≈ WIP ÷ throughput — when WIP climbs, waits climb
+  the sweep reports WIP (not only lead) because an unstable queue shows up
+  honestly in WIP: it keeps growing while censored lead times look tame
 
-    # WIP sample paths at 22/month (past the current ceiling)
+what the numbers say
+  * without rework the process absorbs 22/month (WIP ≈ 9, lead ≈ 12 d)
+  * baseline rework degrades steeply past 20/month (WIP 16 → 23)
+  * heavy rework at 22/month is PAST CAPACITY: WIP ≈ 72 and lead ≈ 100 d —
+    the backlog grows without bound; no amount of effort drains it""")
+
+    # WIP time series at 22/month for the queue chart
     queue_runs = [run_scenario(name, params, lam=22.0, months=36, warmup=14,
                                seed=13)
-                  for name, params in ((levels[0][0], levels[0][1]),
-                                       (levels[1][0], levels[1][1]),
-                                       (levels[2][0], levels[2][1]))]
-
-    make_impact_chart(results)
-    make_queue_chart(queue_runs)
-    make_sweep_chart(lambdas, levels, sweep)
-    make_gantt_chart(results)
-    print("\nCharts written: rework-impact.svg, queue-sample-path.svg, "
-          "rework-vs-demand.svg, gantt-rework.svg")
+                  for name, params in levels]
+    return lambdas, levels, sweep, queue_runs
 
 
-# ----------------------------------------------------------------------
-# SVG helpers
-# ----------------------------------------------------------------------
-class SVG:
-    def __init__(self, w=1000, h=560):
-        self.w, self.h = w, h
-        self.parts = [
-            f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" '
-            f'font-family="Arial, Helvetica, sans-serif">',
-            f'<rect width="{w}" height="{h}" fill="#FFFFFF"/>']
-
-    def line(self, x1, y1, x2, y2, stroke="#666", width=1, dash=None):
-        d = f' stroke-dasharray="{dash}"' if dash else ""
-        self.parts.append(f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" '
-                          f'y2="{y2:.1f}" stroke="{stroke}" stroke-width="{width}"{d}/>')
-
-    def rect(self, x, y, w, h, fill, opacity=1.0, stroke=None):
-        s = f' stroke="{stroke}" stroke-width="1"' if stroke else ""
-        self.parts.append(f'<rect x="{x:.1f}" y="{y:.1f}" width="{max(w, 0):.1f}" '
-                          f'height="{max(h, 0):.1f}" fill="{fill}" '
-                          f'fill-opacity="{opacity}"{s}/>')
-
-    def circle(self, cx, cy, r, fill):
-        self.parts.append(f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="{r}" fill="{fill}"/>')
-
-    def text(self, x, y, s, size=13, anchor="start", fill="#222", weight="normal"):
-        self.parts.append(f'<text x="{x:.1f}" y="{y:.1f}" font-size="{size}" '
-                          f'text-anchor="{anchor}" fill="{fill}" '
-                          f'font-weight="{weight}">{s}</text>')
-
-    def poly(self, pts, stroke, width=2.5, fill="none"):
-        p = " ".join(f"{x:.1f},{y:.1f}" for x, y in pts)
-        self.parts.append(f'<polyline points="{p}" fill="{fill}" '
-                          f'stroke="{stroke}" stroke-width="{width}"/>')
-
-    def save(self, name):
-        self.parts.append("</svg>")
-        (OUT / name).write_text("\n".join(self.parts), encoding="utf-8")
-        print(f"   wrote {name}")
+# ======================================================================
+# PART 3 — charts (matplotlib → four SVGs, transparent background)
+# ======================================================================
+def _save(fig: plt.Figure, name: str) -> None:
+    """Save with a transparent background (for slides) — no white box."""
+    fig.patch.set_alpha(0.0)
+    for ax in fig.axes:
+        ax.set_facecolor("none")
+    path = OUT_DIR / name
+    fig.savefig(path, format="svg", bbox_inches="tight", transparent=True)
+    if PNG_DIR:
+        fig.savefig(Path(PNG_DIR) / name.replace(".svg", ".png"), dpi=110,
+                    transparent=True)
+    plt.close(fig)
+    print(f"  wrote {path.name}")
 
 
-NAVY, GOLD, RED, GREEN, GREY, DARKRED = ("#0F2A43", "#C9A227", "#C62828",
-                                         "#2E7D32", "#9AA5B1", "#7B1F1F")
+SCEN_COLORS = [GREY, GREEN, GOLD, RED]
 
 
-def make_impact_chart(results):
-    svg = SVG(1020, 560)
-    svg.text(40, 40, "Rework vs. lead time and work content", 19, fill=NAVY,
-             weight="bold")
-    svg.text(40, 62, "same process, same two producers, same demand "
-             "(17.5 videos/month)", 13, fill="#6B7785")
+def short(name: str) -> str:
+    return name.replace(" (~90% rework)", "")
 
-    L, R, T, B = 60, 480, 110, 470
+
+# Value labels: one consistent colour (black) with a thin white halo, so it
+# stays readable on every bar fill and on any slide background.
+LABEL_COLOR = "black"
+LABEL_HALO = [patheffects.withStroke(linewidth=2.5, foreground="white")]
+
+
+def chart_impact(results) -> None:
+    """Left: mean lead + P90 per scenario. Right: hands-on work per video."""
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10.6, 5.2),
+                                   width_ratios=(1.05, 1.0))
+    fig.subplots_adjust(top=0.85, wspace=0.5)   # room for the right panel's labels
     ymax = max(r["p90_lead"] for r in results) * 1.15
-    svg.text(60, T - 14, "lead time (calendar days)", 13, fill="#222")
-    for i in range(0, int(ymax) + 1, 10):
-        y = B - i / ymax * (B - T)
-        svg.line(L - 6, y, L, y, "#C9CED6")
-        svg.text(L - 10, y + 4, str(i), 11, anchor="end", fill=GREY)
-    bw = (R - L) / len(results) * 0.55
     for i, r in enumerate(results):
-        x = L + (i + 0.5) * (R - L) / len(results) - bw / 2
-        h = r["mean_lead"] / ymax * (B - T)
-        color = [GREY, GREEN, GOLD, RED][i]
-        svg.rect(x, B - h, bw, h, color)
-        svg.text(x + bw / 2, B - h - 8, f"{r['mean_lead']:.1f}", 12,
-                 anchor="middle", fill="#222", weight="bold")
-        svg.line(x, B - r["p90_lead"] / ymax * (B - T), x + bw,
-                 B - r["p90_lead"] / ymax * (B - T), DARKRED, 2)
-        svg.text(x + bw / 2, B + 34 + (i % 2) * 16,
-                 r["name"].replace(" (~90% rework)", ""), 11,
-                 anchor="middle", fill="#333")
-    svg.text(L, B + 78, "bar = mean lead time · tick = P90", 11, fill=GREY)
+        ax1.bar(i, r["mean_lead"], width=0.55, color=SCEN_COLORS[i], zorder=3)
+        # whisker from the bar top up to P90, capped and labelled
+        ax1.vlines(i, r["mean_lead"], r["p90_lead"], color=DARKRED, lw=2.0,
+                   zorder=4)
+        ax1.hlines(r["p90_lead"], i - 0.14, i + 0.14, color=DARKRED, lw=2.8,
+                   zorder=4)
+        ax1.text(i, r["mean_lead"] - ymax * 0.03, f"mean {r['mean_lead']:.1f}",
+                 ha="center", va="top", color=LABEL_COLOR, fontsize=10,
+                 weight="bold", zorder=5, path_effects=LABEL_HALO)
+        ax1.text(i, r["p90_lead"] + ymax * 0.012, f"P90 {r['p90_lead']:.1f}",
+                 ha="center", va="bottom", color=DARKRED, fontsize=9.5,
+                 weight="bold", zorder=5)
+    ax1.set_xticks(range(len(results)))
+    ax1.set_xticklabels([short(r["name"]) for r in results], fontsize=10)
+    ax1.set_ylim(0, ymax)
+    ax1.set_ylabel("lead time (calendar days)")
+    ax1.set_title("bar = mean · whisker = P90 (1 in 10 orders)", fontsize=10,
+                  color="#555")
+    ax1.grid(axis="y", color="#E3E6EA", lw=0.8)
 
-    L2, R2 = 560, 980
-    wmax = 820
-    svg.text(L2, T - 14, "hands-on work per video (minutes)", 13, fill="#222")
     for i, r in enumerate(results):
-        y = T + 30 + i * 78
-        w = r["mean_work"] / wmax * (R2 - L2)
-        color = [GREY, GREEN, GOLD, RED][i]
-        svg.rect(L2, y, w, 30, color)
-        svg.text(L2 + 8, y + 20,
+        y = len(results) - 1 - i
+        ax2.barh(y, r["mean_work"], height=0.6, color=SCEN_COLORS[i], zorder=3)
+        ax2.text(r["mean_work"] - 12, y,
                  f"{r['mean_work']:.0f} min · rework {r['rework_share']:.0%}",
-                 12, fill="white", weight="bold")
-        svg.text(L2, y - 8, r["name"].replace(" (~90% rework)", ""), 12,
-                 fill="#333")
-    svg.text(L2, 474, "10 h ≈ 600 min (company-reported baseline [C])", 11,
-             fill=GREY)
-    svg.text(L2, 496, "rework adds minutes AND loops that add waits —", 11,
-             fill=GREY)
-    svg.text(L2, 514, "the queue cost is larger than the work cost", 11,
-             fill=GREY)
-    svg.save("rework-impact.svg")
+                 ha="right", va="center", color=LABEL_COLOR, fontsize=10,
+                 weight="bold", path_effects=LABEL_HALO)
+    ax2.set_yticks(range(len(results)))
+    ax2.set_yticklabels([short(r["name"]) for r in reversed(results)],
+                        fontsize=10)
+    ax2.set_xlim(0, 720)
+    ax2.axvline(600, color="#666", ls=":", lw=1.6, zorder=2)
+    ax2.text(600, len(results) - 0.35, " company baseline ≈ 600 min [C]",
+             fontsize=9, color="#555", va="center")
+    ax2.set_xlabel("hands-on work per video (minutes)")
+    ax2.grid(axis="x", color="#E3E6EA", lw=0.8)
+
+    fig.suptitle("Rework: a little extra work, a lot of extra waiting "
+                 "(same team, same demand)", weight="bold")
+    _save(fig, "rework-impact.svg")
 
 
-def make_queue_chart(runs):
-    svg = SVG(1020, 500)
-    svg.text(40, 36, "Videos in the system (WIP) at 22 per month — rework builds a backlog",
-             16.5, fill=NAVY, weight="bold")
-    svg.text(40, 58, "last 20 simulated months · videos in process, sampled every "
-             "half working day · smoothed", 12, fill="#6B7785")
+def _smooth(vals, k=4):
+    return [sum(vals[max(0, i - k):min(len(vals), i + k + 1)])
+            / (min(len(vals), i + k + 1) - max(0, i - k))
+            for i in range(len(vals))]
 
-    L, R, T, B = 70, 980, 100, 410
+
+def chart_queue_path(queue_runs) -> None:
+    """WIP over time at 22/month — flat / climbing / runaway."""
+    fig, ax = plt.subplots(figsize=(10.2, 5.2))
     colors = [GREEN, GOLD, RED]
-    ymax = max(max(q for _, q in r["series"]) for r in runs) * 1.08 or 1
-    step = 10 if ymax < 80 else 20
-    for i in range(0, int(ymax) + 1, step):
-        y = B - i / ymax * (B - T)
-        svg.line(L, y, R, y, "#E9ECEF")
-        svg.text(L - 10, y + 4, str(i), 11, anchor="end", fill=GREY)
-    tmin = runs[0]["series"][0][0]
-    tmax = runs[0]["series"][-1][0]
-    for (r, color) in zip(runs, colors):
-        vals = [q for _, q in r["series"]]
-        pts = r["series"]
-        smooth = []
-        for i in range(len(vals)):
-            lo, hi = max(0, i - 4), min(len(vals), i + 5)
-            smooth.append((pts[i][0], sum(vals[lo:hi]) / (hi - lo)))
-        poly = [(L + (t - tmin) / (tmax - tmin) * (R - L),
-                 B - min(v, ymax) / ymax * (B - T)) for t, v in smooth]
-        svg.poly(poly, color, 2.2)
-    ly = 440
-    for i, (r, color) in enumerate(zip(runs, colors)):
-        x = 70 + i * 310
-        svg.rect(x, ly, 16, 16, color)
-        svg.text(x + 24, ly + 13, r["name"].replace(" (~90% rework)", ""), 12,
-                 fill="#333")
-    total_months = (tmax - tmin) / WD_MONTH
-    for m in range(0, int(total_months) + 1, 4):
-        x = L + m / total_months * (R - L)
-        svg.line(x, B, x, B + 6, "#9AA5B1")
-        svg.text(x, B + 22, f"{m}", 11, anchor="middle", fill=GREY)
-    svg.text(70, B + 62, "months into the 20-month window →", 12, fill="#222")
-    svg.text(70, T - 12, "videos in the system (work in progress)", 12, fill="#222")
-    svg.save("queue-sample-path.svg")
+    for r, color in zip(queue_runs, colors):
+        series = r["series"]
+        t0 = series[0][0]
+        months_x = [(t - t0) / WD_MONTH for t, _ in series]
+        ax.plot(months_x, _smooth([w for _, w in series]), color=color,
+                lw=2.2, label=short(r["name"]))
+    n_months = (queue_runs[0]["series"][-1][0]
+                - queue_runs[0]["series"][0][0]) / WD_MONTH
+    ax.set_xlabel(f"months into the {n_months:.0f}-month window "
+                  "(sampled twice per working day, smoothed)")
+    ax.set_ylabel("videos in the system (WIP)")
+    ax.set_title("Videos in the system at 22/month — rework builds a backlog",
+                 weight="bold")
+    ax.legend(frameon=False, fontsize=10)
+    ax.grid(axis="y", color="#E3E6EA", lw=0.8)
+    _save(fig, "queue-sample-path.svg")
 
 
-def make_sweep_chart(lambdas, levels, sweep):
-    svg = SVG(1020, 540)
-    svg.text(40, 38, "Rework × demand: where work-in-process explodes", 18,
-             fill=NAVY, weight="bold")
-    svg.text(40, 60, "mean videos in the system over the last 12 months · same "
-             "two producers", 12, fill="#6B7785")
-    L, R, T, B = 80, 960, 110, 440
-    ymax = max(b for lam in lambdas for (_a, b) in sweep[lam]) * 1.1
-    step = 10 if ymax < 80 else 20
-    for d in range(0, int(ymax) + 1, step):
-        y = B - d / ymax * (B - T)
-        svg.line(L, y, R, y, "#E9ECEF")
-        svg.text(L - 10, y + 4, str(d), 11, anchor="end", fill=GREY)
+def chart_sweep(lambdas, levels, sweep) -> None:
+    """Mean WIP vs demand — each rework level has its own breaking point."""
+    fig, ax = plt.subplots(figsize=(9.8, 5.4))
     colors = [GREEN, GOLD, RED]
     for j, (name, _) in enumerate(levels):
-        pts = []
-        for lam in lambdas:
-            v = min(sweep[lam][j][1], ymax)
-            pts.append((L + (lam - 14) / (23 - 14) * (R - L),
-                        B - v / ymax * (B - T)))
-        svg.poly(pts, colors[j], 2.6)
-        for lam, (x, y) in zip(lambdas, pts):
-            svg.circle(x, y, 5, colors[j])
-        svg.text(940, 120 + j * 22, name, 13, anchor="end", fill=colors[j],
+        ys = [sweep[lam][j][1] for lam in lambdas]
+        ax.plot(lambdas, ys, "o-", color=colors[j], lw=2.6, ms=6,
+                label=name)
+    ax.annotate("past capacity:\nWIP ≈ 72 · lead ≈ 100 d",
+                xy=(22.0, sweep[22.0][2][1]), xytext=(19.0, 62),
+                fontsize=10, color=RED, weight="bold",
+                arrowprops=dict(arrowstyle="->", color=RED, lw=1.2))
+    ax.set_xlabel("demand λ (videos/month) — same two producers")
+    ax.set_ylabel("mean videos in the system (WIP)")
+    ax.set_title("Rework × demand: where work-in-process explodes",
                  weight="bold")
-    svg.text((L + R) / 2, B + 46, "demand λ (videos/month)", 13,
-             anchor="middle", fill="#222")
-    svg.text(L, T - 16, "mean videos in the system (WIP)", 12, fill="#222")
-    svg.text(L, B + 78, "Interpretation: without rework the process absorbs "
-             "22/month; baseline degrades steeply past ~20;", 12, fill="#333")
-    svg.text(L, B + 96, "heavy rework hits the capacity wall early — demand "
-             "that was manageable becomes a backlog.", 12, fill="#333")
-    svg.save("rework-vs-demand.svg")
+    ax.legend(frameon=False, fontsize=10)
+    ax.grid(axis="y", color="#E3E6EA", lw=0.8)
+    _save(fig, "rework-vs-demand.svg")
 
 
-def make_gantt_chart(results):
-    base = next(r for r in results if "baseline" in r["name"])
-    no = next(r for r in results if "no rework" in r["name"])
+def chart_gantt(results) -> None:
+    """Two median orders — first-time-right vs baseline with loops."""
+    base = next(r for r in results if r["name"] == "baseline")
+    no = next(r for r in results if r["name"] == "no rework")
 
     def pick(r):
         vids = sorted(r["videos"], key=lambda v: v.delivered - v.arrival)
         return vids[len(vids) // 2]
 
-    v_base = pick(base)
-    v_no = pick(no)
-    svg = SVG(1120, 480)
-    svg.text(40, 40, "One order, two worlds — where rework time actually goes",
-             18, fill=NAVY, weight="bold")
-    svg.text(40, 62, "median order of each scenario · coloured blocks = elapsed "
-             "time per step (work vs waiting) · calendar days", 12, fill="#6B7785")
-
-    rows = [("first-time right (no rework)", v_no, 110),
-            ("with rework (baseline)", v_base, 250)]
-    L, R = 300, 1080
+    rows = [("first-time-right (no rework)", pick(no), 1),
+            ("with rework (baseline)", pick(base), 0)]
+    fig, ax = plt.subplots(figsize=(11.0, 4.4))
     tmax = max((v.delivered - v.arrival) * CAL for _, v, _ in rows) + 2
 
     for label, v, y in rows:
-        svg.text(L - 16, y + 22, label, 13, anchor="end", fill="#333",
-                 weight="bold")
+        lead = (v.delivered - v.arrival) * CAL
+        ax.barh(y, lead, height=0.52, color="#ECEFF3", zorder=1)  # elapsed
         intake = ((v.first_work or v.arrival) - v.arrival) * CAL
-        svg.rect(L, y, intake / tmax * (R - L), 30, "#5C7A99")
+        ax.barh(y, intake, height=0.52, color=SLATE, zorder=3)
         if intake > 2:
-            svg.text(L + 6, y + 20, "intake queue", 11, fill="white")
+            ax.text(intake / 2, y, "intake", ha="center", va="center",
+                    fontsize=8.5, color="white", weight="bold")
         for (s, e, lab, kind) in v.segments:
-            x = L + (s - v.arrival) * CAL / tmax * (R - L)
-            w = (e - s) * CAL / tmax * (R - L)
+            x = (s - v.arrival) * CAL
+            w = (e - s) * CAL
             if kind == "work":
                 color = DARKRED if "rework" in lab else GREEN
             else:
                 color = GOLD if "clarification" in lab else RED
-            svg.rect(x, y, max(w, 1.5), 30, color, 0.92)
+            ax.barh(y, max(w, 0.15), left=x, height=0.52, color=color,
+                    zorder=4)
+
+    ax.set_yticks([y for _, _, y in rows])
+    ax.set_yticklabels([l for l, _, _ in rows], fontsize=11)
     for d in range(0, int(tmax) + 1, 5):
-        x = L + d / tmax * (R - L)
-        svg.line(x, 90, x, 320, "#E3E6EA")
-        svg.text(x, 88, str(d), 11, anchor="middle", fill=GREY)
-    ly = 370
-    for i, (lab, col) in enumerate((("active work", GREEN),
-                                    ("rework (extra work)", DARKRED),
-                                    ("approval wait", RED),
-                                    ("clarification wait", GOLD),
-                                    ("intake queue", "#5C7A99"))):
-        x = 70 + i * 200
-        svg.rect(x, ly, 16, 16, col)
-        svg.text(x + 24, ly + 13, lab, 12, fill="#333")
-    svg.text(70, ly + 44, "Same process, same product — rework adds loops that "
-             "each bring their own waiting.", 12, fill="#333")
-    svg.save("gantt-rework.svg")
+        ax.axvline(d, color="#E3E6EA", lw=0.8, zorder=0)
+    ax.set_xlim(0, tmax)
+    ax.set_xlabel("calendar days since request")
+    ax.set_title("One order, two worlds — where rework time actually goes",
+                 weight="bold")
+    handles = [Patch(facecolor=c, label=l) for l, c in
+               (("active work", GREEN), ("rework (extra work)", DARKRED),
+                ("approval wait", RED), ("clarification wait", GOLD),
+                ("intake queue", SLATE), ("total elapsed (grey)", "#ECEFF3"))]
+    ax.legend(handles=handles, ncol=3, loc="upper center",
+              bbox_to_anchor=(0.5, -0.18), frameon=False, fontsize=9)
+    _save(fig, "gantt-rework.svg")
+
+
+def part3_charts(results, sweep_data) -> None:
+    hr("PART 3 · CHARTS → four SVGs, transparent background, next to script")
+    lambdas, levels, sweep, queue_runs = sweep_data
+    chart_impact(results)
+    chart_queue_path(queue_runs)
+    chart_sweep(lambdas, levels, sweep)
+    chart_gantt(results)
+
+
+def main() -> None:
+    results = part1_scenarios()
+    sweep_data = part2_sweep()
+    part3_charts(results, sweep_data)
+    print("\nDONE. Slide use: rework-impact.svg → the headline (queue cost ≈ 30×"
+          " work cost) · queue-sample-path.svg → the backlog forming ·"
+          " rework-vs-demand.svg → the moving capacity wall ·"
+          " gantt-rework.svg → one order with vs. without loops\n")
 
 
 if __name__ == "__main__":
