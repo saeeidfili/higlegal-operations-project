@@ -31,11 +31,11 @@ Baseline parameters used in the simulation (calibrated; see §4): clarification 
 
 Rework is usually managed as a *work* problem ("it costs us extra hours"). Operationally it is mostly a *queue* problem. Five mechanisms, each visible in the simulation:
 
-**① Work inflation → utilization rises.** Every loop adds minutes: 516 (none) → 588 (baseline) → 684 (heavy) min/video. Utilization of the video-dedicated budget rises 65% → 72% → 78%. And near the utilization cliff, a few extra minutes per video are not "a few extra minutes" — they multiply into waiting (the ρ/(1−ρ) multiplier in `queueing-model.md`).
+**① Work inflation → utilization rises.** Every loop adds minutes: 516 (none) → 588 (baseline) → 684 (heavy) min/video. Utilization of the video-dedicated budget rises 65% → 72% → 78%. And near the utilization cliff, a few extra minutes per video are not "a few extra minutes" — they multiply into waiting (the ρ/(1−ρ) multiplier in `../queue/queue_model-explained.md`).
 
 **② Every loop adds a wait, not just work.** A redraft does not just add 50 minutes; it adds a **new gate wait** (1–3 days) and **a new turn in the work queue**, and it holds the video in the system while everything else moves. This is why +72 min of work costs +9.7 days of lead time. The queue cost dominates.
 
-**③ Variability amplification (Kingman's c_s²).** Rework makes service times uneven — one video takes 516 minutes, the next 800. Even at the same average load, uneven service inflates waiting (see the VUT equation in `queueing-model.md`). The "rework halved" scenario cuts work by only 40 minutes but cuts lead time by 6.7 days.
+**③ Variability amplification (Kingman's c_s²).** Rework makes service times uneven — one video takes 516 minutes, the next 800. Even at the same average load, uneven service inflates waiting. The "rework halved" scenario cuts work by only 40 minutes but cuts lead time by 6.7 days.
 
 **④ WIP inflation (Little's Law).** At 17.5 videos/month, videos in the system rise **6.2 → 12.5 → 20.4** from no-rework to baseline to heavy. Since lead time = WIP ÷ throughput, every video held by a loop delays all the others. Rework makes the queue larger *and* slower.
 
@@ -56,14 +56,14 @@ The company's stated ceiling of 35–40 [C] assumes 100% dedication; at operatio
 A **discrete-event simulation of the full 12-step process**, not a queueing formula:
 
 - Poisson arrivals at demand λ (default 17.5 videos/month).
-- **Two producers = one pooled task pool.** Any producer takes the next available work task; tasks are never preempted. (Matches the "team as a processing unit" argument in `queueing-model.md`.)
+- **Two producers = one pooled task pool.** Any producer takes the next available work task; tasks are never preempted. (Matches the "team as a processing unit" argument in `../queue/queue_model-explained.md`.)
 - Every video flows independently: work tasks alternate with client-gate waits. While a video waits at a gate, producers are free for other videos.
 - Three looping gates (G1/G2/G3) with the probabilities above; rework adds both work minutes and new gate waits.
 - Work durations come from the Section 3 waterfall, normalized so the baseline sums to ≈10 h [C] (588 min simulated vs ~600 min reported, −2%).
 - **Availability:** producers spend ~33% of paid time on platform work → effective owner-minutes = 480 × 0.67 ≈ 322/day. Utilization is therefore reported against the *video-dedicated budget* (78% there ≈ 52% of paid hours — consistent with the queueing model's ρ ≈ 0.74–0.85).
 - Horizon 28 months, statistics over the last 18; sweep averaged over 3 seeds.
 
-**Model honesty:** the simulation is work-conserving (idle producers take queued work immediately), so its **intake wait is a lower bound** — it lands at 0.1–0.3 days, while HiLegal reports 3–7 days [C]. The real intake queue comes from batching/pickup policy and is modeled separately in `queueing-model.md`; the rework study deliberately isolates the *whole-process* effect. Total lead time still lands inside the company range (see checks below).
+**Model honesty:** the simulation is work-conserving (idle producers take queued work immediately), so its **intake wait is a lower bound** — it lands at 0.1–0.3 days, while HiLegal reports 3–7 days [C]. The real intake queue comes from batching/pickup policy and is modeled separately in `../queue/queue_model-explained.md`; the rework study deliberately isolates the *whole-process* effect. Total lead time still lands inside the company range (see checks below).
 
 ## 4. Calibration checks (baseline scenario)
 
@@ -139,7 +139,7 @@ The table is honest about the direction: **rework reduction is the single larges
 - **Two producers, pooled task queue, no preemption of tasks.** Tasks are fine-grained (minutes to hours); videos wait at gates without occupying a producer.
 - **Gate loop probabilities are independent of load.** The congestion→rushed-review→more-rework feedback loop is not modeled (would worsen results).
 - **Availability factor 0.67** (platform-work share) is an assumption [E], consistent with `kpi-data.md` §4.
-- **Intake wait is a lower bound** (work-conserving); the true 3–7-day intake queue is modeled in `queueing-model.md`.
+- **Intake wait is a lower bound** (work-conserving); the true 3–7-day intake queue is modeled in `../queue/queue_model-explained.md`.
 - **Stochastic:** seeded runs; single-seed scenario table (±5–10% run-to-run), sweep averaged over 3 seeds. Treat differences under ~2 days as noise.
 - **Heavy rework is a stress scenario**, not a forecast; P90 = 47.8 days means "the queue is out of control", not "some lawyer will wait 48 days".
 - **Durations** are normalized to the company-reported ~10 h baseline (−2% in simulation).

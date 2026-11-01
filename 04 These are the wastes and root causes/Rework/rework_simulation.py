@@ -7,9 +7,11 @@
 """
 rework_simulation.py — rework and the queue: whole-process simulation
 =====================================================================
-Section 3 annex, "Rework" (Operations Management project, HiLegal).
-Builds on the intake-queue model in ../queue_model.py (same units, same
-one-team-as-one-unit idea) — but simulates the WHOLE 12-step process.
+Section 4, "These are the wastes and root causes" (Operations Management
+project, HiLegal) — the rework simulation is the quantitative evidence for
+the Defects waste. It builds on the intake-queue model in ../queue/queue_model.py
+(same units, same one-team-as-one-unit idea) — but simulates the WHOLE
+12-step process.
 
 Question: rework looks like "a bit of extra work" (a redraft, a re-edit).
 What does it actually do to LEAD TIME, WORK-IN-PROCESS and CAPACITY?
@@ -33,7 +35,7 @@ Model (discrete-event simulation):
   * Work durations in effective minutes: 480 × 0.67 ≈ 322 min/producer-day
     (producers also do platform work) — the same dedication as queue_model.
   * Work-conserving dispatch ⇒ the simulated intake wait is a LOWER BOUND;
-    the real 3–7-day intake queue is modeled separately (../queue_model.py).
+    the real 3–7-day intake queue is modeled separately (../queue/queue_model.py).
 
 The script, in three parts (run in order by main()):
   Part 1  Four rework scenarios at fixed demand — table + engine check +
@@ -45,7 +47,7 @@ The script, in three parts (run in order by main()):
             rework-vs-demand.svg · gantt-rework.svg
 
 Run:      uv run rework_simulation.py
-      or  ../.venv/bin/python rework_simulation.py
+      or  ../../.venv/bin/python rework_simulation.py
 Output:   console tables (each with a "how to read" block) + the four SVGs.
 """
 

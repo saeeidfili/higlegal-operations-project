@@ -10,7 +10,7 @@ does, part by part, with the numbers it actually prints.
 ```
 uv run queue_model.py                 # auto-installs matplotlib
 # or, in the project venv already set up:
-../.venv/bin/python queue_model.py    # from this folder
+../../.venv/bin/python queue_model.py    # from this folder
 ```
 
 Output: four console parts and **three SVG charts** (transparent

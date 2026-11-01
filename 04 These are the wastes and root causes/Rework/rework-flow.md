@@ -4,9 +4,9 @@ Companion to **`rework_simulation.py`**. If the results tables ever felt
 opaque, this file fixes that: it shows how a request flows through the
 simulated process, how the code is organized, and then reads every number in
 plain language. It builds on the queue-section foundation
-(`../queue_model.py` + `../queue_model-explained.md`): same units, same
-one-team-as-one-unit idea — but simulating the **whole 12-step process**, not
-just intake.
+(`../queue/queue_model.py` + `../queue/queue_model-explained.md`): same
+units, same one-team-as-one-unit idea — but simulating the **whole 12-step
+process**, not just intake.
 
 **How to run** (needs matplotlib, nothing else):
 
@@ -144,7 +144,7 @@ The per-task minutes are **not** all company data — and it's worth saying so
 out loud. HiLegal reports **one total: ~10 h ≈ 600 min per video including
 rework [C]**, plus two individual steps. Everything else is our
 decomposition of that total, anchored to the Section-3 walkthrough table
-(`../START.md`):
+(`../../03 This is the current process/START.md`):
 
 | task | min | source |
 |---|---:|---|
@@ -286,7 +286,7 @@ Baseline rework degrades steeply past 20 (WIP 16 → 23). Heavy rework at
 22/month — a level the company wants to reach — is **past capacity**: WIP
 ≈ 72 and lead ≈ 100 days, growing without bound. The ceiling is not a
 property of the team; it is a property of **the team plus its rework**
-(compare the calculated ceiling in `../queue_model-explained.md`).
+(compare the calculated ceiling in `../queue/queue_model-explained.md`).
 
 ## The four charts
 
@@ -301,7 +301,7 @@ property of the team; it is a property of **the team plus its rework**
 
 1. **Pooled, work-conserving team** — idle producers grab queued work
    instantly, so the simulated **intake wait is a lower bound** (~0.1–0.2 d);
-   the real 3–7-day intake queue is modeled separately in `../queue_model.py`.
+   the real 3–7-day intake queue is modeled separately in `../queue/queue_model.py`.
 2. **Loop probabilities are fixed** — the congestion → rushed review → more
    rework feedback loop is *not* modeled; real results are likely worse.
 3. **Stochastic, seeded** — scenario table is single-seed (±5–10% run-to-run);

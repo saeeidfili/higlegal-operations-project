@@ -65,20 +65,20 @@ Follow a concrete case — **"Lawyer Chen, corporate-law intro video, 90 seconds
 
 Lawyers wait **3–7 days in the intake queue** before anyone looks at their request [C] — and HiLegal calls the wait *"workload-dependent"* [C], which is a queueing-theory signature: waits that move with load mean the process sits on the steep part of the utilization curve.
 
-**Everything queueing-related now lives in one file: `queueing-model.md` (this folder)** — the model built from zero, the calibration of μ ≈ 23.5, predictions (inbox backlog ≈ 2–5, fat tail, P90 ≈ 10 d, the ρ = 1 wall), Kingman's VUT, the simulation, the persuasion pack, and a short guide to each of the four SVG charts.
+**The queue model now lives with the waste it quantifies: `../04 These are the wastes and root causes/queue/`** — `queue_model-explained.md` (companion doc), `queue_model.py` (the model), and its three charts. It calibrates μ ≈ 23.5 and reproduces the reported wait band; Section 4's "quantitative evidence" beats carry the narrative.
 
-**The paragraph to keep on the slide:** the team behaves as **one processing unit** — videos are held start-to-finish, so pickups happen only at completion boundaries (no preemption) — modeled as M/M/1 with μ ≈ 23.5/month, which reproduces the reported **3–7 day wait across the observed demand range** (2.3–7.5 d), its workload-dependence, and a checkable prediction: the inbox holds ≈ 2–5 parked requests (Little's Law). The alternative two-server model (Erlang C) agrees within ~15%, so the conclusions depend on utilization, not on the server count.
+**The paragraph to keep on the slide:** the team behaves as **one processing unit** — videos are held start-to-finish, so pickups happen only at completion boundaries (no preemption) — modeled as M/M/1 with μ ≈ 23.5/month, which reproduces the reported **3–7 day wait across the observed demand range** (2.3–7.5 d), its workload-dependence, and a checkable prediction: the inbox holds ≈ 2–5 parked requests (Little's Law).
 
-## Rework and the queue (full-process simulation → `Rework/`)
+## Rework and the queue (full-process simulation → `../04 These are the wastes and root causes/Rework/`)
 
-Rework is usually managed as extra *work*; operationally it is mostly extra *queue*. The `Rework/` folder simulates the **whole 12-step process** (two producers, three looping gates) and isolates the effect:
+Rework is usually managed as extra *work*; operationally it is mostly extra *queue*. The `Rework/` folder (now in Section 4) simulates the **whole 12-step process** (two producers, three looping gates) and isolates the effect:
 
 - Baseline (~90% of videos loop) vs. no rework: **+72 min of hands-on work but +9.7 days of lead time** — the queue cost of rework is ~30× its work cost [E]
 - At 17.5 videos/month, work-in-process rises **6.2 → 12.5 → 20.4** videos from no-rework to baseline to heavy — and lead time = WIP ÷ throughput (Little's Law)
 - Rework lowers the effective capacity ceiling: **~27.4 → ~24.0 → ~20.7 videos/month** (no rework → baseline → heavy, at realistic dedication); at 22/month with heavy rework the process is past capacity (WIP ~72, ~100 days)
 - Calibration checks: baseline 20.7 d lead (14–28 d [C]), 588 min work (~10 h [C]), 87% rework (~90% [E]), capacity ~24/month (demand 15–20 [C])
 
-Files: `rework_simulation.py`, `rework-impact.svg`, `queue-sample-path.svg`, `rework-vs-demand.svg`, `gantt-rework.svg`, `rework-explained.md` (step-by-step guide), and `Rework/START.md` (model card + chart guide + the five mechanisms by which rework inflates a queue).
+Files: `rework_simulation.py`, `rework-flow.md` (the flow + results guide), `rework-impact.svg`, `queue-sample-path.svg`, `rework-vs-demand.svg`, `gantt-rework.svg`.
 
 ## Where each number comes from (the audit trail)
 
@@ -91,18 +91,16 @@ Files: `rework_simulation.py`, `rework-impact.svg`, `queue-sample-path.svg`, `re
 | Sync 2–3 h; platform adaptation ~2 h | [C] | Company-reported |
 | Per-step minutes in the trace | [E] | Our decomposition; sums to the reported ~10 h — replace individual steps with time-log data if HiLegal shares any |
 | 15–20 videos/month; ceiling 35–40 | [C] | Company-reported |
-| Queue metrics (μ ≈ 23.5, ρ 0.64–0.85, Wq 2.3–7.5 d, Lq 2–5) | [E] | `queue_model.py` — calibrated on the [C] inputs above; validated by discrete-event simulation (±1%) |
-| M/M/2 robustness (Erlang C): 1.8 / 3.3 / 6.9 d | [E] | `queue_model.py` Part 1b — model choice moves waits ~15%, not the story |
+| Queue metrics (μ ≈ 23.5, ρ 0.64–0.85, Wq 2.3–7.5 d, Lq 2–5) | [E] | `../04 .../queue/queue_model.py` — calibrated on the [C] inputs above; validated by discrete-event simulation (±1%) |
 
-## Files for this folder (model + charts already generated — all explained in `queueing-model.md`)
+## Files for this folder
 
-- `queue_model.py` — **written and run**: calibration, predictions, Kingman VUT, discrete-event validation, charts. Re-run with `python3 queue_model.py` (no dependencies)
-- `queue-cliff.svg` — **THE chart**: expected intake wait vs. utilization ρ, observed 3–7 d band, baseline markers, the ρ = 1 wall, Iteration-3 dot
-- `why-one-server.svg` — **the model-choice slide**: textbook M/M/c vs. HiLegal's one order rail; bottom band carries the M/M/2 test (1.8/3.3/6.9 d vs. 2.3/3.8/7.5 d)
-- `queueing-model.md` — **the single queueing document (everything in one place)**: model from zero → calibration → predictions → Kingman → simulation → persuasion pack → chart gallery (Part C explains every SVG) → cheat sheet + Q&A
-- `Rework/` — **whole-process rework simulation**: `rework_simulation.py` + 4 SVG charts + model card (`Rework/START.md`); headline: +114 min work ↔ +12.3 days lead time
-- `order-timeline.svg` — Lawyer Chen's 12 steps as a work-vs-wait timeline (the 3–7 d intake block in red)
-- `demand-sweep.svg` — wait vs. demand at constant team; asymptote at μ ≈ 23.5, unstable region beyond
+The queue and rework evidence now lives in Section 4:
+`../04 These are the wastes and root causes/queue/` (model, companion doc, three charts)
+and `../04 These are the wastes and root causes/Rework/` (simulation, four charts, flow doc).
+Section 4's START.md carries the narrative that uses them.
+
+Still to produce in this folder:
 - `process-map.png` — still to produce: export of the mermaid/slide version (green transformational, white coordination, red loops)
 - `walkthrough.md` — still to produce: the one-order trace above as a 30-second narration
 - `work-vs-wait.xlsx` (optional) — the trace table; you will reuse it in Sections 5 and 7
@@ -113,7 +111,7 @@ Files: `rework_simulation.py`, `rework-impact.svg`, `queue-sample-path.svg`, `re
 - [ ] Active vs waiting visually distinct (colour or icon)
 - [ ] "Confirmed with HiLegal, September 2026" stated on the slide
 - [ ] PCE (5–8%) computed and shown — it is your single most quotable baseline number
-- [ ] Queueing slide shown: the utilization cliff (`queue-cliff.svg`) with the observed 3–7 d band and the calibration table
+- [ ] Queueing slide shown: the utilization cliff (`../04 .../queue/queue-cliff.svg`) with the observed 3–7 d band and the calibration table
 - [ ] One falsifiable prediction stated on the slide (inbox holds ≈ 2–5 pending requests — Little's Law)
 - [ ] The ρ = 1 wall connected verbally to the company's own "ceiling 35–40" [C]
-- [ ] Limitations owned: μ calibrated [E], variability scenario-based, intake-only scope
+- [ ] Limitations owned: μ calibrated [E], intake-only scope

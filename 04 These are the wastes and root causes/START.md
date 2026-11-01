@@ -2,7 +2,7 @@
 
 **Guiding question:** Where does work wait, repeat, or require unnecessary effort — and why?
 
-**What this section must accomplish:** annotate the as-is map with TIMWOODS, drive each dominant waste to a root cause with Five Whys, and make the **critical distinction between the capacity constraint (what limits output) and the causes of long lead time (what limits speed)**. Those are two different diseases, and our three iterations split cleanly between them. This section also carries the **quantitative evidence**: the two Section-3 models — the intake-queue model and the whole-process rework simulation — turn every dominant waste claim into a number. Deep dives: `../03 This is the current process/queue_model-explained.md` and `../03 This is the current process/Rework/rework-flow.md`.
+**What this section must accomplish:** annotate the as-is map with TIMWOODS, drive each dominant waste to a root cause with Five Whys, and make the **critical distinction between the capacity constraint (what limits output) and the causes of long lead time (what limits speed)**. Those are two different diseases, and our three iterations split cleanly between them. This section also carries the **quantitative evidence**: the two models in this folder — the intake-queue model (`queue/`) and the whole-process rework simulation (`Rework/`) — turn every dominant waste claim into a number. Deep dives: `queue/queue_model-explained.md` and `Rework/rework-flow.md`.
 
 ---
 
@@ -63,7 +63,7 @@ effort.
 ### Beat 1 — The waiting is mathematics, not slowness (intake queue model)
 
 Model the team as one pooled processing unit (a video is held start-to-finish;
-the inbox is answered only when a producer finishes one — `why-one-server.svg`),
+the inbox is answered only when a producer finishes one — `queue/why-one-server.svg`),
 and the reported 3–7-day wait stops being mysterious: calibrate the one
 unknown capacity to μ ≈ 23.5/month and the model predicts **2.3–7.5 days
 across the observed demand range 15–20/month [C]** — including the
@@ -144,15 +144,15 @@ true.
 - Fishbone (Ishikawa) with the 6 Ms for the "≥4 brief iterations" defect — Machines (no tooling), Methods (no intake standard), People (producer chasing), Measurement (no cycle-time logging), Materials (vague briefs), Management (no SLA policy)
 - Theory of Constraints five focusing steps mapped to our plan: **Identify** (sync = constraint) → **Exploit** (standardize around it: Iter 1) → **Subordinate** (feed it structured input: Iter 2) → **Elevate** (automate it: Iter 3) → **Repeat** (new constraint = lawyer approval time)
 
-## Charts — already built in Section 3, reuse them here
+## Charts — built with the models, in this folder
 
-Don't regenerate; link or copy from `../03 This is the current process/`:
+Regenerate with the two scripts; reference from slides by relative path:
 
 | Chart | Use in this section as |
 |---|---|
-| `queue-cliff.svg` | THE waiting-waste slide: the utilization cliff with the observed 3–7 d band and the ρ = 1 wall = the "ceiling" |
-| `why-one-server.svg` | the modeling-choice sidebar (why the team counts as one pooled unit) |
-| `order-timeline.svg` | work ≈ 6% — red dominates Lawyer Chen's 18.8 days |
+| `queue/queue-cliff.svg` | THE waiting-waste slide: the utilization cliff with the observed 3–7 d band and the ρ = 1 wall = the "ceiling" |
+| `queue/why-one-server.svg` | the modeling-choice sidebar (why the team counts as one pooled unit) |
+| `queue/order-timeline.svg` | work ≈ 6% — red dominates Lawyer Chen's 18.8 days |
 | `Rework/rework-impact.svg` | the defects-waste headline: +72 min ↔ +9.7 d, whiskers show the P90 tail |
 | `Rework/rework-vs-demand.svg` | capacity erosion: three rework levels, three different walls |
 | `Rework/queue-sample-path.svg` · `Rework/gantt-rework.svg` | backup slides: the backlog forming at 22/mo; one order's loops |

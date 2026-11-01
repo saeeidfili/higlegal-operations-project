@@ -43,7 +43,7 @@ Each request is an object with: `arrival` time, `first_work` time (when a produc
 Two producers, modelled as **one work queue** with two servers:
 
 - Any free producer takes the next work task (work-conserving).
-- A task, once started, is never interrupted (no preemption — matches the "team as a processing unit" argument in `queueing-model.md`).
+- A task, once started, is never interrupted (no preemption — matches the "team as a processing unit" argument in `../queue/queue_model-explained.md`).
 - While a video waits at a client gate, its producer is **free** to work on other videos.
 
 Dispatch logic:
@@ -109,7 +109,7 @@ The formula and the simulation agree within a few minutes — the model does wha
 
 Requests arrive as a **Poisson process**: inter-arrival times are exponential with mean `22/λ` working days. At λ = 17.5/month, one request every ~1.26 working days. Each arrival creates a video and starts its generator immediately; the first task queues for a producer.
 
-**Note:** because producers take work the moment they are free, the simulated intake wait is a **lower bound** (≈0.1–0.2 days). HiLegal's real 3–7-day intake queue comes from batching/pickup policy, modelled separately in `queueing-model.md`. This study deliberately isolates the *whole-process* effect of rework.
+**Note:** because producers take work the moment they are free, the simulated intake wait is a **lower bound** (≈0.1–0.2 days). HiLegal's real 3–7-day intake queue comes from batching/pickup policy, modelled separately in `../queue/queue_model-explained.md`. This study deliberately isolates the *whole-process* effect of rework.
 
 ## 8. Measurement window and statistics
 
@@ -179,7 +179,7 @@ Capacity = `2 producers × 22 days × 322 min ÷ work per video`. Utilization is
 ## 13. Limitations (say them before someone asks)
 
 - Gate loop probabilities are **independent of load** — the "congestion → rushed review → more rework" feedback loop is not modelled (it would make results worse, not better).
-- The pooled model is **work-conserving**, so its intake wait is a lower bound; the real 3–7-day intake queue lives in `queueing-model.md`.
+- The pooled model is **work-conserving**, so its intake wait is a lower bound; the real 3–7-day intake queue lives in `../queue/queue_model-explained.md`.
 - **Two producers, no skills differentiation** — one task pool, no specialisation or hand-offs.
 - Seeded stochastic runs: single-seed scenarios vary ±5–10%; treat small differences as noise. The sweep averages 3 seeds.
 - Heavy rework is a **stress scenario**, not a forecast. P90 = 47.8 days means "the queue is out of control", not "a specific lawyer waits 48 days".

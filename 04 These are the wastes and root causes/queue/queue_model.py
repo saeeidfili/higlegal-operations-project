@@ -7,7 +7,9 @@
 """
 queue_model.py — the HiLegal intake queue, modelled end-to-end in one file
 ==========================================================================
-Section 3, "This is the current process" (Operations Management project).
+Section 4, "These are the wastes and root causes" (Operations Management
+project). The queueing model is the quantitative evidence for the Waiting
+waste; it was originally developed alongside the Section-3 process map.
 
 Company-reported inputs [C] (confirmed with HiLegal, September 2026):
   * demand / output        λ = 15–20 videos/month

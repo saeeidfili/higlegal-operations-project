@@ -40,8 +40,8 @@ with their owners, listed below.
 | Rework rate · QAR | ~90% · ~10% | [E] | `assumptions.md` |
 | Work share of lead time | ≈ 6% (PCE 5–8%) | [D] | `03 .../START.md` |
 | Capacity at 60% utilization | ~19/month | [D] | `05 .../kpi-data.md` §4 |
-| Queue model capacity μ | ≈ 23.5/month (ρ 0.64–0.85) | [D] | `03 .../queue_model-explained.md` |
-| Calculated ceiling | 352 h ÷ 10 h = 35.2/month ≈ stated 35–40 | [D] | `03 .../queue_model-explained.md` |
+| Queue model capacity μ | ≈ 23.5/month (ρ 0.64–0.85) | [D] | `04 .../queue/queue_model-explained.md` |
+| Calculated ceiling | 352 h ÷ 10 h = 35.2/month ≈ stated 35–40 | [D] | `04 .../queue/queue_model-explained.md` |
 | Iteration 3 targets | ~1 h labour · ~1.5 d lead · ¥180/video · ~190/mo | [T] | `06 .../START.md` |
 | Payroll released | ≈ ¥270k/year (~1.5 FTE) | [E] | `08 .../START.md` |
 | One-time implementation | ≈ ¥105–180k, payback 5–8 months | [E] | `09 .../START.md` |
@@ -51,8 +51,8 @@ with their owners, listed below.
 | Content | Owner |
 |---|---|
 | KPI ladder, labour waterfall, cost ladder, capacity math, bleed tables | `05 These are our operational KPIs/kpi-data.md` |
-| Intake queue model (μ, ρ, Wq, tail, ceiling, wall) | `03 .../queue_model-explained.md` + `queue_model.py` |
-| Rework simulation (scenarios, sweep, capacity erosion, WIP) | `03 .../Rework/rework-flow.md` + `rework_simulation.py` |
+| Intake queue model (μ, ρ, Wq, tail, ceiling, wall) | `04 .../queue/queue_model-explained.md` + `queue_model.py` |
+| Rework simulation (scenarios, sweep, capacity erosion, WIP) | `04 .../Rework/rework-flow.md` + `rework_simulation.py` |
 | Iteration targets & mechanisms, pilot gates | `06 .../START.md` + iteration folders |
 | Implementation costs, payback, monitoring | `09 .../START.md` |
 | The waste/root-cause narrative that uses the models | `04 .../START.md` |

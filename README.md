@@ -51,7 +51,7 @@ Each iteration's API additions consume the previous iteration's outputs. Nothing
 | `01 This is HiLegal` | 1 | Company intro, business model, example video, visit photo, methodology |
 | `02 This is the challenge` | 2 | Scaling problem, customer needs, consequences |
 | `03 This is the current process` | 3 | As-is process map, one-order walkthrough, work vs waiting |
-| `04 These are the wastes and root causes` | 4 | TIMWOODS, Five Whys, bottleneck vs lead-time drivers |
+| `04 These are the wastes and root causes` | 4 | TIMWOODS, Five Whys, bottleneck vs lead-time drivers; **queue + rework evidence models and charts** (`queue/`, `Rework/`) |
 | `05 These are our operational KPIs` | 5 | KPI definitions, baselines, targets — **master data in `kpi-data.md`** |
 | `06 This is how we improve the process iteration by iteration` | 6 | Chain overview + one sub-folder per iteration (each has `START.md` + `ux-flow.md`) |
 | `06 .../Iteration 1 - Standardize briefing and approvals` | 6 | Front-end standardization: forms, previews, SLA approvals |
