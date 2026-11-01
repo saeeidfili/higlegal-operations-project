@@ -91,14 +91,6 @@ Each folder contains a `START.md` with suggestions, ready-to-use tables, and (wh
 - Any spreadsheet models (simulation, cost model) → `07 .../` or `05 .../`
 - Final deck lives outside these folders; these folders are the evidence & content kitchen.
 
-## Presentation (HTML deck): `presentation/`
+## Presentation
 
-The finished 15-minute deck is a plain HTML presentation in `presentation/`: one file per slide, no build step.
-
-- **Online:** once GitHub Pages is enabled (Settings › Pages › Deploy from a branch › main / root), it runs at https://saeeidfili.github.io/higlegal-operations-project/presentation/
-- **Locally on Windows:** double-click `presentation/start.bat` (opens http://localhost:8000).
-- **Locally elsewhere:** `npx serve presentation` or `python3 -m http.server 8000 --directory presentation`.
-
-Edit view: slide list, current slide, file path and speaker notes. Present mode: press P; arrows to navigate, N for notes, Esc to exit.
-
-To edit, change `presentation/slides/<id>.html`; slide order is in `presentation/deck.json`. Coding agents (Codex, Claude Code, …) must read `presentation/AGENTS.md` and `presentation/STYLE.md` first.
+The HTML presentation is maintained separately on the [presentation branch](https://github.com/saeeidfili/higlegal-operations-project/tree/presentation).
