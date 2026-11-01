@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+  // Relative paths need a trailing slash when served as a sub-folder, e.g. /presentation/.
+  if (!/\/$|\.html$/.test(location.pathname)) location.replace(location.pathname + '/' + location.search + location.hash);
+</script>
+<title>OM-Project_Presentation_HiLegal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Momo+Trust+Display&family=Inter:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="runtime/deck.css">
+</head>
+<body>
+<div id="app">
+  <header class="bar">
+    <div class="bar-title"><img src="assets/hilegal-logo-white.png" alt="" class="bar-logo"><span id="deckTitle">Deck</span></div>
+    <div class="bar-actions">
+      <label class="live" title="Reload automatically when slide files change"><input type="checkbox" id="live" checked> Live reload</label>
+      <button id="btnReload" type="button" title="Reload slides (R)">Reload</button>
+      <button id="btnPresent" type="button" class="primary" title="Present (P)">&#9654; Present</button>
+    </div>
+  </header>
+  <nav class="rail" id="rail" aria-label="Slides"></nav>
+  <main class="main">
+    <div class="stage" id="stage"></div>
+    <div class="meta">
+      <div class="meta-row">
+        <span id="slideNo" class="slide-no"></span>
+        <code id="slidePath"></code>
+        <button id="btnCopy" type="button">Copy path</button>
+        <span id="hiddenBadge" class="badge" hidden>Hidden in Present mode</span>
+        <span id="status" class="status"></span>
+      </div>
+      <div class="notes">
+        <div class="notes-label">Speaker notes</div>
+        <div id="notes"></div>
+      </div>
+    </div>
+  </main>
+</div>
+<div id="present" hidden>
+  <div class="pstage" id="pstage"></div>
+  <div class="pnotes" id="pnotes" hidden></div>
+  <div class="pcount" id="pcount"></div>
+</div>
+<script src="runtime/deck.js"></script>
+</body>
+</html>

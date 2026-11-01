@@ -1,0 +1,42 @@
+<section id="appx-a" data-transition="fade" style="background:#FFFFFF;color:#101010;font-family:'Inter', Arial, sans-serif;padding:232px 128px 160px;display:flex;flex-direction:column;gap:24px">
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:184px;background:#0A0A0A"></div>
+<div style="position:absolute;left:0px;top:184px;width:1920px;height:2px;background:#C9A86A"></div>
+<p style="position:absolute;left:128px;top:40px;width:1440px;font-size:24px;letter-spacing:2px;text-transform:uppercase;color:#99A1AF;font-family:'Inter', Arial, sans-serif;font-weight:600">Appendix A · Calculations and assumptions</p>
+<h2 style="position:absolute;left:128px;top:80px;width:1440px;font-size:52px;font-family:'Momo Trust Display', Arial, sans-serif;font-weight:400;line-height:1.15;color:#FFFFFF;white-space:nowrap">How every number was calculated</h2>
+<img src="assets/hilegal-logo-white.png" alt="HiLegal logo" style="position:absolute;left:1662px;top:52px;width:130px;height:80px;object-fit:contain">
+<div style="display:flex;flex-direction:row;gap:48px;align-items:start">
+<div style="width:980px;display:flex;flex-direction:column;gap:8px">
+<table style="font-size:24px;line-height:1.2;color:#101010">
+<tr style="background:#101010"><th style="width:24%;color:#F3F4F6">Item</th><th style="width:46%;color:#F3F4F6">Calculation</th><th style="width:30%;color:#F3F4F6">Assumption</th></tr>
+<tr><td>Active-work share</td><td>10 h ÷ (14–28 d × 24 h) = 1.5–3.0%</td><td>Reported values</td></tr>
+<tr style="background:#F9FAFB"><td>Utilisation today</td><td>15–20 ÷ 35–40 = 38–57%</td><td>Ceiling = capacity</td></tr>
+<tr><td>Labour pool</td><td>35–40 × 10 h = 350–400 h / mo</td><td>Ceiling is labour-bound</td></tr>
+<tr style="background:#F9FAFB"><td>It. 3 capacity</td><td>350–400 h ÷ 7–8 h = 44–57 / mo</td><td>Only sync removed</td></tr>
+<tr><td>Target capacity</td><td>350–400 h ÷ 1 h = 350–400 / mo</td><td>&lt; 1 h target met</td></tr>
+<tr style="background:#F9FAFB"><td>Little’s Law</td><td>WIP = 15–20 / mo × 0.47–0.93 mo ≈ 7–19</td><td>Stable system</td></tr>
+<tr><td>Extra loops</td><td>3 loops × 3–7 d = 9–21 d</td><td>Full queue re-wait</td></tr>
+<tr style="background:#F9FAFB"><td>Cost per Video</td><td>h × rate + tool fees ÷ volume</td><td>Inputs missing</td></tr>
+</table>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px">
+<p style="font-size:24px;font-family:'Inter', Arial, sans-serif;font-weight:600;color:#D92605">Lead-time reconciliation, business days</p>
+<table style="font-size:24px;line-height:1.2;color:#101010">
+<tr style="background:#101010"><th style="width:34%;color:#F3F4F6">Case</th><th style="width:22%;color:#F3F4F6">Wait</th><th style="width:22%;color:#F3F4F6">Rounds</th><th style="width:22%;color:#F3F4F6">LT</th></tr>
+<tr><td>Fast reply</td><td>0.5</td><td>1</td><td><b>1.5</b></td></tr>
+<tr style="background:#F9FAFB"><td>SLA used</td><td>2</td><td>1</td><td>3</td></tr>
+<tr><td>SLA, 2 gates</td><td>2</td><td>2</td><td>5</td></tr>
+<tr style="background:#F9FAFB"><td>Worst case</td><td>2</td><td>4</td><td>9</td></tr>
+</table>
+<p style="font-size:24px;line-height:1.35;color:#4A5565">LT = 1 BD internal + wait × rounds. The 1–2 BD target holds only with a fast, first-time approval.</p>
+<p style="font-size:24px;line-height:1.35;color:#101010"><b>Our proposal:</b> HiLegal time ≤ 1 BD; lawyer reply ≤ 48 h tracked separately.</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1400px;font-size:24px;color:#6A7282">Inputs: estimates reported by the HiLegal team; targets set by our group</p>
+<p style="position:absolute;left:1672px;bottom:64px;width:120px;text-align:right;font-size:24px;color:#6A7282">A</p>
+<aside>USE: backup for questions; not presented in the 15 minutes.
+INPUTS (proposal Table 1, company-reported estimates): lead time 2–4 weeks = 14–28 calendar days (≈ 10–20 business days); ~10 h of work per video; intake queue 3–7 days; ≥4 brief iterations; A/V sync 2–3 h; platform adaptation ~2 h (boundary to confirm, not included above); monthly output ~15–20, ceiling 35–40. Targets (proposal §4): lead time 1–2 business days, under 1 h of labour, roughly tenfold capacity, 48 h approval SLA.
+FORMULAS: utilisation = demand ÷ capacity (Session_1.2 slide 05). Capacity = available labour hours ÷ human hours per video, valid only while staff time is the constraint. Little's Law L = λW (Session_2.1 slide 3): λ = 15–20 per month, W = 14–28 days ÷ 30 = 0.47–0.93 months → L ≈ 7–19 orders; caveats per Session_2.1 slide 25 (steady state, averages only, consistent boundary, rework is a re-entry). The ranges are not paired observations, so the WIP range is indicative only.
+LEAD-TIME RECONCILIATION: the proposal's 1–2 business-day target and its 48 h approval SLA are compatible only if the lawyer replies within about one business day and approves the first time, and if all HiLegal steps (check, AI draft, edit, render queue, render check, delivery) fit within about one business day. If the lawyer uses the full 48 h, lead time is about 3 business days with one approval gate and about 5 with a second gate for the final video. Worst case (four rounds, proposal §5): 1 + 4 × 2 = 9 business days. Recommendation: report HiLegal-controlled time and lawyer response time as two components of Lead Time per Video, with an end-to-end expectation of ≤ 3 business days at the SLA limit. Render queue time is not measured and could add to the internal day.
+SCENARIO INPUTS (slide 11): demand 20, 40, 80 per month (illustrative); approval wait 0.5, 2, 5 business days; rounds 1, 2, 4.
+MISSING INPUTS: loaded hourly labour rate, tool fees, render time, manual drafting time, clarification effort, rework and quality baselines.</aside>
+</section>
