@@ -62,6 +62,9 @@ Both fonts are Google Fonts and load in `index.html`. Do not add other fonts.
 ### Dark slide (cover, challenge, decision, thanks, appendix divider)
 - Background `#0A0A0A` or `#101010`. Logo top right (or top left on cover). Red or gold rules as accents.
 
+### Internal slide (team questions, review)
+- White background, red eyebrow "Internal · …", 56 px title, `hidden` on the section, footer says how to remove it. Never shown in Present mode.
+
 ### Text block
 - Label 24 px 600 in `accent`, body 24 px `body`, separated by a 2 px top rule (`#101010`).
 - Highlight block: same structure, white background, 2 px top rule in `accent`. No thick side bars, no shadows.

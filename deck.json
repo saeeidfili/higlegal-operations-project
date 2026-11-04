@@ -1,6 +1,7 @@
 {
     "title":  "OM-Project_Presentation_HiLegal",
     "order":  [
+                  "team-questions",
                   "review",
                   "cover",
                   "visit",
@@ -23,8 +24,8 @@
               ],
     "sections":  {
                      "s0":  {
-                                "description":  "Internal review checklist, hidden in Present mode",
-                                "start":  "review"
+                                "description":  "Internal: open team questions and review checklist, hidden in Present mode",
+                                "start":  "team-questions"
                             },
                      "s1":  {
                                 "description":  "Context: HiLegal, our visit and the business challenge",
