@@ -559,9 +559,31 @@
       if (pos < 0 || pos >= vis.length) return;
       state.index = vis[pos];
       renderPresent();
+      syncSend();
     } else {
       select(state.index + delta);
     }
+  }
+
+  // Room sync (?room=…): the projector follows the presenter pages and sends its own slide changes.
+  function syncSend() {
+    if (!state.sync) return;
+    var s = state.slides[state.index], r = state.remote;
+    state.remote = { slide: s.id, running: !!(r && r.running), elapsed: DeckSync.elapsedOf(r), receivedAt: Date.now() };
+    state.sync.send(state.remote);
+  }
+
+  function startSync() {
+    var room = window.DeckSync && DeckSync.roomFromUrl();
+    $('lnkPresenter').href = 'presenter.html' + (room ? '?room=' + room : '');
+    if (!room) return;
+    state.sync = DeckSync.connect(room, function (st, own) {
+      state.remote = st;
+      if (own) return;
+      var i = state.slides.findIndex(function (s) { return s.id === st.slide; });
+      if (i < 0 || i === state.index) return;
+      if (state.presenting) { state.index = i; renderPresent(); } else select(i);
+    }, function (on) { setStatus(on ? 'Room ' + room + ' connected' : 'Room ' + room + ' reconnecting…'); });
   }
 
   // Loading and live reload
@@ -630,8 +652,8 @@
       if (state.presenting) {
         if (k === 'ArrowRight' || k === 'ArrowDown' || k === 'PageDown' || k === ' ' || k === 'Enter') { e.preventDefault(); step(1); }
         else if (k === 'ArrowLeft' || k === 'ArrowUp' || k === 'PageUp' || k === 'Backspace') { e.preventDefault(); step(-1); }
-        else if (k === 'Home') { var v = visibleIndices(); state.index = v[0]; renderPresent(); }
-        else if (k === 'End') { var w = visibleIndices(); state.index = w[w.length - 1]; renderPresent(); }
+        else if (k === 'Home') { var v = visibleIndices(); state.index = v[0]; renderPresent(); syncSend(); }
+        else if (k === 'End') { var w = visibleIndices(); state.index = w[w.length - 1]; renderPresent(); syncSend(); }
         else if (k === 'n' || k === 'N') { $('pnotes').hidden = !$('pnotes').hidden; }
         else if (k === 'Escape') { stopPresent(); }
         return;
@@ -690,6 +712,7 @@
     var hashId = decodeURIComponent(location.hash.replace(/^#/, ''));
     apply(data, hashId || null);
     if (/[?&]present\b/.test(location.search)) startPresent();
+    startSync();
   }).catch(function (err) {
     setStatus('Load error: ' + err.message + ' (open via a local web server, see README)');
   });

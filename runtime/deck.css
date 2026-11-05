@@ -21,6 +21,8 @@ button.primary { background: var(--ui-accent); border-color: var(--ui-accent); c
 .bar-logo { height: 28px; width: auto; }
 .bar-actions { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
 .bar-actions button { height: 34px; padding: 0 14px; }
+.bar-link { display: inline-flex; align-items: center; height: 34px; padding: 0 14px; border: 1px solid var(--ui-gold); border-radius: 6px; color: var(--ui-gold); text-decoration: none; font-size: 14px; }
+.bar-link:hover { background: rgba(201, 168, 106, 0.12); }
 .bar-actions button:not(.primary) { background: transparent; color: #ffffff; border-color: #4a5565; }
 .version { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #99a1af; }
 .version select {

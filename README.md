@@ -57,6 +57,16 @@ To change a slide, tell your agent the file path, e.g. *"In `slides/iter2.html`,
 - Click **▶ Present** or press **P**. Opens full screen from the current slide.
 - → / Space / Page Down: next · ← / Page Up: back · Home / End: first / last
 - Click the right half of the screen for next, the left half for back.
+
+## Presenter notes (several devices, synced)
+
+`presenter.html` shows the notes of the current slide, ◀ ▶ buttons and a shared timer (Start / Pause / Reset, 15:00 budget, ahead/behind from each slide's TIME). Every device in the same room sees the same slide and the same time.
+
+1. Click **Presenter notes** in the top bar. The page creates a room (code in the header).
+2. **Copy link for others** and send it to the team; any number of phones or laptops can join.
+3. **Open on projector** opens Present mode in the same room: the projector follows the ◀ ▶ buttons, and its own keys or clicks move everyone else.
+
+Sync runs through the public relay ntfy.sh (only slide id and timer state; anyone with the room code can join). Needs internet.
 - **N** shows or hides speaker notes · **Esc** exits.
 - Slides marked `hidden` (the internal team-questions and review slides) are skipped.
 - Direct link to present: `http://localhost:8000/?present#cover`
