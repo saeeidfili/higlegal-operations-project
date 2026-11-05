@@ -20,9 +20,22 @@ button.primary { background: var(--ui-accent); border-color: var(--ui-accent); c
 .bar-title span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bar-logo { height: 28px; width: auto; }
 .bar-actions { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+.bar-actions button { height: 34px; padding: 0 14px; }
 .bar-actions button:not(.primary) { background: transparent; color: #ffffff; border-color: #4a5565; }
-.version { display: flex; align-items: center; gap: 6px; font-size: 14px; color: #d1d5dc; }
-.version select { font: inherit; max-width: 360px; background: var(--ui-dark); color: #ffffff; border: 1px solid #4a5565; border-radius: 6px; padding: 5px 8px; }
+.version { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #99a1af; }
+.version select {
+  -webkit-appearance: none; appearance: none;
+  font: 400 14px Inter, Arial, sans-serif; letter-spacing: 0; text-transform: none;
+  width: 260px; height: 34px; padding: 0 34px 0 12px; border-radius: 6px; cursor: pointer;
+  color: #ffffff; background-color: #1a1a1a; border: 1px solid #4a5565;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23C9A86A' stroke-width='2'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.version select:hover { border-color: var(--ui-gold); }
+.version select:focus { outline: none; border-color: var(--ui-gold); box-shadow: 0 0 0 2px rgba(201, 168, 106, 0.35); }
+.version select option { background: #ffffff; color: #101010; }
+.live input { accent-color: var(--ui-accent); }
 .version[hidden] { display: none; }
 button:disabled, select:disabled { opacity: 0.45; cursor: default; }
 .canvas.editing [data-eid] { outline: 3px dashed rgba(217, 38, 5, 0.45); outline-offset: 2px; cursor: text; }
