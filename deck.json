@@ -56,6 +56,14 @@
                                 "start":  "appx-divider"
                             }
                  },
+    "history":  {
+                    "repo":  "saeeidfili/higlegal-operations-project",
+                    "branch":  "presentation",
+                    "paths":  [
+                                  "slides/{id}.html",
+                                  "presentation/slides/{id}.html"
+                              ]
+                },
     "fonts":  [
                   "Momo Trust Display",
                   "Inter"

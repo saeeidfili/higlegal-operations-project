@@ -4,7 +4,7 @@
   'use strict';
 
   var SVG_NS = 'http://www.w3.org/2000/svg';
-  var state = { deck: null, slides: [], index: 0, presenting: false, signature: '' };
+  var state = { deck: null, slides: [], index: 0, presenting: false, signature: '', view: null, versions: {}, editing: null, saved: {} };
   var $ = function (id) { return document.getElementById(id); };
 
   function fetchText(url) {
@@ -53,6 +53,7 @@
     tpl.innerHTML = slide.html.trim();
     var sec = tpl.content.querySelector('section');
     if (!sec) return canvas;
+    if (opts.editable) markEditable(sec);
     sec.removeAttribute('hidden');
     sec.querySelectorAll('aside').forEach(function (a) { a.remove(); });
 
@@ -158,19 +159,345 @@
     });
   }
 
-  function renderStage() {
+  // Version history: earlier versions of a slide, read from the GitHub commit history (deck.json "history").
+  function historyCfg() { return state.deck && state.deck.history; }
+
+  function historyPaths(id) {
+    return (historyCfg().paths || ['slides/{id}.html']).map(function (p) { return p.replace('{id}', id); });
+  }
+
+  function loadVersions(id) {
+    if (state.versions[id]) return state.versions[id];
+    var cfg = historyCfg(), key = 'versions:' + cfg.repo + ':' + id;
+    try {
+      var cached = JSON.parse(sessionStorage.getItem(key) || 'null');
+      if (cached && Date.now() - cached.t < 600000) return (state.versions[id] = Promise.resolve(cached.list));
+    } catch (e) {}
+    var api = 'https://api.github.com/repos/' + cfg.repo + '/commits?per_page=50&sha=' +
+      encodeURIComponent(cfg.branch || 'main') + '&path=';
+    var p = Promise.all(historyPaths(id).map(function (path) {
+      return fetch(api + encodeURIComponent(path)).then(function (r) {
+        if (!r.ok) throw new Error(r.status === 403 ? 'GitHub limit reached, try again in an hour' : 'GitHub ' + r.status);
+        return r.json();
+      });
+    })).then(function (lists) {
+      var seen = {}, out = [];
+      lists.forEach(function (list) {
+        list.forEach(function (c) {
+          if (seen[c.sha]) return;
+          seen[c.sha] = true;
+          out.push({ sha: c.sha, date: c.commit.author.date, author: c.commit.author.name, msg: c.commit.message.split('\n')[0] });
+        });
+      });
+      out.sort(function (a, b) { return a.date < b.date ? 1 : -1; });
+      try { sessionStorage.setItem(key, JSON.stringify({ t: Date.now(), list: out })); } catch (e) {}
+      return out;
+    });
+    p.catch(function () { delete state.versions[id]; });
+    return (state.versions[id] = p);
+  }
+
+  // Slides moved folders once, so try every configured path at that commit.
+  function fetchVersion(id, sha) {
+    var paths = historyPaths(id), base = 'https://raw.githubusercontent.com/' + historyCfg().repo + '/' + sha + '/', i = 0;
+    function next() {
+      if (i >= paths.length) return Promise.reject(new Error('file not found in ' + sha.slice(0, 7)));
+      var path = paths[i++];
+      return fetch(base + path).then(function (r) {
+        return r.ok ? r.text().then(function (html) { return { html: html, path: path }; }) : next();
+      });
+    }
+    return next();
+  }
+
+  function addOption(sel, value, label, disabled) {
+    var o = document.createElement('option');
+    o.value = value;
+    o.textContent = label;
+    o.disabled = !!disabled;
+    sel.appendChild(o);
+  }
+
+  function updateVersionMenu() {
+    var sel = $('version'), s = state.slides[state.index];
+    sel.parentNode.hidden = !historyCfg();
+    if (!s || !historyCfg()) return;
+    if (sel.dataset.slide !== s.id) {
+      sel.dataset.slide = s.id;
+      sel.innerHTML = '';
+      addOption(sel, '', 'Current file');
+      addOption(sel, '', 'Loading history…', true);
+      loadVersions(s.id).then(function (list) {
+        if (sel.dataset.slide !== s.id) return;
+        sel.innerHTML = '';
+        addOption(sel, '', 'Current file');
+        if (!list.length) addOption(sel, '', 'No versions on GitHub yet', true);
+        list.forEach(function (v) {
+          var when = new Date(v.date).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+          addOption(sel, v.sha, when + ' · ' + v.sha.slice(0, 7) + ' · ' + v.author + ' · ' + v.msg);
+        });
+        sel.value = state.view ? state.view.sha : '';
+      }, function (err) {
+        if (sel.dataset.slide !== s.id) return;
+        sel.innerHTML = '';
+        addOption(sel, '', 'Current file');
+        addOption(sel, '', 'History unavailable: ' + err.message, true);
+      });
+    }
+    sel.value = state.view ? state.view.sha : '';
+  }
+
+  function showVersion(sha) {
+    var s = state.slides[state.index];
+    if (!sha) { state.view = null; renderStage(); return; }
+    setStatus('Loading version ' + sha.slice(0, 7) + '…');
+    fetchVersion(s.id, sha).then(function (res) {
+      if (state.slides[state.index].id !== s.id) return;
+      state.view = parseSlide(s.id, res.html);
+      state.view.sha = sha;
+      state.view.path = res.path;
+      renderStage();
+      setStatus('');
+    }).catch(function (err) {
+      setStatus('Could not load version: ' + err.message);
+      $('version').value = state.view ? state.view.sha : '';
+    });
+  }
+
+  // Online editing: text on the slide and the notes, saved as a commit through the GitHub API.
+  var INLINE = /^(B|STRONG|I|EM|U|S|BR|SPAN|A|SUP|SUB|CODE|SMALL|MARK)$/;
+  var EDIT_SKIP = 'aside, x-embed, x-connector, svg, script, style';
+
+  function canEditOnline() {
+    return !!historyCfg() && (/\.github\.io$/.test(location.hostname) || /[?&]edit\b/.test(location.search));
+  }
+
+  function isTextBlock(el) {
+    if (!el.textContent.trim()) return false;
+    for (var n = el.firstElementChild; n; n = n.nextElementSibling) if (!INLINE.test(n.tagName)) return false;
+    return true;
+  }
+
+  // Runs on the source and on the rendered slide in the same order, so the ids match.
+  function markEditable(sec) {
+    var n = 0;
+    (function walk(el) {
+      for (var c = el.firstElementChild; c; c = c.nextElementSibling) {
+        if (c.matches(EDIT_SKIP)) continue;
+        if (isTextBlock(c)) c.setAttribute('data-eid', n++);
+        else walk(c);
+      }
+    })(sec);
+  }
+
+  function norm(s) { return String(s).replace(/\r\n/g, '\n').trim(); }
+
+  function ghToken() { try { return localStorage.getItem('gh-token') || ''; } catch (e) { return ''; } }
+
+  function gh(path, opts) {
+    opts = opts || {};
+    opts.headers = { Authorization: 'Bearer ' + ghToken(), Accept: 'application/vnd.github+json' };
+    return fetch('https://api.github.com/repos/' + historyCfg().repo + path, opts).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (j) {
+        if (r.ok) return j;
+        if (r.status === 401) throw new Error('token not accepted, set it again');
+        if (r.status === 403 || r.status === 404) throw new Error('no write access with this token (' + r.status + ')');
+        throw new Error(j.message || 'GitHub ' + r.status);
+      });
+    });
+  }
+
+  function b64decode(s) {
+    var bin = atob(s.replace(/\s/g, '')), bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+
+  function b64encode(str) {
+    var bytes = new TextEncoder().encode(str), bin = '';
+    for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin);
+  }
+
+  // Refuses to save when the file on GitHub is no longer the one this edit started from.
+  function saveHtml(id, base, html, message) {
+    var cfg = historyCfg(), path = 'slides/' + id + '.html', branch = cfg.branch || 'main';
+    return gh('/contents/' + path + '?ref=' + encodeURIComponent(branch)).then(function (cur) {
+      if (norm(b64decode(cur.content)) !== norm(base)) {
+        throw new Error('someone changed this slide on GitHub in the meantime. Copy your text, press Cancel, wait a minute and Reload');
+      }
+      return gh('/contents/' + path, {
+        method: 'PUT',
+        body: JSON.stringify({ message: message, content: b64encode(html), sha: cur.sha, branch: branch })
+      });
+    }).then(function (res) {
+      state.saved[id] = html;
+      var i = state.slides.findIndex(function (s) { return s.id === id; });
+      if (i >= 0) state.slides[i] = parseSlide(id, html);
+      delete state.versions[id];
+      try { sessionStorage.removeItem('versions:' + cfg.repo + ':' + id); } catch (e) {}
+      $('version').dataset.slide = '';
+      return res.commit.sha.slice(0, 7);
+    });
+  }
+
+  function escapeHtml(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+  // Patches only the changed text in the original file, so the rest of the HTML stays byte-identical.
+  // Falls back to re-serialising the slide when a changed text cannot be found in the file.
+  function collectEdits() {
+    var ed = state.editing, raw = ed.base.replace(/\r\n/g, '\n');
+    var tpl = document.createElement('template');
+    tpl.innerHTML = raw.trim();
+    var sec = tpl.content.querySelector('section');
+    markEditable(sec);
+    var patches = [], pos = 0, located = true;
+    sec.querySelectorAll('[data-eid]').forEach(function (src) {
+      var el = $('stage').querySelector('[data-eid="' + src.dataset.eid + '"]');
+      var changed = el && el.innerHTML !== ed.orig[src.dataset.eid];
+      var at = raw.indexOf('>' + src.innerHTML + '</' + src.tagName.toLowerCase(), pos);
+      if (at < 0) { if (changed) located = false; return; }
+      pos = at + 1 + src.innerHTML.length;
+      if (changed) patches.push([at + 1, pos, el.innerHTML]);
+      src.innerHTML = el ? el.innerHTML : src.innerHTML;
+    });
+    var out;
+    if (located) {
+      out = raw;
+      for (var i = patches.length - 1; i >= 0; i--) out = out.slice(0, patches[i][0]) + patches[i][2] + out.slice(patches[i][1]);
+    } else {
+      sec.querySelectorAll('[data-eid]').forEach(function (el) { el.removeAttribute('data-eid'); });
+      out = tpl.innerHTML + '\n';
+    }
+    var notes = norm($('notes').innerText), notesChanged = notes !== norm(ed.notes);
+    if (notesChanged) {
+      var m = /<aside\b[^>]*>([\s\S]*?)(?=<\/aside>|<\/section>)/i.exec(out);
+      if (m) {
+        var from = m.index + m[0].length - m[1].length;
+        out = out.slice(0, from) + escapeHtml(notes) + out.slice(from + m[1].length);
+      } else {
+        var end = out.lastIndexOf('</section>');
+        out = out.slice(0, end) + '  <aside>' + escapeHtml(notes) + '</aside>\n' + out.slice(end);
+      }
+    }
+    return (patches.length || !located || notesChanged) ? out : null;
+  }
+
+  function setEditUi() {
+    var on = !!state.editing;
+    $('btnEdit').hidden = !canEditOnline() || on;
+    $('btnSave').hidden = !on;
+    $('btnCancel').hidden = !on;
+    $('btnPresent').disabled = on;
+    $('btnReload').disabled = on;
+    $('version').disabled = on;
+    $('btnRestore').textContent = canEditOnline() ? 'Restore this version' : 'Copy restore request';
+  }
+
+  function startEdit() {
     var s = state.slides[state.index];
     if (!s) return;
+    if (state.view) { setStatus('Switch the Version menu to "Current file" to edit'); return; }
+    state.editing = { id: s.id, base: s.html, notes: s.notes, orig: {} };
+    renderStage();
+    setStatus('Editing: click a text on the slide or the notes');
+  }
+
+  function stopEdit() {
+    state.editing = null;
+    renderStage();
+  }
+
+  // Returns false when the user wants to keep unsaved edits.
+  function leaveEdit() {
+    if (!state.editing) return true;
+    if (collectEdits() && !confirm('Discard your unsaved edits on this slide?')) return false;
+    state.editing = null;
+    return true;
+  }
+
+  function saveEdit() {
+    var ed = state.editing, html = collectEdits();
+    if (!html) { stopEdit(); setStatus('No changes'); return; }
+    if (!ghToken()) { openTokenDialog(saveEdit); return; }
+    setStatus('Saving…');
+    $('btnSave').disabled = true;
+    saveHtml(ed.id, ed.base, html, 'Edit slide ' + ed.id + ' in viewer').then(function (sha) {
+      $('btnSave').disabled = false;
+      state.editing = null;
+      renderRail();
+      renderStage();
+      setStatus('Saved as commit ' + sha + ' · live for everyone in about 1 min');
+    }).catch(function (err) {
+      $('btnSave').disabled = false;
+      setStatus('Not saved: ' + err.message);
+    });
+  }
+
+  function restoreVersion() {
+    var v = state.view, cur = state.slides[state.index];
+    if (!v) return;
+    if (!canEditOnline()) {
+      var text = 'Restore slides/' + v.id + '.html to the version in commit ' + v.sha.slice(0, 7) +
+        ' (file ' + v.path + ' at that commit). Follow STYLE.md.';
+      if (navigator.clipboard) navigator.clipboard.writeText(text).then(function () { setStatus('Copied restore request'); });
+      return;
+    }
+    if (!ghToken()) { openTokenDialog(restoreVersion); return; }
+    if (!confirm('Replace the current slide with version ' + v.sha.slice(0, 7) + '? This creates a new commit; nothing is lost.')) return;
+    setStatus('Restoring…');
+    saveHtml(cur.id, cur.html, v.html, 'Restore slide ' + cur.id + ' to ' + v.sha.slice(0, 7) + ' in viewer').then(function (sha) {
+      state.view = null;
+      renderRail();
+      renderStage();
+      setStatus('Restored as commit ' + sha + ' · live for everyone in about 1 min');
+    }).catch(function (err) { setStatus('Not restored: ' + err.message); });
+  }
+
+  function openTokenDialog(then) {
+    var dlg = $('tokenDlg');
+    $('tokenInput').value = '';
+    $('tokenForget').hidden = !ghToken();
+    dlg.onclose = function () {
+      if (dlg.returnValue === 'forget') { try { localStorage.removeItem('gh-token'); } catch (e) {} setStatus('Token removed from this browser'); return; }
+      var t = $('tokenInput').value.trim();
+      if (dlg.returnValue !== 'ok' || !t) return;
+      try { localStorage.setItem('gh-token', t); } catch (e) { setStatus('This browser blocks saving the token'); return; }
+      if (then) then();
+    };
+    dlg.showModal();
+  }
+
+  function renderStage() {
+    var cur = state.slides[state.index];
+    if (!cur) return;
+    if (state.view && state.view.id !== cur.id) state.view = null;
+    if (state.editing && state.editing.id !== cur.id) state.editing = null;
+    var s = state.view || cur;
     var stage = $('stage');
     stage.innerHTML = '';
-    var canvas = buildCanvas(s);
+    var canvas = buildCanvas(s, { editable: !!state.editing });
+    if (state.editing) {
+      canvas.classList.add('editing');
+      canvas.querySelectorAll('[data-eid]').forEach(function (el) {
+        state.editing.orig[el.dataset.eid] = el.innerHTML;
+        el.contentEditable = 'true';
+      });
+    }
     stage.appendChild(canvas);
     fit(stage, canvas);
     var n = slideNumber(state.index);
     $('slideNo').textContent = (n === null ? 'Hidden slide' : 'Slide ' + n) + ' · ' + s.title;
     $('slidePath').textContent = 'slides/' + s.id + '.html';
     $('hiddenBadge').hidden = !s.hidden;
-    $('notes').textContent = s.notes || '(no notes)';
+    $('notes').textContent = state.editing ? s.notes : (s.notes || '(no notes)');
+    try { $('notes').contentEditable = state.editing ? 'plaintext-only' : 'false'; }
+    catch (e) { $('notes').contentEditable = state.editing ? 'true' : 'false'; }
+    setEditUi();
+    $('versionBadge').hidden = !state.view;
+    $('btnRestore').hidden = !state.view;
+    if (state.view) $('versionBadge').textContent = 'Old version ' + state.view.sha.slice(0, 7) + ' · view only';
+    updateVersionMenu();
     requestAnimationFrame(function () { fit(stage, canvas); });
     document.querySelectorAll('.thumb').forEach(function (t, i) { t.classList.toggle('active', i === state.index); });
     var active = document.querySelectorAll('.thumb')[state.index];
@@ -179,6 +506,7 @@
 
   function select(i) {
     if (i < 0 || i >= state.slides.length) return;
+    if (i !== state.index && !leaveEdit()) return;
     state.index = i;
     history.replaceState(null, '', '#' + state.slides[i].id);
     renderStage();
@@ -204,6 +532,7 @@
   }
 
   function startPresent() {
+    if (state.editing) return;
     var vis = visibleIndices();
     if (!vis.length) return;
     if (vis.indexOf(state.index) < 0) state.index = vis.filter(function (i) { return i > state.index; })[0] || vis[0];
@@ -239,7 +568,12 @@
   function apply(data, keepId) {
     state.deck = data.deck;
     state.signature = data.signature;
-    state.slides = data.deck.order.map(function (id, i) { return parseSlide(id, data.texts[i]); });
+    // GitHub Pages needs about a minute after a save; until then keep showing the saved text.
+    state.slides = data.deck.order.map(function (id, i) {
+      var saved = state.saved[id];
+      if (saved != null && data.texts[i] != null && norm(data.texts[i]) === norm(saved)) delete state.saved[id];
+      return parseSlide(id, state.saved[id] != null ? state.saved[id] : data.texts[i]);
+    });
     document.title = data.deck.title || 'Deck';
     $('deckTitle').textContent = data.deck.title || 'Deck';
     var idx = keepId ? state.slides.findIndex(function (s) { return s.id === keepId; }) : -1;
@@ -250,6 +584,7 @@
   }
 
   function reload(silent) {
+    if (state.editing) return Promise.resolve();
     var keep = state.slides[state.index] && state.slides[state.index].id;
     return loadAll().then(function (data) {
       if (silent && data.signature === state.signature) return;
@@ -267,8 +602,25 @@
       var path = $('slidePath').textContent;
       if (navigator.clipboard) navigator.clipboard.writeText(path).then(function () { setStatus('Copied ' + path); });
     });
+    $('version').addEventListener('change', function (e) { showVersion(e.target.value); });
+    $('btnRestore').addEventListener('click', restoreVersion);
+    $('btnEdit').addEventListener('click', startEdit);
+    $('btnSave').addEventListener('click', saveEdit);
+    $('btnCancel').addEventListener('click', function () { if (leaveEdit()) { renderStage(); setStatus(''); } });
+    // Plain text only, and Enter makes a line break instead of a new block.
+    $('stage').addEventListener('paste', function (e) {
+      if (!state.editing) return;
+      e.preventDefault();
+      document.execCommand('insertText', false, (e.clipboardData || window.clipboardData).getData('text/plain'));
+    });
+    $('stage').addEventListener('keydown', function (e) {
+      if (state.editing && e.key === 'Enter') { e.preventDefault(); document.execCommand('insertLineBreak'); }
+    });
+    window.addEventListener('beforeunload', function (e) {
+      if (state.editing && collectEdits()) { e.preventDefault(); e.returnValue = ''; }
+    });
     document.addEventListener('keydown', function (e) {
-      if (e.target && /INPUT|TEXTAREA/.test(e.target.tagName)) return;
+      if (e.target && (/INPUT|TEXTAREA|SELECT/.test(e.target.tagName) || e.target.isContentEditable)) return;
       var k = e.key;
       if (state.presenting) {
         if (k === 'ArrowRight' || k === 'ArrowDown' || k === 'PageDown' || k === ' ' || k === 'Enter') { e.preventDefault(); step(1); }
@@ -288,6 +640,7 @@
       var id = decodeURIComponent(location.hash.replace(/^#/, ''));
       var i = state.slides.findIndex(function (s) { return s.id === id; });
       if (i < 0 || i === state.index) return;
+      if (!leaveEdit()) { history.replaceState(null, '', '#' + state.slides[state.index].id); return; }
       state.index = i;
       if (state.presenting) renderPresent(); else renderStage();
     });

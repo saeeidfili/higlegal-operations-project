@@ -8,7 +8,7 @@ This repo is a 15-minute Operations Management presentation (PHBS, Group 9) abou
 
 | Path | What it is | Edit? |
 |---|---|---|
-| `deck.json` | Deck title, slide **order**, sections | Yes, when adding/removing/reordering slides |
+| `deck.json` | Deck title, slide **order**, sections, `history` (repo and paths for the Version dropdown) | Yes, when adding/removing/reordering slides |
 | `slides/<id>.html` | One slide per file, one `<section id="<id>">` each | **Yes – this is where content lives** |
 | `assets/` | Logos, hero image, group photo | Add files; do not replace logos |
 | `animations/` | Full-screen animation pages linked by the play buttons | Only if asked |
@@ -35,7 +35,7 @@ Keeping this format means slides can still be imported back into the original Cl
 2. Edit only the slide files you were asked to change. Keep the process-map geometry identical across slides 4–9.
 3. Check the slide in the viewer at full size: nothing overlaps, nothing runs past the footer (y ≈ 985), no text below 24 px.
 4. Commit one logical change per commit, e.g. `slide iter2: shorten KPI table`.
-5. Pull before you start; if two people edit the same slide file, resolve the conflict by hand.
+5. Pull before you start: team members also edit slide text online, which creates commits "Edit slide <id> in viewer". If two people edit the same slide file, resolve the conflict by hand.
 
 ## Content rules (short version – full rules in STYLE.md §6)
 
