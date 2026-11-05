@@ -603,6 +603,11 @@
       if (navigator.clipboard) navigator.clipboard.writeText(path).then(function () { setStatus('Copied ' + path); });
     });
     $('version').addEventListener('change', function (e) { showVersion(e.target.value); });
+    // Present mode: click the left half to go back, the right half to go forward.
+    $('present').addEventListener('click', function (e) {
+      if (!state.presenting || e.target.closest('a, button, iframe, #pnotes')) return;
+      step(e.clientX < window.innerWidth / 2 ? -1 : 1);
+    });
     $('btnRestore').addEventListener('click', restoreVersion);
     $('btnEdit').addEventListener('click', startEdit);
     $('btnSave').addEventListener('click', saveEdit);

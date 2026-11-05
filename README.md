@@ -56,6 +56,7 @@ To change a slide, tell your agent the file path, e.g. *"In `slides/iter2.html`,
 
 - Click **▶ Present** or press **P**. Opens full screen from the current slide.
 - → / Space / Page Down: next · ← / Page Up: back · Home / End: first / last
+- Click the right half of the screen for next, the left half for back.
 - **N** shows or hides speaker notes · **Esc** exits.
 - Slides marked `hidden` (the internal team-questions and review slides) are skipped.
 - Direct link to present: `http://localhost:8000/?present#cover`
