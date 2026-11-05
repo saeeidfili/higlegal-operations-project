@@ -52,6 +52,15 @@
   .msg { max-width: 640px; margin: 48px auto; padding: 24px; background: var(--panel); border-top: 3px solid var(--accent); border-radius: 8px; line-height: 1.6; }
   .toast { position: fixed; left: 50%; bottom: 110px; transform: translateX(-50%); background: #262626; color: var(--text); padding: 8px 14px; border-radius: 8px; font-size: 14px; opacity: 0; transition: opacity .2s; pointer-events: none; }
   .toast.show { opacity: 1; }
+  .qr { position: fixed; inset: 0; z-index: 20; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.9); padding: 16px; cursor: pointer; }
+  .qr[hidden] { display: none; }
+  .qr-card { background: #ffffff; color: #101010; border-top: 4px solid var(--accent); border-radius: 12px; padding: 24px; text-align: center; }
+  .qr-code { width: min(80vw, 62vh, 480px); margin: 0 auto; }
+  .qr-title { font-weight: 700; font-size: 20px; margin-bottom: 12px; }
+  .qr-code svg { width: 100%; height: auto; display: block; }
+  .qr-room { margin-top: 12px; font-size: 18px; color: #4a5565; }
+  .qr-room b { color: #101010; letter-spacing: 2px; }
+  .qr-hint { margin-top: 6px; font-size: 13px; color: #6a7282; }
 </style>
 </head>
 <body>
@@ -59,6 +68,7 @@
   <img src="assets/hilegal-logo-white.png" alt="HiLegal">
   <span class="h-title">Presenter notes</span>
   <span class="room"><span class="dot" id="dot" title="Connection"></span>Room <code id="roomCode">…</code></span>
+  <button class="h-btn" id="btnQr" type="button">Show QR</button>
   <button class="h-btn" id="btnShare" type="button">Copy link for others</button>
   <a class="h-btn" id="lnkProjector" target="_blank" rel="noopener">Open on projector</a>
 </header>
@@ -82,6 +92,15 @@
   <button class="nav" id="btnNext" type="button" aria-label="Next slide">&#9654;</button>
 </footer>
 <div class="toast" id="toast"></div>
+<div class="qr" id="qr" hidden>
+  <div class="qr-card">
+    <div class="qr-title">Scan to join the presenter notes</div>
+    <div class="qr-code" id="qrCode"></div>
+    <div class="qr-room">Room <b id="qrRoom"></b></div>
+    <div class="qr-hint">Tap anywhere to close</div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="runtime/sync.js?v=1"></script>
 <script>
 (function () {
@@ -219,7 +238,18 @@
     if (navigator.share) navigator.share({ title: 'Presenter notes', url: url }).catch(function () {});
     else if (navigator.clipboard) navigator.clipboard.writeText(url).then(function () { toast('Link copied'); });
   });
+  $('btnQr').addEventListener('click', function () {
+    if (!window.qrcode) { toast('QR not available offline, use Copy link'); return; }
+    var q = qrcode(0, 'M');
+    q.addData(base + 'presenter.html?room=' + room);
+    q.make();
+    $('qrCode').innerHTML = q.createSvgTag({ cellSize: 8, margin: 2, scalable: true });
+    $('qrRoom').textContent = room;
+    $('qr').hidden = false;
+  });
+  $('qr').addEventListener('click', function () { $('qr').hidden = true; });
   document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') $('qr').hidden = true;
     if (e.key === 'ArrowRight' || e.key === 'PageDown') go(1);
     else if (e.key === 'ArrowLeft' || e.key === 'PageUp') go(-1);
   });
