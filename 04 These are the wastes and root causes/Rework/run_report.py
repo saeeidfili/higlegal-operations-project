@@ -45,7 +45,7 @@ def part1_calibrate() -> dict:
     fit = calibrate(0.75, 0.20, verbose=True)
     print("  p_clar   = 0.75  from 1/(1-p) = 4 rounds [C]")
     print("  p_script = 0.20, p_final = 2 x p_script (late-stage rejection")
-    print("             likelier) - solved from the 600-min anchor [C]")
+    print("             likelier) - conditional on chosen p_script; the rounded .20/.40 simulation gives 599.17 min")
     return fit
 
 
@@ -113,7 +113,7 @@ def part5_verify(fit: dict, derived: list, results: list, sweep: dict) -> None:
     ]
     for what, got in checks:
         print(f"  {what:<44} {got}")
-    print("\n  all anchors hold -> baseline = today, in simulation")
+    print("\n  internal checks completed; calibration is not independent operational validation")
 
 
 if __name__ == "__main__":

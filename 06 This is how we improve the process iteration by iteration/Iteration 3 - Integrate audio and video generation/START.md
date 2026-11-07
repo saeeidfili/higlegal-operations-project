@@ -23,7 +23,7 @@
 2. **Auto platform variants from the same render**: 16:9 (site/YouTube) · 9:16 (Shorts/Reels/LinkedIn) · 1:1 (feed) — the 75–90 min of manual adaptation drops to zero and consistency between variants becomes structural.
 3. **Avatar & consent registry** (from the proposal's risk register): written **likeness + voice consent per lawyer** before any avatar render (`POST /v3/avatars/{id}/consent`); consent status gates the render.
 4. **Human QC stays — deliberately**: a 20-min render-QA pass per video (likeness, name pronunciation, captions, brand frames, per a digitized checklist). This is the quality guardrail the proposal commits to ("AI-generated content may require corrections — human quality control").
-5. **Publish + objection window replaces the serial final approval**: the video auto-delivers to the lawyer's channels with a 24 h objection window that runs **in parallel** — the final gate stops adding serial waiting (this is what compresses lead time to 1–2 days).
+5. **Delivery + proposed objection window replaces the serial final approval**: the video delivers downloadable files to the lawyer with a 24 h objection window that runs **in parallel** — the final gate stops adding serial waiting (this is what compresses lead time to 1–2 days).
 6. **Engagement analytics** (to-be step 8): views/watch-time per platform flow back into the unified dashboard; per-step cycle-time logging continues — the PDCA habit, now covering the whole pipeline.
 
 ## 3. Updated process map (9 → 8 steps — the proposal's to-be shape)
@@ -53,7 +53,7 @@ flowchart TD
 | `GET /v3/renders/{id}/variants` | **new** | 16:9 / 9:16 / 1:1 outputs from the same job |
 | `POST /v3/avatars` · `POST /v3/avatars/{id}/consent` | **new** | Avatar registry + **written likeness/voice consent** — consent gates rendering (compliance by construction) |
 | `GET /v3/voices` | **new** | Brand voice library per language |
-| `POST /v3/videos/{id}/publish` | **new** | Auto-deliver to lawyer channels + start 24 h objection window (replaces serial final approval) |
+| `POST /v3/videos/{id}/deliver` | **new** | Deliver downloadable files to the lawyer + start 24 h objection window (replaces serial final approval) |
 | `POST /v3/videos/{id}/engagement` | **new** | Views/watch-time ingestion → unified dashboard |
 | `GET /v1/*`, `POST /v2/*` | unchanged | The chain: Brief JSON (v1) → Script JSON (v2) → Render (v3) — each layer consumes the previous one's output |
 
@@ -82,13 +82,13 @@ flowchart TD
 | Rework rate | ≤ 12% | > 12% → QA checklist misses a recurring defect class; add it to the auto-check |
 | **Guardrails:** consent on file = **100%** of avatar renders (hard gate, zero tolerance) · compliance incidents = 0 · client satisfaction ≥ v2 cohort | | any consent gap = stop-the-line incident |
 
-**Steady-state transition rule:** after 50 videos, re-baseline human time; if ≤ 1 h 05, declare the proposal's "under one hour" target met operationally and lock the standard.
+**Steady-state transition rule:** after 50 videos, re-baseline human time; a <=65-minute tolerance does not meet the strict under-60-minute proposal target; assess that target separately before locking a standard.
 
 ## 7. Remaining limitation (the honest close of Section 6)
 
-- **The constraint is now the lawyer's own approval time.** Residual lead time ≈ 100% client-side (24–48 h script approval). Further improvement requires managing the client (SLAs in subscription terms, reminders, escalation) — not more internal automation. Iteration 1's SLA machinery is already in place; the process is as fast as its slowest client.
+- **The constraint is now the lawyer's own approval time.** Residual lead time substantially client-influenced, with internal render and QC still contributing (24–48 h script approval). Further improvement requires managing the client (SLAs in subscription terms, reminders, escalation) — not more internal automation. Iteration 1's SLA machinery is already in place; the process is as fast as its slowest client.
 - **AI-vendor dependency** (proposal risk): render + LLM pricing and lock-in → dual-vendor evaluation and interchangeable components; the Script JSON layer keeps the pipeline renderer-agnostic.
-- Volume ceiling is now demand, not capacity: at 40 videos/month the two producers spend **~4 h/month** total on video (see `single source of truth/kpi-data.md` §4) — the staffing question inverts from "can we hire enough producers?" to "what should the company do with the payroll and the management attention that no longer go into video?" → Section 8's answer: fund the legal LLM.
+- Volume ceiling is now demand, not capacity: at 40 videos/month the two producers spend **~40 h/month** total on video (see `single source of truth/kpi-data.md` §4) — the staffing question inverts from "can we hire enough producers?" to "what should the company do with the payroll and the management attention that no longer go into video?" → Section 8's answer: fund the legal LLM.
 
 ## 8. Risks & guardrails
 

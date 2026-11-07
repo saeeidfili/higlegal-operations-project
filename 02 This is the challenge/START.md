@@ -184,3 +184,5 @@ A campaign with a growing budget, a capacity ceiling, and a drain on the core pr
 - [ ] The per-customer bleed table shown before any solution appears
 - [ ] The startup/marketing-campaign framing stated fairly (they *do* tolerate it) before our counter-thesis
 - [ ] No detailed solutions in this section — preview hooks only (~¥180/video, the QAR KPI pointer)
+
+Financial interpretation: subscription-minus-video-cost tables allocate the full subscription price to video. Other bundled service, support and acquisition costs are excluded; actual customer profitability and actual cash burn are not established. Typical use of two videos/month is an estimate. Freed staff time is already reflected in the allocated unit-cost reduction and cannot be added again as cash savings.

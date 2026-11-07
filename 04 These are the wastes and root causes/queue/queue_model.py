@@ -17,14 +17,14 @@ Company-reported inputs [C] (confirmed with HiLegal, September 2026):
   * labour per video       ~10 h, two producers
   * stated output ceiling  35–40 videos/month
 
-Model: M/M/1 — one intake inbox; the two producers act as ONE pooled pickup
-function because videos are held start-to-finish (no preemption), so a slot
-frees only at a completion boundary.  Units: working days (wd);
+Model: M/M/1 — an assumed aggregate serial intake surrogate. A shared inbox
+and non-preemption do not imply a literal single server for two producers.
+The separate whole-process model uses two pooled task servers.  Units: working days (wd);
 1 month = 22 wd; 1 wd ≈ 1.4 calendar days.
 
 The script, in four parts (each is one function, run in order by main()):
   Part 1  Calibrate the one unknown μ against the observed 3–7 day wait, and
-          calculate the company's 35–40/month ceiling from first principles
+          calculate the company's 100%-dedication illustration alongside the reported 35–40/month ceiling
   Part 2  Predictions: backlog, wait tail, P90, nonlinearity, the ρ = 1 wall
   Part 3  Validate every formula with a discrete-event simulation
   Part 4  Render the two SVG charts with matplotlib (transparent
@@ -57,7 +57,7 @@ from matplotlib.patches import Patch
 # from these values.
 # ----------------------------------------------------------------------
 WD_MONTH = 22.0                    # working days per month
-CAL = 30.4 / 21.7                  # calendar days per working day ≈ 1.40
+CAL = 30.4 / 22.0                  # calendar days per working day ≈ 1.40
 OUT_DIR = Path(__file__).resolve().parent
 PNG_DIR = os.environ.get("Q_PNG_DIR")   # optional: also write PNG previews
 
@@ -82,7 +82,7 @@ STEPS = [
     ("10 Audio generation",     13.8,  0.5, "work"),
     ("11 AV sync (bottleneck)", 14.3,  1.5, "work"),
     ("12a Final approval",      15.8,  2.0, "wait"),
-    ("12b Publish + adapt",     17.8,  1.0, "work"),
+    ("12b Adapt + deliver",     17.8,  1.0, "work"),
 ]
 
 # Colour tokens — presentation design system (STYLE.md, presentation branch)
@@ -160,11 +160,11 @@ def part1_calibration() -> None:
         r = mm1(lam, MU)
         print(f"  {lam:>6.1f}  {r['rho']:>5.2f}  {r['Wq'] * CAL:>4.1f} d"
               f"  {obs:<14}")
-    print("  ✓ reproduces the whole observed band, incl. its workload-dependence")
+    print("  Approximate calibration only: endpoints are about 2.3 and 7.4 d, outside the reported 3–7 d band.")
 
     print("\nReality check — labour")
     print(f"  {MU} × 10 h = {MU * TAU_HOURS:.0f} h = {DEDICATION:.0%}"
-          f" of the {HOURS_AVAIL:.0f} h available  (≈ the 65% in kpi-data.md)")
+          f" of the {HOURS_AVAIL:.0f} h available  (distinct from the KPI scenario: 60% of 160 h, not an independent 65% estimate)")
 
     print("\nThe company's output ceiling, calculated from first principles:")
     print(f"  2 producers × 22 working days × 8 h = {HOURS_AVAIL:.0f}"
@@ -205,7 +205,7 @@ def part2_predictions() -> None:
           f"  ⇒  multiplier ρ/(1−ρ) {mult_l:.1f} → {mult_h:.1f}"
           f"  ⇒  wait ×{rh['Wq'] / rl['Wq']:.1f}"
           f" ({rl['Wq'] * CAL:.1f} → {rh['Wq'] * CAL:.1f} d)")
-    print(f"  the wall:  the calculated ceiling {MU_THEORETICAL:.1f} (Part 1)"
+    print(f"  the wall:  the effective ceiling {MU:.1f} for this scenario (Part 1)"
           f" IS ρ = 1;  at λ = 24 → ρ = {24 / MU:.2f} > 1,"
           " backlog grows forever")
 
@@ -220,7 +220,7 @@ def part3_simulation() -> None:
         sim = simulate_mm1(lam, MU) * CAL
         print(f"  λ = {lam:>5.1f}/month   formula {theory:4.1f} d   "
               f"simulation {sim:4.1f} d   diff {abs(sim - theory) / theory:.1%}")
-    print("  → the formulas are what actually happens when you run the process.")
+    print("  → the simulation verifies the algebra under identical assumptions; it does not validate HiLegal operations.")
 
 
 # ======================================================================
@@ -280,7 +280,7 @@ def chart_cliff_sweep() -> None:
     ax.text(1.01, 24.6, "ρ = 1  ⇒  wait → ∞", fontsize=11, color=RED,
             weight="bold")
     ax.text(1.01, 23.1, "capacity λ = μ ≈ 23.5/mo", fontsize=9.5, color=RED)
-    ax.text(1.01, 21.6, "calculated ceiling 35.2 [C]", fontsize=9.5,
+    ax.text(1.01, 21.6, "100%-dedication ceiling 35.2 [D]", fontsize=9.5,
             color=RED)
     ax.axvspan(1.0, 1.25, color=RED, alpha=0.08, zorder=1)
     ax.text(1.125, 9.4, "unstable (ρ > 1)", ha="center", va="center",
@@ -329,13 +329,13 @@ def chart_order_timeline() -> None:
     ax.set_ylim(-0.7, n - 0.3)
     ax.set_xlabel("calendar days")
     ax.set_xticks(range(0, 20, 2))
-    ax.set_title("active work ≈ 10 h ≈ 6% of elapsed time — everything red is waiting",
+    ax.set_title("illustrative timeline: 10 h staff effort; calendar spans do not measure value-added PCE",
                  fontsize=11, color="#6A7282")
     fig.suptitle("Lawyer Chen's video — 18.8 days end-to-end (reported: 2–4 weeks [C])",
                  weight="bold")
 
     handles = [Patch(facecolor=c, label=l) for l, c in
-               (("waiting", RED), ("active work", GREEN),
+               (("waiting", RED), ("active work", NAVY),
                 ("mostly waiting", AMBER), ("lawyer (client)", BLUE))]
     ax.legend(handles=handles, ncol=4, loc="upper center",
               bbox_to_anchor=(0.5, -0.08), frameon=False, fontsize=10)

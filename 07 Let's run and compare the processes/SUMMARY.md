@@ -1,70 +1,35 @@
-# Section 7 — Let's run and compare the processes (summary)
+# Section 7: compare and stress-test the proposed process
 
-Flow from Section 6: *"That's the design. Now let's stress-test it."* Baseline vs Iterations 1–3 through the same scenarios — demand, approval delays, rework varied openly. This is what makes the Section-6 claims credible instead of aspirational.
+The existing Section-4 event engine is retained through the Iteration-3 lineage. Proposed task times, rejection probabilities and waits remain assumptions, not measured improvements. Results are generated in `scenario-results.md`; the joint workload/queue experiment is in `rework-demand-results.md` with machine-readable records in `rework-demand-results.json`.
 
-## Model
+## Common measurement basis
 
-Same engine as the whole project (Section-4 lineage): each video flows through its version's process map; steps consume producer time (2 producers), gates add calendar waiting and can loop; parameters from `single source of truth/kpi-data.md`, distributions uniform over stated ranges — ranges, not fake precision. All runs in `compare_sim.py` (this folder), 3 seeds per point; every table in `scenario-results.md`.
+Two producers share a FIFO task queue. A producer is free for other videos during client waits. Work tasks have deterministic durations; client/machine waits use uniform ranges, and arrivals are Poisson. The month has 22 working days and 30.4 calendar days. Weekend and holiday scheduling is not explicitly modelled.
 
-## S0 — Normal conditions (λ = 20/mo)
+WIP is integrated exactly over the same post-warm-up time window used to count departures. Throughput counts departures in that window, not completed arrival-cohort members divided by the arrival-window length. The arrival cohort retains its completion count; uncompleted arrivals are flagged, not silently discarded. Work-content capacity uses expected work including rework rather than completed-survivor work. Offered utilization is demand/capacity; observed busy utilization is reported separately.
 
-| version | lead | P90 | work | ¥/video | rework | QAR |
-|---|---:|---:|---:|---:|---:|---:|
-| baseline | 23.4 d | 36.9 | 600 min | ¥940 | 88% | 12% |
-| v1 · standardize | 7.2 d | 10.5 | 437 | ¥709 | 56% | 44% |
-| v2 · AI scripting | 4.0 d | 5.3 | 349 | ¥595 | 30% | 70% |
-| v3 · single render | **1.6 d** | **2.1** | **61** | **¥182** | **8%** | **92%** |
+The main comparison uses 36 months, 16 months warm-up, a 3-month cutoff and seeds 11/12/13. S4 remains a single-seed disruption experiment. Three seeds show sensitivity, not a confidence interval or external validation. Stable means below the analytical work-content limit; it does not guarantee that a short run has converged.
 
-The Section-6 scoreboard, now simulated. Charts: `ladder.svg` (six KPI panels), `timer-bars.svg` (one median order per version — the red shrinks, the green nearly vanishes).
+## Scenarios and interpretation
 
-## S1 — Demand surge — `saturation.svg`, `wip-paths.svg`
+| Scenario | Retained experiment | Interpretation |
+|---|---|---|
+| S0 | Baseline and three versions at 20 arrivals/month | Conditional normal-operation comparison; source of the generated KPI table |
+| S1 | Demand sweep 15–240/month | Overloaded/censored cases have no reported stationary mean lead; show backlog instead |
+| S2 | Gate waits x2.5 | Client-response sensitivity, not a mathematical worst case; a censored baseline is reported unavailable |
+| S3 | p=.75 per active gate | Mean four geometric rounds, with unbounded possible rounds; not exactly four rounds or a finite worst case |
+| S4 | One producer unavailable for half a model month | Existing task finishes without preemption; the same producer resumes and queued work is dispatched immediately; recovery cohort is distinct from stationary operation |
+| S5 | Higher proposed v3 correction rates and deeper edits | Conditional quality/workload sensitivity; not proof that legal quality is protected |
+| Rework x demand | Existing baseline process, 3 rework intensities x 5 demands x 3 seeds | Joint effects on workload, capacity, offered/busy utilization, throughput, WIP, backlog growth and lead |
 
-Baseline explodes past 20/mo (93 d at 25, 271 at 30, unstable by 60); v1 unstable by 60; v2 degrades at 40 (28.8 d); **v3 flat at 1.6–2.2 d from 15 to 200/mo** — bends only at 240. WIP at 40/mo: baseline spirals, v3 stays ≤ 4 videos. *"Demand stops being a capacity problem."*
+## Main findings that survive review
 
-Honest note: v2 saturates at ~38/mo — *before* its 40.4 work-content ceiling, exactly as queueing theory predicts (practical < work-content; the same 80–85% rule the Section-4 models show).
+Baseline E[work]=599.17 min and rework incidence=88% under p=(.75,.20,.40). Removing loops gives 516 min; heavy rework gives 686.33 min. At the same 14,150.4-minute monthly budget, capacities are 27.42, 23.62 and 20.62/month respectively. Heavy rework at 22/month is over capacity. The finite completed-only lead seen in an overloaded run is not a stationary mean and has been withdrawn from decision tables.
 
-## S2 — Slow lawyers (all gate waits ×2.5) — `slow-lawyers.svg`
+At 20/month, the corrected comparison gives approximately 23.1, 7.1, 3.9 and 1.6 calendar days from baseline to v3. These are simulations of proposed configurations. Iteration 3 retains work and renderer waits; client approval is not 100% of its lead time. The engine currently treats objections as immediate rework before delivery, so a real 24-hour post-delivery objection window is not validated.
 
-| version | normal | slow |
-|---|---:|---:|
-| baseline | 23.4 d | 49.8 d |
-| v1 | 7.2 | 13.4 |
-| v2 | 4.0 | 7.3 |
-| v3 | 1.6 | **3.0** (P90 4.0) |
+Practical-capacity figures based on <=28 calendar days are grid-dependent scenario thresholds. They must not be sold as a 1–2-day SLA: at 230/month v3 lead is about 10 days. A mean 1.6-day result does not guarantee every customer delivery within 48 hours.
 
-**v3's worst case beats baseline's best case** (14 d) by 4×. *"The residual process time belongs to the client."*
+## Evidence still required
 
-## S3 — Rework stress (loop p = 0.75 at every gate — proposal worst case) — `rework-stress.svg`
-
-Baseline **295 d** (P90 404) — the process does not function. v1 18.3 d · v2 10.4 d · **v3 4.5 d** (P90 8.8). Worst-case robustness is designed in: cheap loops (scene-level regeneration) survive even 4 iterations per gate.
-
-## S4 — Producer absence (1 of 2 away, 2 weeks)
-
-| version | cohort lead after absence | peak WIP |
-|---|---:|---:|
-| baseline | 31.6 d | 30 |
-| v1 | 7.6 d | 10 |
-| v2 | 4.3 d | 6 |
-| v3 | **1.6 d** | **4** |
-
-Capacity headroom as insurance: the absence is invisible in v3 (team load ~4 h/mo at this demand).
-
-## S5 — Quality dip (v3's model regresses to v2-level loops + deeper edits)
-
-| config | lead | work | rework | ¥/video |
-|---|---:|---:|---:|---:|
-| v3 normal | 1.6 d | 61 min | 8% | ¥182 |
-| **v3 dipped** | **1.8 d** | **85 min** | **28%** | **¥216** |
-| v2 normal | 4.0 d | 349 min | 30% | ¥595 |
-
-Graceful degradation: even a regressed v3 beats v3-normal's predecessor on every axis. No iteration depends on perfection — capacity is structural, labour is QC-bound.
-
-## Expectation check
-
-Every pre-registered ordering held (v3 < v2 < v1 < baseline throughout). The two honest findings — v2's practical saturation below its work-content ceiling, and v3 bending at 240/mo — are shown, not hidden: a stress test that only confirms is theater.
-
-## Assumptions (the honesty box)
-
-Producers = 2 [C]; waits uniform over stated ranges [E]; loop rates from kpi-data targets [T] (S3 overrides to the proposal's worst case [C]); calendar days include weekends; seasonality not modeled. Calibrated so S0 reproduces company-reported baseline (23.4 d inside 14–28 [C]; capacity ≈ reported 15–20 [C]).
-
-Bridge to Section 8: *"The process now has headroom. What is that headroom worth to HiLegal?"*
+Arrival timestamps, per-gate outcomes, task-time distributions, daily video dedication, producer assignments, approved final-delivery boundary and renderer concurrency. Calibration to the reported baseline and matching target-informed inputs are not independent operational validation. The direction of the proposed improvement remains plausible; its size and service commitments require the Section-9 pilot.

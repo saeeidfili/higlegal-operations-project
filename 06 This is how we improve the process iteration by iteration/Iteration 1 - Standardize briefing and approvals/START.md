@@ -13,7 +13,7 @@
 | 3–7 days pass before work even starts | Intake queue [C] | Free-form requests must be clarified by email before briefing |
 | Brief approval loop runs ≥4 iterations [C] | Company-reported | No format previews; lawyer can't see what they'll get; feedback is free-text |
 | ~90% of videos need rework [E] | Derived | Unstructured approvals: no SLA, no scene-level change requests, manual chasing |
-| 21-day lead time driven ~94% by waiting | Little's Law analysis | Three looping gates + intake queue |
+| 21-day illustrative lead time dominated by waits | Little's Law analysis | Three looping gates + intake queue |
 
 ## 2. Change introduced
 

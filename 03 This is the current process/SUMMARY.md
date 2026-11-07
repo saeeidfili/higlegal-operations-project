@@ -20,11 +20,11 @@ flowchart LR
     AG --> AVS["11. AV SYNC<br/>manual · 2–3 h"]
     AVS --> FA{"12a. FINAL APPROVAL"}
     FA -->|"changes"| FS
-    FA -->|"approved"| PB["12b. PUBLISHING<br/>+ platform adaptation ~2 h"]
-    PB --> DONE(("Video live"))
+    FA -->|"approved"| PB["12b. DELIVERY<br/>+ platform adaptation ~2 h"]
+    PB --> DONE(("Video delivered"))
 ```
 
-Request → **intake queue (3–7 d wait)** → clarification (×2–4 rounds) → content brief → script drafting → AI refinement → **script approval (loops to drafting)** → video generation → audio generation → **AV sync (2–3 h manual)** → **final approval (loops to script)** → publishing + platform adaptation (~2 h).
+Request → **intake queue (3–7 d wait)** → clarification (×2–4 rounds) → content brief → script drafting → AI refinement → **script approval (loops to drafting)** → video generation → audio generation → **AV sync (2–3 h manual)** → **final approval (loops to script)** → platform adaptation + delivery (~2 h).
 
 Three rejection loops drive rework.
 
@@ -39,56 +39,31 @@ Three rejection loops drive rework.
 | 9–10 | Video + audio generation | 95 min | 1 d | Work |
 | 11 | AV sync | **2–3 h** | 1–2 d | Work (bottleneck) |
 | 12a | Final approval | 10 min | **1–3 d** | **Wait** |
-| 12b | Publishing + adaptation | ~2 h | 1 d | Work |
+| 12b | Adaptation + delivery | ~2 h | 1 d | Work |
 | | **Total** | **~10 h** | **14–28 d** | |
 
 ## Punchline
 
-~10 h of work spread over 2–4 weeks. Work ≈ 6% of lead time; **~94% is waiting. Process Cycle Efficiency ≈ 5–8%** — single most quotable baseline.
+~10 h of work spread over 2–4 weeks. Work ≈ 6% of lead time; **Most elapsed time is waiting. A value-added Process Cycle Efficiency cannot be calculated from total labour alone** — single most quotable baseline.
 
-## Calibrating μ
+## Queue-model calibration and boundary
 
-```
-Model:   Wq(λ, μ) = ρ/(1−ρ) · τ = λ/(μ−λ) · 22/μ  [wd]   ×1.4 → calendar d
-Data:    observed intake wait 3–7 d [C], demand λ = 15–20/month [C]
+The M/M/1 is an aggregate serial intake surrogate [E], not a literal description of two producers. A pooled inbox or non-preemption does not turn two workers into one server. The whole-process simulation instead has two FIFO task servers and releases them during client waits; its task durations are deterministic. The models are deliberately different simplifications and their waiting times must not be added as if they were independent components. Neither is independently validated against measured order histories.
 
-Anchor 1 — pin heavy month (λ=20, ~7 d):
-         20/(μ−20) · 22/μ · 1.4 = 7  →  μ² − 20μ − 88 = 0  →  μ = 23.7
-Anchor 2 — pin light month (λ=15, ~3 d):
-         15/(μ−15) · 22/μ · 1.4 = 3  →  μ² − 15μ − 154 = 0  →  μ = 22.0
-Bracket: 22.0 ≤ μ ≤ 23.7
-
-Optimize (least squares on both anchors, inside bracket):
-         min (Wq(15)−3)² + (Wq(20)−7)²  →  μ = 23.66 ≈ 23.5 ✓
-
-Verify (μ = 23.5):
-         λ=15:   ρ=0.64, Wq = 2.3 d  ~3 d  ✓
-         λ=17.5: ρ=0.74, Wq = 3.8 d  3–7 d ✓
-         λ=20:   ρ=0.85, Wq = 7.5 d  ~7 d  ✓
-         → reproduces the whole band incl. workload-dependence
-         Note: heavy end pins μ — Wq grows exponentially in ρ.
-
-Cross-checks:
-         labour:   23.5 × 10 h = 235 h = 67% of 352 h ✓ (~65% per kpi-data.md, single source of truth)
-                   (352 h = 2 producers × 22 wd × 8 h, same input as Section 2's table)
-```
-
-(Script: `calibrate_mu.py` in this folder.)
-
-## Queue (M/M/1)
-
-- Team = one processing unit (video held start-to-finish, pickup only at completion) → M/M/1
-- λ = 15–20/month [C], μ = 23.5 → ρ = λ/μ = **0.64–0.85** — steep part of the curve; "workload-dependent" wait [C] is the signature
-- Wq = ρ/(1−ρ) · τ, τ = 22 wd ÷ 23.5 = 0.94 wd → **2.3 / 3.8 / 7.5 d** at λ = 15 / 17.5 / 20 — reproduces reported 3–7 d [C]
-- Parked requests: Lq = λ·Wq → **2.2–4.9 in inbox** — checkable prediction
-- Nonlinearity: demand ×1.33 (15→20) but wait ×3.2 — congestion multiplier ρ/(1−ρ): 1.8 → 2.9 → 5.7 as ρ 0.64 → 0.74 → 0.85. Working harder fails; only process change moves μ
-- Tail: P90 ≈ 10 days — 1 in 10 lawyers waits 2 weeks just to be looked at
-- Lead time = WIP × cycle time (Little's Law): waiting, not work, drives lead time
+At retained mu=23.5/month the consistent 30.4/22 conversion gives intake waits of approximately 2.28, 3.77 and 7.39 calendar days at assumed arrivals 15, 17.5 and 20/month. The reported 3–7-day and 15–20-output ranges do not establish paired endpoints. This is approximate calibration, not a fit to every endpoint. Implied dedication 23.5 x 10 / 352 = 66.76% is not an independent 65% estimate. The KPI scenario uses 60% of 160 h; it is a separate budget.
 
 ## Rework (full-process simulation)
 
 - Baseline ~90% of videos loop [E]; simulated 87%
 - Rework cost is mostly queue, not work: **+84 min hands-on vs +10.8 days lead time** (~29×)
 - At 17.5 videos/month, WIP: **6.2 → 12.7 → 17.2** (no rework → baseline → heavy)
-- Capacity ceiling drops: **27.4 → 23.6 → 20.6 videos/month**; at 22/month with heavy rework the process is past capacity (WIP ~86, ~117 days)
+- Capacity ceiling drops: **27.4 → 23.6 → 20.6 videos/month**; at 22/month with heavy rework the process is past capacity (overload: report backlog growth, not a stationary lead mean)
 - Calibration: baseline 21.8 d lead (vs 14–28 d [C]), 600 min work (vs ~10 h [C]), capacity ~23.6/month (vs demand 15–20 [C])
+
+## Review correction 7 November 2026
+
+The M/M/1 is an aggregate serial intake surrogate [E], not a literal description of two producers. A pooled inbox or non-preemption does not turn two workers into one server. The whole-process simulation instead has two FIFO task servers and releases them during client waits; its task durations are deterministic. The models are deliberately different simplifications and their waiting times must not be added as if they were independent components. Neither is independently validated against measured order histories.
+
+At retained mu=23.5/month the consistent 30.4/22 conversion gives intake waits of approximately 2.28, 3.77 and 7.39 calendar days at assumed arrivals 15, 17.5 and 20/month. The reported 3–7-day and 15–20-output ranges do not establish paired endpoints. This is approximate calibration, not a fit to every endpoint. Implied dedication 23.5 x 10 / 352 = 66.76% is not an independent 65% estimate. The KPI scenario uses 60% of 160 h; it is a separate budget.
+
+Current whole-process comparison and exact run settings are in `single source of truth/model-results.json` (repository root). Earlier single-seed traces are illustrations, not measured customer histories. Work of 10 h over 2–4 calendar weeks is 1.5–3.0% of wall-clock hours, or about 6–13% of an assumed 8-hour working-day clock. Neither ratio is value-added PCE.

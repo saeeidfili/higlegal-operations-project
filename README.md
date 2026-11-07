@@ -1,14 +1,14 @@
 # HiLegal Operations Management Project — Working Structure
 
 **Team:** Augustin · Dedi · Joel · Saeed — October 2026
-**Proposal:** `Proposal/OM-Project-Proposal-HiLegal.docx` (submitted; its numbers are canon)
-**Client:** HiLegal — cross-border legal-tech platform operated by FaDaDa (Shenzhen)
+**Proposal:** `Proposal/OM-Project-Proposal-HiLegal.docx` (submitted; preserved as the original scope and commitment reference)
+**Client:** HiLegal — cross-border legal-tech platform operated by Fadada (Shenzhen)
 
 ---
 
 ## The story in one paragraph (keep every section consistent with this)
 
-HiLegal is a software company. Lawyers pay a subscription — the most popular tier is ≈ $100/month and promises ten videos a month [C] — and promotional videos are produced for them as a service bundled with that subscription. The service is a stated differentiator — no major competitor offers AI-video promotion for lawyers in the cross-border space — but today every video takes **twelve manual steps, ~10 hours of labour, and 2–4 weeks** to deliver. Because the subscription price is fixed, every inefficient hour is money HiLegal loses: the service bleeds margin, it cannot scale past ~15–20 videos/month with two producers, and engineering attention is diverted from HiLegal's real asset — its fine-tuned legal language model. Our proposal: **standardize and then automate the production pipeline in three chained iterations**, so videos cost almost nothing to produce, the production payroll (~1.5 FTE ≈ ¥270k/year) is released to fund the core product — the fine-tuned legal LLM — and the video service flips from a cost centre into a scalable, profitable differentiator.
+HiLegal operates a paid lawyer-promotion video service bundled with subscriptions. Company-reported baselines are about 10 labour hours, 2–4 weeks lead time and 15–20 completed videos/month, with a separately stated 35–40 ceiling. The team proposes standardization, template-driven scripting and integrated rendering. The proposed chain is preserved; its quantified benefits remain conditional models and targets. Freed producer hours, allocated unit-cost reductions and actual payroll cash must be accounted for separately. See `RECONCILIATION.md` before carrying any numbers into the presentation.
 
 **The chain logic (each iteration attacks the constraint the previous one exposed):**
 
@@ -79,7 +79,7 @@ Each folder contains a `START.md` with suggestions, ready-to-use tables, and (wh
 | Lead time per video (calendar) | 14–28 d [C] | 7–12 d [T] | 3–5 d [T] | 1–2 d [T] |
 | Human processing time per video | 10 h 00 [C] | 7 h 15 [T] | 5 h 50 [T] | ~1 h [T] |
 | Cost per video | ¥940 [E] | ¥705 [T] | ¥595 [T] | ¥180 [T] |
-| Throughput capacity, same 2 producers | ~19/mo [E] | ~26/mo [T] | ~33/mo [T] | ~190/mo [T] |
+| Work-content ceiling, KPI budget (not throughput) | ~19/mo [E] | ~26/mo [T] | ~33/mo [T] | ~190/mo [T] |
 | (Company-reported actual output) | 15–20/mo, ceiling 35–40 [C] | — | — | — |
 | Rework rate (≥1 rework loop) | ~90% [E] | ~55% [T] | ~30% [T] | ~10% [T] |
 | Quality Acceptance Rate (zero loops, first pass) | ~10% [E] | ~45% [T] | ~70% [T] | ~90% [T] |
@@ -94,3 +94,7 @@ Each folder contains a `START.md` with suggestions, ready-to-use tables, and (wh
 ## Presentation
 
 The HTML presentation is maintained separately on the [presentation branch](https://github.com/saeeidfili/higlegal-operations-project/tree/presentation).
+
+## Source hierarchy and review
+
+Start with Saeed's latest relevant SUMMARY.md, critically verify against company-facts.md and assumptions.md, then inspect actual scripts/results, detailed START.md material and the submitted proposal. Company-reported values are not overwritten to force model agreement. `RECONCILIATION.md` records corrections, open questions and presentation implications. `python verify_analysis.py` checks identities and regenerates the exact 3-seed normal snapshot; the existing section scripts reproduce their own scenarios. Models require matplotlib and numpy. No presentation changes are authorized by this analytical reconciliation.

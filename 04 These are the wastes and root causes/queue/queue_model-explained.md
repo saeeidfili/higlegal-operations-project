@@ -13,10 +13,10 @@ uv run queue_model.py                 # auto-installs matplotlib
 ../../.venv/bin/python queue_model.py    # from this folder
 ```
 
-Output: four console parts and **three SVG charts** (transparent
+Output: four console parts and **two SVG charts** (transparent
 backgrounds, ready to drop onto slides) written next to the script —
 `queue-cliff.svg` (utilization cliff + demand sweep, merged into one),
-`order-timeline.svg`, `why-one-server.svg`.
+`order-timeline.svg`.
 Change any value in the `Parameters` block at the top of the script and every
 table and chart updates consistently.
 
@@ -24,19 +24,13 @@ table and chart updates consistently.
 
 ## The model in one paragraph
 
-Lawyers' video requests wait **3–7 days in the intake inbox** [C] before anyone
-looks at them. The two producers act as **one pooled pickup function**: a video
-is held start-to-finish (no preemption), so the inbox gets answered only when a
-producer *finishes* one. That is an **M/M/1 queue**: ρ = λ/μ utilization,
-τ = 1/μ one "turn" of work, **Wq = ρ/(1−ρ) · τ** the expected wait, and
-Lq = λ·Wq the parked requests (Little's Law). All rates are per month; times in
-working days (1 month = 22 wd, 1 wd ≈ 1.4 calendar days).
+Reported intake waiting is 3–7 calendar days [C]. We use an aggregate M/M/1 serial intake surrogate [E]: rho=lambda/mu, Wq=rho/(1-rho) x 1/mu, Lq=lambda x Wq, with consistent units. This is an analytical simplification, not a consequence of non-preemption or a shared inbox. Two producers remain two servers in the separate whole-process task simulation. Those two models cannot have their waits simply added together. The intake fit is approximate: mu=23.5 predicts about 2.28/3.77/7.39 calendar days at assumed arrivals 15/17.5/20. Reported output and waiting ranges do not establish those exact paired endpoints. One model month is 22 working days = 30.4 calendar days.
 
 ## Inputs (`Parameters` block — the single source of truth)
 
 | Symbol | Meaning | Value | Status |
 |---|---|---|---|
-| λ | demand | 15 / 17.5 / 20 per month | [C] company-reported |
+| λ | assumed arrival rates | 15 / 17.5 / 20 per month | [E], inferred from reported output range |
 | wait | observed intake wait | 3–7 calendar days | [C] company-reported |
 | labour | active work per video | ~10 h, two producers | [C] |
 | hours | producer-hours available | 2 × 176 = 352 h/month | derived |
@@ -165,7 +159,7 @@ simulation matches the formulas at **0.7 % (λ = 17.5)** and **1.2 % (λ = 20)**
 
 | File | What it shows | When to show it |
 |---|---|---|
-| `queue-cliff.svg` | **One curve, two x-axes**: expected wait vs. utilization ρ (bottom axis) and vs. monthly demand λ (top axis, constant team) — the utilization cliff and the demand sweep are the same curve, since ρ = λ/μ. Gold 3–7 d observed band, three demand dots (15 / 17.5 / 20), the ρ = 1 wall at λ = μ ≈ 23.5 with the calculated ceiling 35.2 [C], and the unstable region (ρ > 1) where backlog grows forever — including the λ = 24 marketing push | THE chart — the "you cannot stand slightly left of a cliff" slide; also carries the scale/ceiling discussion ("near μ, demand becomes queue") |
+| `queue-cliff.svg` | **One curve, two x-axes**: expected wait vs. utilization ρ (bottom axis) and vs. monthly demand λ (top axis, constant team) — the utilization cliff and the demand sweep are the same curve, since ρ = λ/μ. Gold 3–7 d observed band, three demand dots (15 / 17.5 / 20), the ρ = 1 wall at λ = μ ≈ 23.5 with the 100%-dedication illustration 35.2 [D], distinct from the current 23.5 effective limit, and the unstable region (ρ > 1) where backlog grows forever — including the λ = 24 marketing push | THE chart — the "you cannot stand slightly left of a cliff" slide; also carries the scale/ceiling discussion ("near μ, demand becomes queue") |
 | `order-timeline.svg` | Lawyer Chen's order through the 12 steps: green work, red waiting; intake queue is the first big red block; 18.8 d end-to-end, work ≈ 6 % | the one-order walkthrough — makes "queue-gated, not work-gated" visible |
 | `why-one-server.svg` | split panel: textbook M/M/c (instant dispatch, minutes-long jobs) vs HiLegal's order rail (pickup only at completion boundaries); bottom band ties the choice to the calibration fit (2.3 / 3.8 / 7.5 d across the demand range) | the "why M/M/1" moment — the only chart about the *model choice* |
 
@@ -182,7 +176,7 @@ place them on light backgrounds.
 2. Poisson arrivals are an assumption — defensible: independent lawyers, no
    coordination; bursts only make waits worse, strengthening the conclusion.
 3. M/M/1 is a simplification (two humans, one modeled server) — chosen because
-   the pickup process behaves as one pooled unit (see `why-one-server.svg`).
+- The single-server intake model is an aggregate surrogate [E]; shared queuing and non-preemption do not prove that two producers are one server.
 4. Steady state assumed — a normal month, not a launch transient.
 5. Falsifiable: if the inbox never holds more than ~1 request while waits
    still run 3–7 days, the delay is batch-review cadence, not queueing — a
@@ -194,3 +188,11 @@ place them on light backgrounds.
 
 > "At ρ ≈ 0.74–0.85, the 3–7 day intake wait is not a people problem — it is
 > the mathematics of standing on the steep part of the utilization cliff."
+
+## Review correction 7 November 2026
+
+The M/M/1 is an aggregate serial intake surrogate [E], not a literal description of two producers. A pooled inbox or non-preemption does not turn two workers into one server. The whole-process simulation instead has two FIFO task servers and releases them during client waits; its task durations are deterministic. The models are deliberately different simplifications and their waiting times must not be added as if they were independent components. Neither is independently validated against measured order histories.
+
+At retained mu=23.5/month the consistent 30.4/22 conversion gives intake waits of approximately 2.28, 3.77 and 7.39 calendar days at assumed arrivals 15, 17.5 and 20/month. The reported 3–7-day and 15–20-output ranges do not establish paired endpoints. This is approximate calibration, not a fit to every endpoint. Implied dedication 23.5 x 10 / 352 = 66.76% is not an independent 65% estimate. The KPI scenario uses 60% of 160 h; it is a separate budget.
+
+Current whole-process comparison and exact run settings are in `single source of truth/model-results.json` (repository root). Earlier single-seed traces are illustrations, not measured customer histories. Work of 10 h over 2–4 calendar weeks is 1.5–3.0% of wall-clock hours, or about 6–13% of an assumed 8-hour working-day clock. Neither ratio is value-added PCE.

@@ -8,8 +8,8 @@ Run:   python3 calibrate_mu.py
 """
 
 WD_PER_MONTH = 22
-CAL = 1.4  # calendar days per working day
-OBSERVED = {15.0: 3.0, 20.0: 7.0}  # lambda -> observed Wq [C]
+CAL = 30.4 / 22  # calendar days per working day
+OBSERVED = {15.0: 3.0, 20.0: 7.0}  # assumed endpoint pairing [E], based on separate reported ranges [C]
 
 
 def wq_days(lam: float, mu: float) -> float:
@@ -45,7 +45,7 @@ def test(name: str, mu: float) -> None:
     observed = {15.0: "~3 d", 17.5: "3-7 d", 20.0: "~7 d"}
     for lam, obs in observed.items():
         w = wq_days(lam, mu)
-        inside = 2.3 <= w <= 7.5
+        inside = 3 <= w <= 7
         print(f"  lambda={lam:<5} rho={lam/mu:.2f}  Wq={w:4.1f} d   observed {obs}  {'OK' if inside else 'OUT'}")
 
 

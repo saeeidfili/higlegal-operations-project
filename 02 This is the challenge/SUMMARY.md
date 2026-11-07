@@ -21,7 +21,7 @@
 | Model/tool credits | ¥90 | 9.6% |
 | **Total** | **≈ ¥940** | |
 
-Assumed ¥117/video (credits + 30% overhead) — off 8×. Every video −¥823.
+Internal attribution ¥117/video (credits + 30% overhead), compared with an estimated ¥940 allocated cost. The model cost exceeds the internal ¥117 attribution by ¥823; this is not measured cash loss per video.
 
 ## Scale
 
@@ -31,11 +31,13 @@ Assumed ¥117/video (credits + 30% overhead) — off 8×. Every video −¥823.
 | 2 videos (typical per person/month) | ¥1,880 | ¥720 | −¥1,160 |
 | 10 videos (full entitlement) | ¥9,400 | ¥720 | **−¥8,680** |
 
-Break-even: 0.77 videos/month. Team output 15–20/mo → ~2 fully-served customers max. Incentive inverted.
+Break-even: 0.77 videos/month. Team output 15–20/mo → 1.5–2 full ten-video entitlements; actual subscriber count is not identified. Incentive inverted.
 
 ## Rest
 
-- **Drain:** ¥150–195k/yr burn + engineering time; starves the legal LLM moat.
-- **Why not automated (observation):** belief automation kills quality — valid at launch, expired since. Only ~3 of 10 h creative; rest mechanical.
+- **Allocated-cost gap:** ¥150–195k/year against the internal ¥117 benchmark [E], not measured company cash burn. Engineering attention is a separate opportunity-cost question.
+- **Why not automated (observation):** belief automation kills quality — a hypothesis to re-test with current tools and explicit quality guardrails. Only ~3 of 10 h creative; rest mechanical.
 - **Lawyer side:** 2–4 wk delivery stalls campaigns, eats billable hours → renewal risk on whole subscription.
 - **Thesis:** automate and optimize the process — AI-aided QC for speed — to produce more videos at the same quality (or better), for less money.
+
+Financial interpretation: subscription-minus-video-cost tables allocate the full subscription price to video. Other bundled service, support and acquisition costs are excluded; actual customer profitability and actual cash burn are not established. Typical use of two videos/month is an estimate. Freed staff time is already reflected in the allocated unit-cost reduction and cannot be added again as cash savings.

@@ -9,14 +9,14 @@ Flow from Section 8: the headroom is worth having — here is how to get it and 
 | **0 — Baseline instrumentation** | 1–2 | Time-log 10 legacy videos; replace [E] baselines; freeze dashboard spec | Observed baselines published; targets re-confirmed |
 | **1 — Standardize front end** | 3–6 | **Iter 1** — forms, previews, SLA approvals, state machine; no new AI | Lead ≤ 12 d · 0 clarification loops ≥8/10 · rework ≤ 60% · QAR ≥ 35% · no quality drop |
 | **2a — Script Engine** | 7–10 | **Iter 2** — fine-tuned LLM + templates, edit-QC | Lead ≤ 5 d · edit depth ≤ 20% · rework ≤ 35% · **0 compliance incidents** |
-| **2b — Render pipeline** | 11–14 | **Iter 3** — single render, variants, consent registry, delivery + objection window | Lead ≤ 2 d · render success ≥ 90% · consent 100% · QAR ≥ 85% |
+| **2b — Render pipeline** | 11–14 | **Iter 3** — single render, variants, consent registry, delivery + objection window | Lead ≤ 2 business days · render success ≥ 90% · consent 100% · QAR ≥ 85% |
 | **3 — Sustain & improve** | 15+ | PDCA at run-rate | 4 consecutive weeks at target → steady state |
 
 The proposal's Phase 2 is split 2a/2b because scripting and render automation fail differently — separate go/no-go decisions.
 
 ## Ownership (small company — hats, not departments)
 
-Production lead owns process + dashboard; marketing owns form/template content; **one engineer at ~30% capacity weeks 7–14 only** (the person who would otherwise be fine-tuning the LLM — then hands off); legal/compliance owns consent wording (FaDaDa resources); COO/founder holds go/no-go.
+Production lead owns process + dashboard; marketing owns form/template content; **one engineer at ~30% capacity weeks 7–14 only** (the person who would otherwise be fine-tuning the LLM — then hands off); legal/compliance owns consent wording (Fadada resources); COO/founder holds go/no-go.
 
 **Our exit condition:** HiLegal runs the weekly PDCA review without us for 3 consecutive weeks with all gate metrics holding — self-sufficiency as a test, not a hope.
 
@@ -30,7 +30,7 @@ Production lead owns process + dashboard; marketing owns form/template content; 
 | Training | 2 × ½ day per phase |
 | **Total one-time** | **≈ ¥105–180k** |
 
-Payback at ¥760/video saving ≈ 140–240 videos ≈ **5–8 months** at 20–35 videos/month.
+Payback at ¥760/video saving ≈ 140–240 videos ≈ **4–12 months if the allocated saving is realizable** at 20–35 videos/month.
 
 ## Pilot validation (the evidence engine)
 
@@ -40,7 +40,7 @@ Every phase ships to **10 pilot videos** vs concurrent legacy cohort; legacy pat
 
 - **Weekly (30 min):** lead median + P90, SLA compliance, rework by reason code, render success, edit depth → reason-code Pareto drives next week's fix
 - **Monthly:** all six KPIs + cost/render price drift
-- **Quarterly:** volume vs headroom, training-example flow to the LLM backlog, **payroll-savings audit** (is the ≈ ¥270k actually funding the core?)
+- **Quarterly:** volume vs headroom, training-example flow to the LLM backlog, **staff-time and cash audit** (redeployment and actual cash tracked separately)
 - **Alerts:** P90 > 5 d · SLA < 85% · render < 90% · QAR < 80% · consent < 100% (stop-the-line)
 
 ## Why it survives after we leave
@@ -52,3 +52,9 @@ Every phase ships to **10 pilot videos** vs concurrent legacy cohort; legacy pat
 5. **Self-sufficiency is scheduled** — weeks 15+ have no external dependency
 
 Closing line: *"You don't need a bigger video team. You need your video team back."*
+
+## Payback and pilot corrections
+
+At ¥760/video of allocated cost reduction, ¥105–180k corresponds to 138–237 videos. At 20–35 videos/month the extreme combinations give 3.95–11.84 months (about 4–12), not a universal 5–8 months. At the reported 15–20 output/month, the corresponding range is about 6.9–15.8 months. This is economic cost-allocation payback only: it becomes cash payback only if salary/overtime/contractor or avoided-hire costs actually change. With unchanged salaries, the tooling assumption rises from ¥90 to ¥95/video; payroll cash saving is not demonstrated. Confirm whether implementation estimates already include staff time and avoid double-counting it.
+
+The phased 14+ week plan extends the submitted proposal's weeks 1–10; it is a documented planning refinement requiring client agreement. Ten videos are a screening pilot, not a reliable P90/rare-event or long-run capacity validation. Report exact denominators and uncertainty. Collect arrival/completion timestamps, active work, gate events and task ownership; separate calendar-time targets from business-day commitments. The proposal's strict under-one-hour target remains unproven by a model expecting 61.45 minutes; a 65-minute gate cannot certify it. Final approval versus a proposed objection window requires explicit HiLegal agreement before implementation.

@@ -24,7 +24,7 @@ Primaries say *whether* an iteration worked; auxiliaries say *why*.
 
 ## Measurement plan — simulate, then pilot
 
-1. **Simulate first:** each iteration's targets validated in the process simulation (Section 7) before implementation — models carry baseline and to-be scenarios.
+1. **Simulate first:** each iteration's targets explored in the process simulation (Section 7) before implementation — models carry baseline and to-be scenarios.
 2. **Pilot in the company:** contained pilot per iteration (Section 9); order state machine timestamps every transition → all KPIs auto-computed per order from Iter 1 on (PDCA).
 3. **Gate rule:** pass = primary KPIs hit target AND no auxiliary regresses.
 

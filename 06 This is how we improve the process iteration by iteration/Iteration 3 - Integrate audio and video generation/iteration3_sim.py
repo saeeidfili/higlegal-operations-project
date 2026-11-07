@@ -39,12 +39,16 @@ import heapq
 import random
 import statistics
 from collections import deque
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from simulation_metrics import measure
 
 # ----------------------------------------------------------------------
 # Shared constants — identical across the simulation lineage.
 # ----------------------------------------------------------------------
 WD_MONTH = 22.0
-CAL = 30.4 / 21.7
+CAL = 30.4 / 22.0
 DEDICATION = 0.67
 MIN_PER_DAY = 480 * DEDICATION
 BUDGET_MIN = 2 * WD_MONTH * MIN_PER_DAY   # ≈ 14,150 min/month (67% budget)
@@ -159,6 +163,7 @@ class Sim:
         self.lam_wd = lam_per_month / WD_MONTH
         self.intake = deque()
         self.work_queue = deque()
+        self.videos = []
         self.finished = []
         self.series = []
         self.next_vid = 0
@@ -199,7 +204,7 @@ class Owner:
 
 def dispatch(sim):
     while sim.work_queue:
-        owner = next((o for o in sim.owners if not o.busy), None)
+        owner = next((o for o in sim.owners if not o.busy and getattr(o, "available", True)), None)
         if owner is None:
             return
         minutes, video, label, cb = sim.work_queue.popleft()
@@ -316,6 +321,7 @@ def run_scenario(name, cfg, lam=LAMBDA, months=MONTHS, seed=7,
     def arrival():
         v = Video(sim.next_vid, sim.t)
         sim.next_vid += 1
+        sim.videos.append(v)
         sim.intake.append(v)
         drive(sim, v, video_steps(sim, v, cfg))
         sim.schedule(sim.rng.expovariate(sim.lam_wd), arrival)
@@ -340,12 +346,13 @@ def run_scenario(name, cfg, lam=LAMBDA, months=MONTHS, seed=7,
     util = sum(o.busy_days for o in sim.owners) / (2 * months * WD_MONTH)
     series = [(t, wip) for (t, _q, wip) in sim.series if t >= t0]
 
+    metrics = measure(sim, t0, cutoff, months*WD_MONTH, expected_work(cfg), MIN_PER_DAY, lam)
     return dict(
-        name=name, leads=leads, works=works, loops=loops, util=util,
-        mean_wip=statistics.mean([w for _, w in series]) if series else float("nan"),
-        capacity=(BUDGET_MIN / statistics.mean(works) if works else float("nan")),
-        mean_lead=statistics.mean(leads) if leads else float("nan"),
-        p90_lead=(sorted(leads)[int(0.9 * len(leads))] if leads else float("nan")),
+        metrics=metrics, name=name, leads=leads, works=works, loops=loops, util=metrics["busy_util"],
+        mean_wip=metrics["mean_wip"],
+        capacity=metrics["capacity"],
+        mean_lead=statistics.mean(leads) if leads and metrics["stable"] and not metrics["censored"] else float("nan"),
+        p90_lead=(sorted(leads)[int(0.9 * len(leads))] if leads and metrics["stable"] and not metrics["censored"] else float("nan")),
         mean_work=statistics.mean(works) if works else float("nan"),
         rework_share=statistics.mean(loops) if loops else float("nan"),
     )
@@ -357,11 +364,11 @@ def run_scenario(name, cfg, lam=LAMBDA, months=MONTHS, seed=7,
 def part0_sanity() -> None:
     hr("PART 0 · SANITY — engine must reproduce the published numbers")
     checks = [("baseline", run_scenario("baseline", CONFIGS["baseline"]),
-               dict(lead=21.8, work=600)),
+               dict(lead=21.8*21.7/22, work=600)),
               ("iteration 1", run_scenario("iteration 1", CONFIGS["iteration 1"]),
-               dict(lead=6.8, work=438)),
+               dict(lead=6.8*21.7/22, work=438)),
               ("iteration 2", run_scenario("iteration 2", CONFIGS["iteration 2"]),
-               dict(lead=4.0, work=351))]
+               dict(lead=4.0*21.7/22, work=351))]
     for name, r, want in checks:
         ok = "✓" if abs(r["mean_lead"] - want["lead"]) < 0.15 else "✗"
         print(f"  {name:<12} lead {r['mean_lead']:>5.1f} vs {want['lead']:>5.1f}"
@@ -409,9 +416,9 @@ def part2_sweep() -> dict:
     print("""
   practical capacity = highest λ with mean lead ≤ 28 d (top of today's
   reported band [C]). For Iteration 3 the ceiling stops being capacity at
-  all — it becomes demand: at any plausible demand the queue is dead.""")
+  all — it becomes demand: at any plausible demand queueing is low under the tested low-demand assumptions.""")
     for j, name in enumerate(levels):
-        ok = [lam for lam in lambdas if sweep[lam][j][0] <= 28.0]
+        ok = [lam for lam in lambdas if lam < BUDGET_MIN / expected_work(CONFIGS[name]) and sweep[lam][j][0] <= 28.0]
         cap = max(ok) if ok else 0.0
         print(f"  {name:<12} practical capacity ≈ {cap:.0f}/mo "
               f"(work-content ceiling {BUDGET_MIN / expected_work(CONFIGS[name]):.1f}/mo)")
@@ -428,7 +435,7 @@ def part3_sensitivity(results: list) -> None:
         lo, hi = CONFIGS[r["name"]]["gate_wait"]
         print(f"  {label:<26}{f'U({lo}–{hi}) wd':>16}"
               f"{r['mean_lead']:>8.1f}{r['p90_lead']:>8.1f}")
-    print("  → after Iteration 3, lead time ≈ 100% client approval time.\n"
+    print("  → after Iteration 3, client approval is a major lead-time component; machine render and human QC remain.\n"
           "    The constraint has left HiLegal's building.")
 
 

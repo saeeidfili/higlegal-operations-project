@@ -4,7 +4,7 @@ Flow from queue summary: intake queue explained the 3–7 d wait. This covers th
 
 ## Headline
 
-Rework looks like extra work, is mostly extra waiting. No-rework → baseline: **+84 min of work but +10.8 days of lead time** — queue cost ~29× work cost. *"Rework costs ~11 days for under an hour and a half of work."*
+Rework looks like extra work, is mostly extra waiting. No-rework → baseline: **+84 min of work but +10.8 days of lead time** — additional elapsed-time equivalent roughly 29 times the additional effort-clock duration. *"Rework costs ~11 days for under an hour and a half of work."*
 
 ## Setup
 
@@ -36,7 +36,7 @@ First-time-right work (12 tasks, no loops):
 ```
 15 + 8 + 45 + 70 + 35 + 55 + 30 + 140 + 95 + 23 = 516 min
 ```
-(15 intake review · 8 clarification reply · 45 brief · 70 drafting · 35 AI refine · 55 video gen · 30 audio gen · 140 AV sync [C] · 95 adaptation [C] · 23 delivery admin)
+(15 intake review · 8 clarification reply · 45 brief · 70 drafting · 35 AI refine · 55 video gen · 30 audio gen · 140 AV sync [E within reported range] · 95 adaptation [E] · 23 delivery admin)
 
 Loop costs on top:
 ```
@@ -46,9 +46,9 @@ final rework                : 70 × 0.40/(1−0.40)         =  46.7 min
                                                               ─────────
 E[work] = 516 + 24 + 12.5 + 46.7                           = 599 ≈ 600 [C]
 ```
-p_final = 2 × p_script — late-stage rejection is likelier, the client sees the real product only at the final gate. The 600-min anchor pins the pair (solved by `calibrate_loops.py`).
+p_final = 2 × p_script — late-stage rejection is likelier, the client sees the real product only at the final gate. The 600-min anchor constrains a family of pairs; the selected rounded .20/.40 pair depends on additional modelling assumptions (solved by `calibrate_loops.py`).
 
-**Not fitted — kept back to verify, and the math behind each:**
+**Conditional consistency checks, not independent validation:**
 
 **Lead time** (no closed form — that is why it is simulated):
 ```
@@ -82,35 +82,46 @@ P(≥1 loop) = 1 − (1−p_clar)(1−p_script)(1−p_final)
 budget = 2 producers × 22 wd × 321.6 eff. min (480 × 0.67) = 14,150 min/month
 capacity = budget ÷ E[work] = 14150 ÷ 599 = 23.6 videos/month
    vs demand 15–20 [C] ✓
-no rework:  14168 ÷ 516 = 27.4/mo
-heavy:      14168 ÷ 686 = 20.6/mo
+no rework:  14150.4 ÷ 516 = 27.4/mo
+heavy:      14150.4 ÷ 686 = 20.6/mo
 ```
 
 ## Results (λ = 17.5/month)
 
-| scenario | p_clar / p_script / p_final | rework % | lead | P90 | work | capacity |
+| scenario | p_clar / p_script / p_final | rework | lead cal d | P90 cal d | work min | capacity/mo |
 |---|---|---:|---:|---:|---:|---:|
-| no rework | 0 / 0 / 0 | 0% | 11.0 d | 13.1 | 516 min | 27.4/mo |
-| halved | 0.50 / 0.10 / 0.20 | 66% | 15.1 d | 21.8 | 551 | 25.7 |
-| **baseline** | **0.75 / 0.20 / 0.40** | **87%** | **21.8 d** | **34.1** | **600** | **23.6** |
-| heavy | 0.80 / 0.40 / 0.60 | 93% | 31.1 d | 54.8 | 686 | 20.6 |
+| no rework | 0.00 / 0.00 / 0.00 | 0.0% | 10.90 | 12.92 | 516.00 | 27.42 |
+| reduced rework | 0.50 / 0.10 / 0.20 | 66.0% | 14.86 | 21.55 | 550.82 | 25.87 |
+| baseline | 0.75 / 0.20 / 0.40 | 86.9% | 21.55 | 33.68 | 600.16 | 23.62 |
+| heavy rework | 0.80 / 0.40 / 0.60 | 93.0% | 30.71 | 54.06 | 686.44 | 20.62 |
 
 Remove rework: lead −49%, work only −14%. P90 story: half the pain lands on the worst-served 10% of lawyers.
 
-## Rework × demand (WIP · lead)
+## Rework x demand: reconciled common-window output
 
-| λ | no rework | baseline | heavy |
-|---:|---|---|---|
-| 15 | 5.2 · 10.7 d | 10.1 · 21.2 | 14.5 · 29.6 |
-| 17.5 | 6.2 · 11.2 | 12.7 · 22.4 | 17.2 · 30.6 |
-| 20 | 7.6 · 11.8 | 15.3 · 23.4 | 36.4 · 54.6 |
-| 22 | 8.9 · 12.5 | 19.4 · 28.9 | **86.3 · 116.7 ✗** |
+| Rework | Demand/mo | Expected work min | Capacity/mo | Mean WIP | WIP growth/mo | Lead cal d |
+|---|---:|---:|---:|---:|---:|---|
+| no rework | 15 | 516.00 | 27.42 | 5.17 | -0.02 | 10.56 |
+| no rework | 17.5 | 516.00 | 27.42 | 6.16 | -0.02 | 11.03 |
+| no rework | 20 | 516.00 | 27.42 | 7.61 | 0.10 | 11.68 |
+| no rework | 22 | 516.00 | 27.42 | 8.88 | -0.24 | 12.33 |
+| no rework | 25 | 516.00 | 27.42 | 22.56 | 0.43 | 25.83 |
+| baseline | 15 | 599.17 | 23.62 | 10.25 | -0.10 | 20.87 |
+| baseline | 17.5 | 599.17 | 23.62 | 12.65 | 0.25 | 22.05 |
+| baseline | 20 | 599.17 | 23.62 | 15.27 | 0.02 | 23.12 |
+| baseline | 22 | 599.17 | 23.62 | 20.39 | -0.75 | 28.52 |
+| baseline | 25 | 599.17 | 23.62 | 72.09 | 1.71 | overload |
+| heavy | 15 | 686.33 | 20.62 | 14.85 | -0.29 | 29.18 |
+| heavy | 17.5 | 686.33 | 20.62 | 16.84 | 0.24 | 30.20 |
+| heavy | 20 | 686.33 | 20.62 | 35.31 | 0.55 | censored |
+| heavy | 22 | 686.33 | 20.62 | 81.04 | 3.76 | overload |
+| heavy | 25 | 686.33 | 20.62 | 164.50 | 6.39 | overload |
 
-No rework absorbs 22/month easily; heavy rework at 22 is past capacity — unbounded backlog. **The ceiling is a property of the team plus its rework.**
+Overloaded rows have no stationary mean lead. Censored rows omit a full-cohort estimate. See Section 7 rework-demand-results.md for offered/observed utilization, workload, departure throughput and exact run settings.
 
 ## Five mechanisms (why loops cost days, not minutes)
 
-Loops add fresh gate waits and queue turns, not just minutes; variability amplification; WIP inflation (Little's Law); capacity erosion (27.4 → 23.6 → 20.6); utilization rises toward the cliff (65% → 70% → 87%).
+Loops add fresh gate waits and queue turns, not just minutes; variability amplification; WIP inflation (Little's Law); capacity erosion (27.4 → 23.6 → 20.6); offered utilization rises toward the cliff (63.8% → 74.1% → 84.9% at 17.5/month).
 
 ## Charts
 
@@ -122,8 +133,10 @@ G1 → halved (−5–7 d), G2 → better (−2–4 d), G3 → toward no-rework 
 
 ## Model card
 
-Intake wait a lower bound (work-conserving); loop probabilities fixed (congestion→rework feedback not modeled → results conservative); per-task minutes our decomposition [E], only total ~10 h + sync + adaptation [C]; heavy = stress scenario, not forecast.
+Intake wait a lower bound (work-conserving); loop probabilities fixed (congestion-to-rework feedback is not modelled; its sign and size require data); per-task minutes our decomposition [E], only approximate total ~10 h and the sync/adaptation ranges are company-reported; individual minutes are estimates; heavy = stress scenario, not forecast.
 
 ## One-liner
 
 > "Rework adds 84 minutes of work and eleven days of waiting — and it moves the capacity wall from 27 down to 21 videos a month. Kill the loops, not the overtime."
+
+Reconciliation: the results table above uses the common 3-seed Section-7 experiment. Earlier fixed-demand scenario rows are single-seed illustrations; calendar lead figures must be recomputed with CAL=30.4/22 when quoted. A reported four-round example is not a measured geometric probability.

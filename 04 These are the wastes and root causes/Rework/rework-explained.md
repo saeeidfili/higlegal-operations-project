@@ -96,12 +96,12 @@ E[work] = 15 + 8/(1−p_clar) + 45 + 70 + 35
           + 50·p_s/(1−p_s) + 55 + 30 + 140 + 70·p_f/(1−p_f) + 95 + 23
 ```
 
-| Scenario | Formula | Simulated |
-|---|---:|---:|
-| No rework | 516 min | **516** |
-| Halved | 547 min | **551** |
-| Baseline | 599 min | **600** |
-| Heavy | 686 min | **686** |
+| scenario | p_clar / p_script / p_final | rework | lead cal d | P90 cal d | work min | capacity/mo |
+|---|---|---:|---:|---:|---:|---:|
+| no rework | 0.00 / 0.00 / 0.00 | 0.0% | 10.90 | 12.92 | 516.00 | 27.42 |
+| reduced rework | 0.50 / 0.10 / 0.20 | 66.0% | 14.86 | 21.55 | 550.82 | 25.87 |
+| baseline | 0.75 / 0.20 / 0.40 | 86.9% | 21.55 | 33.68 | 600.16 | 23.62 |
+| heavy rework | 0.80 / 0.40 / 0.60 | 93.0% | 30.71 | 54.06 | 686.44 | 20.62 |
 
 The formula and the simulation agree within a few minutes — the model does what it claims.
 
@@ -124,21 +124,21 @@ Collected per video: lead time (`delivered − arrival`), intake wait (`first_wo
 
 ## 9. Scenarios
 
-| Scenario | p_clar | p_script | p_final | Expected rounds | Expected rework incidence |
-|---|---:|---:|---:|---:|---:|
-| No rework | 0 | 0 | 0 | 1 | 0% |
-| Rework halved | 0.50 | 0.10 | 0.20 | 2 | 64% (66% simulated) |
-| Baseline | 0.75 | 0.20 | 0.40 | 4 | 88% (87% simulated) |
-| Heavy | 0.80 | 0.40 | 0.60 | 5 | 95% (93% simulated) |
+| scenario | p_clar / p_script / p_final | rework | lead cal d | P90 cal d | work min | capacity/mo |
+|---|---|---:|---:|---:|---:|---:|
+| no rework | 0.00 / 0.00 / 0.00 | 0.0% | 10.90 | 12.92 | 516.00 | 27.42 |
+| reduced rework | 0.50 / 0.10 / 0.20 | 66.0% | 14.86 | 21.55 | 550.82 | 25.87 |
+| baseline | 0.75 / 0.20 / 0.40 | 86.9% | 21.55 | 33.68 | 600.16 | 23.62 |
+| heavy rework | 0.80 / 0.40 / 0.60 | 93.0% | 30.71 | 54.06 | 686.44 | 20.62 |
 
 ## 10. Results (λ = 17.5 videos/month)
 
-| Scenario | Lead time | P90 | Work | Rework | Capacity | Utilization |
-|---|---:|---:|---:|---:|---:|---:|
-| No rework | 11.0 d | 13.1 | 516 min | 0% | 27.4/mo | 65% |
-| Halved | 15.1 d | 21.8 | 551 min | 66% | 25.7/mo | 67% |
-| Baseline | 21.8 d | 34.1 | 600 min | 87% | 23.6/mo | 70% |
-| Heavy | 31.1 d | 54.8 | 686 min | 93% | 20.6/mo | 87% |
+| scenario | p_clar / p_script / p_final | rework | lead cal d | P90 cal d | work min | capacity/mo |
+|---|---|---:|---:|---:|---:|---:|
+| no rework | 0.00 / 0.00 / 0.00 | 0.0% | 10.90 | 12.92 | 516.00 | 27.42 |
+| reduced rework | 0.50 / 0.10 / 0.20 | 66.0% | 14.86 | 21.55 | 550.82 | 25.87 |
+| baseline | 0.75 / 0.20 / 0.40 | 86.9% | 21.55 | 33.68 | 600.16 | 23.62 |
+| heavy rework | 0.80 / 0.40 / 0.60 | 93.0% | 30.71 | 54.06 | 686.44 | 20.62 |
 
 Capacity = `2 producers × 22 days × 322 min ÷ work per video`. Utilization is measured against the 67%-video budget; 70% there ≈ 47% of paid hours — the same regime as the queueing model (ρ ≈ 0.74–0.85).
 
@@ -191,3 +191,5 @@ python3 rework_simulation.py
 ```
 
 Edit `SCENARIOS` at the top of `main()` to change loop probabilities, `MONTHS`/`WARMUP_MONTHS` for horizon, or pass a different `lam` to `run_scenario` for demand. All randomness is seeded → results are reproducible. The script prints every table shown here and rewrites all four SVGs.
+
+Review correction: all gate probabilities and individual task minutes are assumptions. Current common-window demand/rework output is in Section 7 rework-demand-results.md. Completed-only finite-horizon lead figures for overloaded or censored cohorts are withdrawn from decision use. The intake M/M/1 is a separate aggregate surrogate and is not added to this task simulation.

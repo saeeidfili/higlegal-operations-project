@@ -4,7 +4,7 @@ Rationale: failing at the last gate (final approval, after the video is
 rendered) is more likely than failing the script gate - the client sees the
 actual product only at the end.
 
-Anchors [C]:
+Reported anchors [C], with an estimated geometric interpretation [E]:
   - ~10 h = 600 min total work per video (incl. rework)
   - >= 4 clarification rounds -> p_clar = 0.75 (geometric mean 1/(1-p))
 
@@ -46,13 +46,13 @@ def calibrate(p_clar: float, p_script: float, verbose: bool = True) -> dict:
     incidence = 1 - (1 - p_clar) * (1 - p_script) * (1 - p_final)
 
     if verbose:
-        print(f"p_clar = {p_clar:.2f} -> mean {clar_rounds:.0f} rounds [C], "
+        print(f"p_clar = {p_clar:.2f} -> mean {clar_rounds:.0f} rounds [E representative assumption], "
               f"extra replies {clar_extra:.0f} min")
         print(f"p_script = {p_script:.2f} -> script loops {script_min:.1f} min")
         print(f"budget for final loops = {final_budget:.1f} min "
               f"-> p_final = {p_final:.3f}")
         print(f"E[work]  = {work:.1f} min  (anchor 600 [C])")
-        print(f"incidence = {incidence:.1%}  (company ~90% [E])\n")
+        print(f"incidence = {incidence:.1%}  (our approximate 90% modelling estimate [E])\n")
     return dict(p_clar=p_clar, p_script=p_script, p_final=p_final,
                 work=work, incidence=incidence)
 

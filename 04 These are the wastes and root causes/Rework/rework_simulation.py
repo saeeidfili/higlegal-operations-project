@@ -17,11 +17,10 @@ Question: rework looks like "a bit of extra work" (a redraft, a re-edit).
 What does it actually do to LEAD TIME, WORK-IN-PROCESS and CAPACITY?
 
 One-paragraph answer (baseline vs no rework, same demand 17.5/month):
-rework adds ≈ 72 minutes of hands-on work but ≈ 9.7 days of lead time —
-the queue cost is ~30× the work cost.  WIP rises 6 → 12 → 20 videos and the
-effective capacity ceiling falls 27 → 24 → 21 videos/month (no rework →
-baseline → heavy rework).  Rework does not just slow the queue; it lowers
-the demand level at which the queue explodes.
+baseline loops add 83.17 expected hands-on minutes to the 516-minute first
+pass. Extra elapsed time includes repeated client waits and producer queues.
+Exact regenerated results are in the console tables and Section 7's joint
+report. Overloaded/censored cohorts have no reported stationary mean lead.
 
 Model (discrete-event simulation):
   * Poisson arrivals at demand λ (videos/month, working-day clock).
@@ -58,6 +57,10 @@ import os
 import random
 import statistics
 from collections import deque
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from simulation_metrics import measure
 from pathlib import Path
 
 import matplotlib
@@ -72,14 +75,14 @@ from matplotlib.patches import Patch
 # Parameters — the single source of truth.
 # ----------------------------------------------------------------------
 WD_MONTH = 22.0                       # working days per month
-CAL = 30.4 / 21.7                     # calendar days per working day ≈ 1.40
+CAL = 30.4 / 22.0                     # calendar days per working day ≈ 1.40
 DEDICATION = 0.67                     # share of paid time available for videos
 MIN_PER_DAY = 480 * DEDICATION        # ≈ 322 effective producer-minutes/day
 
 MONTHS = 28                           # horizon of a scenario run
 WARMUP_MONTHS = 10                    # discarded (pipeline starts empty)
 CUTOFF_MONTHS = 3                     # excluded at the end (censoring guard)
-LAMBDA = 17.5                         # demand, videos/month [C]
+LAMBDA = 17.5                         # arrival-rate assumption [E], midpoint of reported output
 
 OUT_DIR = Path(__file__).resolve().parent
 PNG_DIR = os.environ.get("Q_PNG_DIR")  # optional: also write PNG previews
@@ -100,7 +103,7 @@ GATE_WAIT = (1.0, 3.0)                # script/final approval waits, working day
 # Expected clarification rounds = 1/(1−p_clar): 0.75 → 4 rounds [C].
 SCENARIOS = [
     ("no rework",       dict(p_clar=0.00, p_script=0.00, p_final=0.00)),
-    ("rework halved",   dict(p_clar=0.50, p_script=0.10, p_final=0.20)),
+    ("reduced rework",   dict(p_clar=0.50, p_script=0.10, p_final=0.20)),
 
     # p_final = 2 x p_script: late-stage rejection is likelier - the client
     # sees the real product only at the final gate. Solved from the 600-min
@@ -146,6 +149,7 @@ class Sim:
         self.lam_wd = lam_per_month / WD_MONTH
         self.intake = deque()                   # requests not yet picked up
         self.work_queue = deque()               # work tasks waiting for a producer
+        self.videos = []
         self.finished = []
         self.series = []                        # (t, intake_len, wip) samples
         self.next_vid = 0
@@ -187,7 +191,7 @@ class Owner:
 def dispatch(sim):
     """Start queued work on any free producer (work-conserving)."""
     while sim.work_queue:
-        owner = next((o for o in sim.owners if not o.busy), None)
+        owner = next((o for o in sim.owners if not o.busy and getattr(o, "available", True)), None)
         if owner is None:
             return
         minutes, video, label, cb = sim.work_queue.popleft()
@@ -286,6 +290,7 @@ def run_scenario(name, params, lam=LAMBDA, months=MONTHS, seed=7,
     def arrival():
         v = Video(sim.next_vid, sim.t)
         sim.next_vid += 1
+        sim.videos.append(v)
         sim.intake.append(v)
         drive(sim, v, video_steps(sim, v, params))
         sim.schedule(sim.rng.expovariate(sim.lam_wd), arrival)
@@ -317,15 +322,15 @@ def run_scenario(name, params, lam=LAMBDA, months=MONTHS, seed=7,
 
     series = [(t, wip) for (t, _q, wip) in sim.series if t >= t0]
 
+    metrics = measure(sim, t0, cutoff, months*WD_MONTH, expected_work(params), MIN_PER_DAY, lam)
     return dict(
-        name=name, leads=leads, intake_waits=intake_waits, works=works,
-        loops=loops, util=util,
-        mean_wip=statistics.mean([w for _, w in series]) if series else float("nan"),
-        capacity=(2 * WD_MONTH * MIN_PER_DAY / statistics.mean(works)
-                  if works else float("nan")),
-        throughput=len(window) / window_months,
-        mean_lead=statistics.mean(leads) if leads else float("nan"),
-        p90_lead=(sorted(leads)[int(0.9 * len(leads))] if leads else float("nan")),
+        metrics=metrics, name=name, leads=leads, intake_waits=intake_waits, works=works,
+        loops=loops, util=metrics["busy_util"],
+        mean_wip=metrics["mean_wip"],
+        capacity=metrics["capacity"],
+        throughput=metrics["throughput"],
+        mean_lead=statistics.mean(leads) if leads and metrics["stable"] and not metrics["censored"] else float("nan"),
+        p90_lead=(sorted(leads)[int(0.9 * len(leads))] if leads and metrics["stable"] and not metrics["censored"] else float("nan")),
         mean_wait=statistics.mean(intake_waits) if intake_waits else float("nan"),
         mean_work=statistics.mean(works) if works else float("nan"),
         rework_share=statistics.mean(loops) if loops else float("nan"),
@@ -425,8 +430,8 @@ how to read the table
 what the numbers say
   * without rework the process absorbs 22/month (WIP ≈ 9, lead ≈ 12 d)
   * baseline rework degrades steeply past 20/month (WIP 15 → 19)
-  * heavy rework at 22/month is PAST CAPACITY: WIP ≈ 86 and lead ≈ 117 d —
-    the backlog grows without bound; no amount of effort drains it""")
+  * heavy rework at 22/month is PAST CAPACITY: report finite-window WIP
+    and backlog growth; do not report a stationary mean lead time""")
 
     # WIP time series at 22/month for the queue chart
     queue_runs = [run_scenario(name, params, lam=22.0, months=36, warmup=14,
@@ -550,7 +555,7 @@ def chart_sweep(lambdas, levels, sweep) -> None:
         ys = [sweep[lam][j][1] for lam in lambdas]
         ax.plot(lambdas, ys, "o-", color=colors[j], lw=2.6, ms=6,
                 label=name)
-    ax.annotate("past capacity:\nWIP ≈ 86 · lead ≈ 117 d",
+    ax.annotate(f"past capacity: overload\nfinite-window WIP ≈ {sweep[22.0][2][1]:.0f}",
                 xy=(22.0, sweep[22.0][2][1]), xytext=(19.0, 62),
                 fontsize=10, color=RED, weight="bold",
                 arrowprops=dict(arrowstyle="->", color=RED, lw=1.2))

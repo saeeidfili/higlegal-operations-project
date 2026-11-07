@@ -1,8 +1,7 @@
 # Company-reported facts [C] — the canon
 
 Everything HiLegal told us (visit / follow-up / proposal, September 2026).
-These are observations, not estimates. Ultimate authority: the submitted
-proposal docx. Used in: all sections.
+These are company-reported statements and approximate figures, not independently measured observations. Preserve them when a model differs. Consult summaries for analytical interpretation and the submitted proposal for original scope. Used in: all sections.
 
 ## Process & operations
 
@@ -36,14 +35,14 @@ proposal docx. Used in: all sections.
 | Most popular tier | **$100/month**, promises **10 videos/month** | S1, S2 bleed, S8 |
 | Their cost attribution (first assumption) | **model costs + 30% overhead ≈ ¥117/video** (¥90 × 1.3); the ¥27 was meant to cover the human factor | S2 inversion, S8 assumptions |
 
-## CEO-reported statements (September 2026)
+## Company-reported statements (individual speaker attribution to confirm) (September 2026)
 
 | Statement | Content | Where used |
 |---|---|---|
 | HR toll | team **works around the clock**; **people keep resigning**; re-hiring makes the company **less agile**; **knowledge leaves with every resignation** | S2 human toll, S3 conservatism note |
 | Why not automated | *"We assumed automation was redundant — that it kills creativity and might lower the quality."* — right at the time, expired by AI's exponential improvement | S2, S1 methodology |
 | Stated goal | **scale the service up**, **self-sufficient within months**, no consulting dependency | S9 exit condition |
-| Worst case (proposal) | **all three approval gates × 4 iterations** | S5 sensitivity, S7 scenario S3 |
+| Worst case (proposal) | **all three approval gates requiring four rounds in the proposal scenario** | S5 sensitivity, S7 scenario S3 |
 | Startup framing | service knowingly run as **marketing campaign** burn — for now | S2 framing |
 
 ## Notes
@@ -51,3 +50,5 @@ proposal docx. Used in: all sections.
 - "Confirmed with HiLegal, September 2026" is the citation sentence — not audit-grade data.
 - Per-step minutes inside the 10 h are NOT company data — see `assumptions.md` § decomposition.
 - Only sync (2–3 h) and adaptation (~2 h) are individually company-reported steps.
+
+The visit participant was identified by our team as the product lead. The repository does not establish which individual made each quotation; confirm attribution before using a CEO quote.

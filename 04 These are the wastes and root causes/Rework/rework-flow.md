@@ -78,12 +78,12 @@ capacity** — and the answer is that rework is mostly a *queue* problem:
 
 The loop probabilities define the four scenarios:
 
-| Scenario | p_clar | p_script | p_final | Mean clar rounds | Rework incidence |
-|---|---:|---:|---:|---:|---:|
-| no rework | 0 | 0 | 0 | 1 | 0% |
-| rework halved | 0.50 | 0.10 | 0.20 | 2 | 66% |
-| baseline | 0.75 | 0.20 | 0.40 | 4 [C] | 87% (~90% [E]) |
-| heavy rework | 0.80 | 0.40 | 0.60 | 5 | 93% |
+| scenario | p_clar / p_script / p_final | rework | lead cal d | P90 cal d | work min | capacity/mo |
+|---|---|---:|---:|---:|---:|---:|
+| no rework | 0.00 / 0.00 / 0.00 | 0.0% | 10.90 | 12.92 | 516.00 | 27.42 |
+| reduced rework | 0.50 / 0.10 / 0.20 | 66.0% | 14.86 | 21.55 | 550.82 | 25.87 |
+| baseline | 0.75 / 0.20 / 0.40 | 86.9% | 21.55 | 33.68 | 600.16 | 23.62 |
+| heavy rework | 0.80 / 0.40 / 0.60 | 93.0% | 30.71 | 54.06 | 686.44 | 20.62 |
 
 ### Where the scenarios come from — and why #3 is *the* baseline
 
@@ -207,7 +207,7 @@ whatever happens next on a min-heap of scheduled events
    video's generator resumes at its next step, and `dispatch` runs again in
    case something is queued. That is the entire scheduler:
    work-conserving, first-come-first-served, no preemption — the same
-   "team as one pooled unit" rule as the intake queue model.
+   "two task servers sharing one FIFO queue" rule as the intake queue model.
 5. **Measuring (`run_scenario`).** After the run, only videos *arriving*
    between month 10 (warm-up over) and month 25 (3-month cutoff, so no
    video is cut off by the horizon) enter the statistics: lead =
@@ -229,12 +229,12 @@ lifetimes.
 
 ## Part 1 results — rework intensity (λ = 17.5/month)
 
-| scenario | lead d | P90 d | work min | rework | cap/mo | util |
-|---|---:|---:|---:|---:|---:|---:|
-| no rework | **11.0** | 13.1 | 516 | 0% | 27.4 | 65% |
-| rework halved | **15.1** | 21.8 | 551 | 66% | 25.7 | 67% |
-| baseline | **21.8** | 34.1 | 600 | 87% | 23.6 | 70% |
-| heavy rework | **31.1** | 54.8 | 686 | 93% | 20.6 | 87% |
+| scenario | p_clar / p_script / p_final | rework | lead cal d | P90 cal d | work min | capacity/mo |
+|---|---|---:|---:|---:|---:|---:|
+| no rework | 0.00 / 0.00 / 0.00 | 0.0% | 10.90 | 12.92 | 516.00 | 27.42 |
+| reduced rework | 0.50 / 0.10 / 0.20 | 66.0% | 14.86 | 21.55 | 550.82 | 25.87 |
+| baseline | 0.75 / 0.20 / 0.40 | 86.9% | 21.55 | 33.68 | 600.16 | 23.62 |
+| heavy rework | 0.80 / 0.40 / 0.60 | 93.0% | 30.71 | 54.06 | 686.44 | 20.62 |
 
 **What each column means.** *lead d* = calendar days from request to
 delivery. *P90* = 1 in 10 orders takes at least this long. *work min* =
@@ -322,3 +322,5 @@ property of the team; it is a property of **the team plus its rework**
 > "Rework adds 84 minutes of work and eleven days of waiting — and it moves the
 > capacity wall from 27 down to 21 videos a month. Kill the loops, not the
 > overtime."
+
+Review correction: all gate probabilities and individual task minutes are assumptions. Current common-window demand/rework output is in Section 7 rework-demand-results.md. Completed-only finite-horizon lead figures for overloaded or censored cohorts are withdrawn from decision use. The intake M/M/1 is a separate aggregate surrogate and is not added to this task simulation.

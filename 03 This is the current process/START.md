@@ -26,8 +26,8 @@ flowchart LR
     AG --> AVS["11. AUDIO-VISUAL SYNC<br/>MANUAL · 2–3 h [C] · WORK"]
     AVS --> FA{"12a. FINAL APPROVAL<br/>lawyer reviews video"}
     FA -->|"changes → redo"| FS
-    FA -->|"approved"| PB["12b. SENT FOR PUBLISHING<br/>+ manual platform adaptation ~2 h [C]"]
-    PB --> DONE(("Video live"))
+    FA -->|"approved"| PB["12b. SENT FOR DELIVERY<br/>+ manual platform adaptation ~2 h [C]"]
+    PB --> DONE(("Video delivered"))
 ```
 
 **Colour convention for the slide:** green = core transformational activities (Content Brief, Script Drafting, AI Refinement, Video Generation, Audio Generation, Audio-Visual Sync); white = coordination/decision stages (Intake Queue, Clarification, Approval, Final Script, Final Approval, Publishing) — this matches Figure 1 in the proposal exactly. The three rejection loops are the red arrows.
@@ -53,7 +53,7 @@ Follow a concrete case — **"Lawyer Chen, corporate-law intro video, 90 seconds
 | 12b | Publishing + platform adaptation | Producer          | ~2 h [C]      | 1 day              | Work                      |
 | —   | **Total**                        |                   | **~10 h [C]** | **14–28 days [C]** |                           |
 
-**The punchline of the section:** ~10 hours of work spread over 2–4 weeks. Work is ~6% of lead time; the other ~94% is waiting. **Process Cycle Efficiency ≈ 5–8% [E]** (600 min work ÷ 15 working days × 480 min).
+**The punchline of the section:** ~10 hours of work spread over 2–4 weeks. Work is ~6% of lead time; the other ~most elapsed time is waiting. **Process Cycle Efficiency ≈ 5–8% [E]** (600 min work ÷ 15 working days × 480 min).
 
 ## Work vs. waiting summary (put this table on a slide)
 
@@ -61,13 +61,11 @@ Follow a concrete case — **"Lawyer Chen, corporate-law intro video, 90 seconds
 - **Total waiting:** 14–28 calendar days minus ~3–4 working days of work → dominated by intake queue (3–7 d [C]) and three approval gates that each loop [C]
 - **Queue-gated process:** by Little's Law (Lead time = Work-in-progress × Cycle time), waiting — not work — drives lead time. Restate this sentence verbatim in Section 4.
 
-## The intake queue, explained by queueing theory
+## The intake queue, explained
 
-Lawyers wait **3–7 days in the intake queue** before anyone looks at their request [C] — and HiLegal calls the wait *"workload-dependent"* [C], which is a queueing-theory signature: waits that move with load mean the process sits on the steep part of the utilization curve.
+The M/M/1 is an aggregate serial intake surrogate [E], not a literal description of two producers. A pooled inbox or non-preemption does not turn two workers into one server. The whole-process simulation instead has two FIFO task servers and releases them during client waits; its task durations are deterministic. The models are deliberately different simplifications and their waiting times must not be added as if they were independent components. Neither is independently validated against measured order histories.
 
-**The queue model now lives with the waste it quantifies: `../04 These are the wastes and root causes/queue/`** — `queue_model-explained.md` (companion doc), `queue_model.py` (the model), and its three charts. It calibrates μ ≈ 23.5 and reproduces the reported wait band; Section 4's "quantitative evidence" beats carry the narrative.
-
-**The paragraph to keep on the slide:** the team behaves as **one processing unit** — videos are held start-to-finish, so pickups happen only at completion boundaries (no preemption) — modeled as M/M/1 with μ ≈ 23.5/month, which reproduces the reported **3–7 day wait across the observed demand range** (2.3–7.5 d), its workload-dependence, and a checkable prediction: the inbox holds ≈ 2–5 parked requests (Little's Law).
+At retained mu=23.5/month the consistent 30.4/22 conversion gives intake waits of approximately 2.28, 3.77 and 7.39 calendar days at assumed arrivals 15, 17.5 and 20/month. The reported 3–7-day and 15–20-output ranges do not establish paired endpoints. This is approximate calibration, not a fit to every endpoint. Implied dedication 23.5 x 10 / 352 = 66.76% is not an independent 65% estimate. The KPI scenario uses 60% of 160 h; it is a separate budget.
 
 ## Rework and the queue (full-process simulation → `../04 These are the wastes and root causes/Rework/`)
 
@@ -75,7 +73,7 @@ Rework is usually managed as extra *work*; operationally it is mostly extra *que
 
 - Baseline (~90% of videos loop) vs. no rework: **+84 min of hands-on work but +10.8 days of lead time** — the queue cost of rework is ~29× its work cost [E]
 - At 17.5 videos/month, work-in-process rises **6.2 → 12.7 → 17.2** videos from no-rework to baseline to heavy — and lead time = WIP ÷ throughput (Little's Law)
-- Rework lowers the effective capacity ceiling: **~27.4 → ~23.6 → ~20.6 videos/month** (no rework → baseline → heavy, at realistic dedication); at 22/month with heavy rework the process is past capacity (WIP ~86, ~117 days)
+- Rework lowers the effective capacity ceiling: **~27.4 → ~23.6 → ~20.6 videos/month** (no rework → baseline → heavy, at realistic dedication); at 22/month with heavy rework the process is past capacity (overload: report backlog growth, not a stationary lead mean)
 - Calibration checks: baseline 21.8 d lead (14–28 d [C]), 600 min work (~10 h [C]), 87% rework (~90% [E]), capacity ~23.6/month (demand 15–20 [C])
 
 Files: `rework_simulation.py`, `rework-flow.md` (the flow + results guide), `rework-impact.svg`, `queue-sample-path.svg`, `rework-vs-demand.svg`, `gantt-rework.svg`.
@@ -110,8 +108,16 @@ Still to produce in this folder:
 - [ ] One order followed end-to-end, named lawyer, concrete video
 - [ ] Active vs waiting visually distinct (colour or icon)
 - [ ] "Confirmed with HiLegal, September 2026" stated on the slide
-- [ ] PCE (5–8%) computed and shown — it is your single most quotable baseline number
+- [ ] Do not label total-labour / elapsed-time ratios as value-added PCE without value-added observations
 - [ ] Queueing slide shown: the utilization cliff (`../04 .../queue/queue-cliff.svg`) with the observed 3–7 d band and the calibration table
 - [ ] One falsifiable prediction stated on the slide (inbox holds ≈ 2–5 pending requests — Little's Law)
 - [ ] The ρ = 1 wall connected verbally to the company's own "ceiling 35–40" [C]
 - [ ] Limitations owned: μ calibrated [E], intake-only scope
+
+## Review correction 7 November 2026
+
+The M/M/1 is an aggregate serial intake surrogate [E], not a literal description of two producers. A pooled inbox or non-preemption does not turn two workers into one server. The whole-process simulation instead has two FIFO task servers and releases them during client waits; its task durations are deterministic. The models are deliberately different simplifications and their waiting times must not be added as if they were independent components. Neither is independently validated against measured order histories.
+
+At retained mu=23.5/month the consistent 30.4/22 conversion gives intake waits of approximately 2.28, 3.77 and 7.39 calendar days at assumed arrivals 15, 17.5 and 20/month. The reported 3–7-day and 15–20-output ranges do not establish paired endpoints. This is approximate calibration, not a fit to every endpoint. Implied dedication 23.5 x 10 / 352 = 66.76% is not an independent 65% estimate. The KPI scenario uses 60% of 160 h; it is a separate budget.
+
+Current whole-process comparison and exact run settings are in `single source of truth/model-results.json` (repository root). Earlier single-seed traces are illustrations, not measured customer histories. Work of 10 h over 2–4 calendar weeks is 1.5–3.0% of wall-clock hours, or about 6–13% of an assumed 8-hour working-day clock. Neither ratio is value-added PCE.

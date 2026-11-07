@@ -16,7 +16,7 @@ with their owners, listed below.
 ## Evidence tags (used project-wide)
 
 - **[C]** company-reported — confirmed with HiLegal (visit / proposal, Sept 2026). Canon.
-  The submitted proposal (`Proposal/OM-Project-Proposal-HiLegal.docx`) is the ultimate authority.
+  The submitted proposal preserves original scope and commitments; later verified analysis may refine preliminary assumptions. Use the stated review hierarchy, not proposal primacy for every numerical estimate.
 - **[E]** estimate — our assumption; plausible, sanity-checked, replace when real data arrives.
 - Elsewhere you will also see **[T]** target (a commitment, not an observation) and derived
   figures labelled [E] in the section folders — this folder is where their [C]/[E] inputs live.
@@ -38,13 +38,13 @@ with their owners, listed below.
 | Fully-loaded producer rate | ¥85/h | [E] | `assumptions.md` |
 | Cost per video (true, baseline) | ¥940 — labour is ~90% | [D] | `kpi-data.md` §3 |
 | Rework rate · QAR | ~90% · ~10% | [E] | `assumptions.md` |
-| Work share of lead time | ≈ 6% (PCE 5–8%) | [D] | `03 .../START.md` |
+| Work share of lead time | Not measured as value-added PCE; clock-dependent labour share only | [D] | `03 .../START.md` |
 | Capacity at 60% utilization | ~19/month | [D] | `kpi-data.md` §4 |
 | Queue model capacity μ | ≈ 23.5/month (ρ 0.64–0.85) | [D] | `04 .../queue/queue_model-explained.md` |
 | Calculated ceiling | 352 h ÷ 10 h = 35.2/month ≈ stated 35–40 | [D] | `04 .../queue/queue_model-explained.md` |
 | Iteration 3 targets | ~1 h labour · ~1.5 d lead · ¥180/video · ~190/mo | [T] | `06 .../START.md` |
-| Payroll released | ≈ ¥270k/year (~1.5 FTE) | [E] | `08 .../START.md` |
-| One-time implementation | ≈ ¥105–180k, payback 5–8 months | [E] | `09 .../START.md` |
+| Payroll released | 135–180 h/month freed at 15–20 videos; not cash payroll savings | [E] | `08 .../START.md` |
+| One-time implementation | ≈ ¥105–180k, payback 4–12 months if the allocated saving is realizable | [E] | `09 .../START.md` |
 
 ## Where the derived numbers live (their owners, not this folder)
 
@@ -64,7 +64,7 @@ that matches your frame:
 
 | Figure | Value | Assumptions behind it | Home |
 |---|---|---|---|
-| KPI capacity (baseline) | ~19/mo | 2 × 160 h × **60%** utilization = 11,500 min ÷ **600 min** | kpi-data §4 |
+| KPI capacity (baseline) | ~19/mo (KPI budget) | 2 × 160 h × **60%** utilization = 11,500 min ÷ **600 min** | kpi-data §4 |
 | Queue-model capacity μ | ~23.5/mo | calibrated to the 3–7 d wait; 67% of 2 × 176 h | queue_model-explained.md |
 | Rework-sim capacity (baseline) | ~23.6/mo | 2 × 22 d × 322 min (**67%**) ÷ **600 min** simulated | rework-flow.md |
 | Theoretical ceiling | 35.2/mo | **100%** of 2 × 176 paid hours ÷ 10 h — ≈ stated 35–40 [C] | queue_model-explained.md |
@@ -93,3 +93,11 @@ Other deliberate differences:
 - 2026-10-30 trimmed to the evidence base ([C] + [E]); derived/targets/implementation
   files removed — that content stays with its owners (kpi-data.md, the model docs,
   sections 06/09).
+
+## Analytical review 7 November 2026
+
+Use RECONCILIATION.md in the repository root and the regenerated model-results.json for verified model output. SUMMARY.md has interpretive priority, company-facts.md preserves reported inputs, assumptions.md declares estimates, and code/results verify calculations. Proposal remains the original scope reference.
+
+The 19.2/month KPI ceiling uses 11,520 video minutes; the 23.5/month intake surrogate is a calibrated serial rate; the 23.62/month task-model ceiling uses 14,150.4 minutes and 599.17 expected work minutes. At 100% of 352 paid hours, 35.2/month is a separate theoretical illustration, alongside the reported 35–40 ceiling. None is interchangeable with actual 15–20 output.
+
+Company-reported input and model calibration are not independent validation. Rework rates are .75/.20/.40 per gate in the baseline code; ~90% order-level incidence remains an estimate. Staff-time value is not cash savings, and total-labour ratios are not measured value-added PCE.

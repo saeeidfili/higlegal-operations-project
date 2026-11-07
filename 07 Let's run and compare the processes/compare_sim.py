@@ -15,8 +15,8 @@ Scenarios:
   S0 normal      λ=20/mo, parameters as calibrated
   S1 demand      λ sweep 15→240/mo (saturation curves + WIP paths at 40/mo)
   S2 slow lawyers  all gate waits ×2.5 (≈3–6 calendar days)
-  S3 rework stress  loop probability 0.75 at every gate (proposal worst case)
-  S4 absence     one producer away for 2 weeks (months 12–12.5)
+  S3 rework stress  loop probability 0.75 at every gate (geometric high-rework sensitivity, not a finite worst case)
+  S4 absence     one producer away for 10 working days from month 12
   S5 quality dip  v3 with v2-level loop rates + deeper edits (editing 30,
                  render QA 30 min)
 
@@ -31,6 +31,9 @@ Run:  ../../.venv/bin/python compare_sim.py
 from __future__ import annotations
 
 import statistics
+import math
+import json
+import re
 import sys
 from pathlib import Path
 
@@ -44,6 +47,7 @@ sys.path.insert(0, str(HERE.parent
                        / "06 This is how we improve the process iteration by iteration"
                        / "Iteration 3 - Integrate audio and video generation"))
 import iteration3_sim as eng  # noqa: E402
+from simulation_metrics import measure
 
 WD, CAL, BUDGET = eng.WD_MONTH, eng.CAL, eng.BUDGET_MIN
 OUT = HERE
@@ -56,6 +60,7 @@ SHORT = {"baseline": "baseline", "iteration 1": "v1 · standardize",
          "iteration 2": "v2 · AI scripting", "iteration 3": "v3 · single render"}
 VCOLORS = {"baseline": "#99A1AF", "iteration 1": "#A8823F",
            "iteration 2": "#C9A86A", "iteration 3": "#101010"}
+MEASUREMENT_LOG = []
 TOOLS = {"baseline": 90, "iteration 1": 90, "iteration 2": 100, "iteration 3": 95}
 
 
@@ -91,10 +96,11 @@ def run_full(name, cfg, lam=20.0, months=36, warmup=16, seed=7,
         t_drop, t_back = absence
 
         def drop():
-            sim.owners.pop()
+            sim.owners[-1].available = False  # finish any current non-preemptive task
 
         def restore():
-            sim.owners.append(eng.Owner())
+            sim.owners[-1].available = True
+            eng.dispatch(sim)
 
         sim.schedule(t_drop, drop)
         sim.schedule(t_back, restore)
@@ -102,6 +108,7 @@ def run_full(name, cfg, lam=20.0, months=36, warmup=16, seed=7,
     def arrival():
         v = eng.Video(sim.next_vid, sim.t)
         sim.next_vid += 1
+        sim.videos.append(v)
         sim.intake.append(v)
         eng.drive(sim, v, eng.video_steps(sim, v, cfg))
         sim.schedule(sim.rng.expovariate(sim.lam_wd), arrival)
@@ -123,23 +130,31 @@ def run_full(name, cfg, lam=20.0, months=36, warmup=16, seed=7,
     works = [v.work for v in window]
     loops = [1 if (v.clar_rounds > 1 or v.script_loops or v.final_loops) else 0
              for v in window]
+    absent_days = max(0.0, min(absence[1], cutoff)-max(absence[0], t0)) if absence else 0.0
+    metrics = measure(sim, t0, cutoff, months*WD, eng.expected_work(cfg), eng.MIN_PER_DAY,
+                      lam, owners=n_own, absent_days=absent_days)
+    valid = metrics['stable'] and metrics['censored'] == 0
+    MEASUREMENT_LOG.append(dict(name=name,demand=lam,seed=seed,months=months,warmup=warmup,absence=absence,
+                                gate_probabilities={key:cfg[key] for key in ['p_clar','p_script','p_final']},metrics=metrics))
     return dict(
+        metrics=metrics, completed_cohort_lead=metrics['completed_cohort_lead'],
         name=name, videos=window, leads=leads, works=works, loops=loops,
         series=[(t, w) for (t, _q, w) in sim.series if t >= t0],
-        mean_lead=statistics.mean(leads) if leads else float("nan"),
-        p90_lead=(sorted(leads)[int(0.9 * len(leads))] if leads else float("nan")),
+        mean_lead=statistics.mean(leads) if leads and valid else float("nan"),
+        p90_lead=(sorted(leads)[int(0.9 * len(leads))] if leads and valid else float("nan")),
         mean_work=statistics.mean(works) if works else float("nan"),
         rework=statistics.mean(loops) if loops else float("nan"),
         cost=(statistics.mean(works) / 60 * 85 + TOOLS[name.split(" · ")[0]]
               if works else float("nan")),
-        capacity=(BUDGET / statistics.mean(works) if works else float("nan")),
+        capacity=metrics["capacity"],
     )
 
 
 def multi(name, cfg, lam, seeds=(11, 12, 13), **kw):
     runs = [run_full(name, cfg, lam=lam, seed=s, **kw) for s in seeds]
     return dict(
-        name=name, mean_lead=statistics.mean(r["mean_lead"] for r in runs),
+        name=name, runs=runs, metrics=runs[0]["metrics"],
+        mean_lead=statistics.mean(r["mean_lead"] for r in runs),
         p90_lead=statistics.mean(r["p90_lead"] for r in runs),
         mean_work=statistics.mean(r["mean_work"] for r in runs),
         rework=statistics.mean(r["rework"] for r in runs),
@@ -338,7 +353,7 @@ def s2():
     ax.set_xticks(x)
     ax.set_xticklabels([SHORT[v] for v in VERSIONS], fontsize=10)
     ax.set_ylabel("mean lead time (calendar days)")
-    ax.set_title("S2 · slow lawyers — v3's worst case ≈ baseline's best case",
+    ax.set_title("S2 · slow lawyers — slow-response sensitivity, not a worst-case bound",
                  weight="bold")
     ax.legend(frameon=False, fontsize=10)
     ax.grid(axis="y", color="#E5E7EB", lw=0.8)
@@ -349,7 +364,7 @@ def s2():
 # S3 — rework stress (loop probability 0.75 at every gate)
 # ======================================================================
 def s3():
-    hr("S3 · REWORK STRESS — loop p = 0.75 at every gate (proposal worst case), λ=20")
+    hr("S3 · REWORK STRESS — loop p = 0.75 at every gate (geometric high-rework sensitivity, not a finite worst case), λ=20")
     res = {}
     for v in VERSIONS:
         cfg = cfg_for(v, p_script=0.75, p_final=0.75)
@@ -361,20 +376,19 @@ def s3():
                              rework=res[v]["rework"]) for v in VERSIONS}
 
     fig, ax = plt.subplots(figsize=(9.8, 5.4))
-    bars = ax.bar(range(len(VERSIONS)), [res[v]["mean_lead"] for v in VERSIONS],
-                  color=[VCOLORS[v] for v in VERSIONS], width=0.6)
-    ax.errorbar(range(len(VERSIONS)), [res[v]["mean_lead"] for v in VERSIONS],
-                yerr=[[0] * 4, [res[v]["p90_lead"] - res[v]["mean_lead"] for v in VERSIONS]],
-                fmt="none", ecolor=DARKRED, elinewidth=2.2, capsize=5)
     for i, v in enumerate(VERSIONS):
-        ax.text(i, res[v]["p90_lead"] + 1, f"P90 {res[v]['p90_lead']:.0f} d",
-                ha="center", fontsize=9, color=DARKRED, weight="bold")
-        ax.text(i, res[v]["mean_lead"] / 2, f"{res[v]['mean_lead']:.0f} d",
-                ha="center", va="center", fontsize=10, color="white", weight="bold")
+        r = res[v]
+        if math.isfinite(r['mean_lead']):
+            ax.bar(i, r['mean_lead'], color=VCOLORS[v], width=0.6)
+            ax.errorbar(i, r['mean_lead'], yerr=[[0],[max(0,r['p90_lead']-r['mean_lead'])]],
+                        fmt='none', ecolor=DARKRED, capsize=5)
+            ax.text(i, r['p90_lead']+1, f"P90 {r['p90_lead']:.1f} d", ha='center')
+        else:
+            ax.text(i, 1, 'No stationary mean\n(overload/censored)', ha='center', color=RED)
     ax.set_xticks(range(len(VERSIONS)))
     ax.set_xticklabels([SHORT[v] for v in VERSIONS], fontsize=10)
     ax.set_ylabel("mean lead time (calendar days)")
-    ax.set_title("S3 · every gate loops up to 4 iterations — worst-case robustness",
+    ax.set_title("S3 · mean four rounds at each active gate; overload has no stationary lead",
                  weight="bold")
     ax.grid(axis="y", color="#E5E7EB", lw=0.8)
     save(fig, "rework-stress.svg")
@@ -384,8 +398,8 @@ def s3():
 # S4 — producer absence (1 producer for 2 weeks)
 # ======================================================================
 def s4():
-    hr("S4 · PRODUCER ABSENCE — one producer away months 12→12.5, λ=20")
-    t_drop, t_back = 12 * WD, 12.5 * WD
+    hr("S4 · PRODUCER ABSENCE — one producer away for 10 working days from month 12, λ=20")
+    t_drop, t_back = 12 * WD, 12 * WD + 10.0
     res = {}
     for v in VERSIONS:
         r = run_full(v, eng.CONFIGS[v], lam=20.0, months=36, warmup=11,
@@ -424,6 +438,8 @@ def s5():
 # ----------------------------------------------------------------------
 def write_results_md():
     L = ["# Section 7 — scenario results (generated by compare_sim.py)", ""]
+    L.append("Model results under stated assumptions, not observed improvements. 22 working days = 30.4 calendar days. Work durations are deterministic; waits and arrivals are stochastic. Each comparison uses 3 seeds unless a single-seed absence path is specified.")
+    L.append("Lead/P90 are unavailable if offered workload exceeds capacity or the arrival cohort remains censored. Such cases have no defensible stationary lead estimate; completed-only diagnostics are not substituted. Capacity is analytical work-content capacity, not throughput.")
     L.append("## S0 · normal conditions (λ = 20/mo)")
     L.append("| version | lead d | P90 d | work min | ¥/video | cap/mo | rework | QAR |")
     L.append("|---|---:|---:|---:|---:|---:|---:|---:|")
@@ -438,7 +454,7 @@ def write_results_md():
     L.append("|---:|" + "---:|" * 4)
     for lam in lams:
         cells = [f"{RESULTS['S1'][lam][v]:.1f}" if RESULTS["S1"][lam][v] == RESULTS["S1"][lam][v]
-                 else "unstable" for v in VERSIONS]
+                 else "unavailable (overload/censored)" for v in VERSIONS]
         L.append(f"| {lam} | " + " | ".join(cells) + " |")
     L.append("\n## S2 · slow lawyers (gates ×2.5)")
     L.append("| version | normal d | slow d |")
@@ -446,7 +462,7 @@ def write_results_md():
     for v in VERSIONS:
         L.append(f"| {SHORT[v]} | {RESULTS['S2'][v]['normal']:.1f} |"
                  f" {RESULTS['S2'][v]['slow']:.1f} |")
-    L.append("\n## S3 · rework stress (p = 0.75 per gate)")
+    L.append("\n## S3 · rework stress (p = 0.75 per active gate; mean four rounds, not a maximum)")
     L.append("| version | lead d | P90 d | rework |")
     L.append("|---|---:|---:|---:|")
     for v in VERSIONS:
@@ -467,7 +483,7 @@ def write_results_md():
         r = s5[k]
         L.append(f"| {lab} | {r['mean_lead']:.1f} | {r['mean_work']:.0f} |"
                  f" {r['rework']:.0%} | {r['cost']:.0f} |")
-    (OUT / "scenario-results.md").write_text("\n".join(L) + "\n")
+    (OUT / "scenario-results.md").write_text(re.sub(r"\bnan\b", "unavailable (overload/censored)", "\n".join(L)) + "\n", encoding="utf-8")
     print("  wrote scenario-results.md")
 
 
@@ -480,3 +496,37 @@ if __name__ == "__main__":
     s5()
     write_results_md()
     print("\nDONE. Six SVGs + scenario-results.md in this folder.")
+
+
+def rework_demand_report():
+    """Section 7 cross-factor extension: same Section-4/6 event engine."""
+    levels = {'no rework': (0,0,0), 'baseline': (.75,.20,.40), 'heavy': (.80,.40,.60)}
+    lines=['# Rework x demand: existing engine, three seeds', '',
+           'All inputs below are modelling assumptions, not measured gate rates. Capacity is expected work-content capacity. Busy utilization and WIP use the same post-warm-up time window; throughput counts departures in that window.',
+           'Working month = 22 days, calendar month = 30.4 days. Lead is the full arrival-cohort mean only when all cohort arrivals finish and offered utilization is below one. Otherwise the completed-only diagnostic is withheld from the lead column. WIP growth is a finite-horizon diagnostic, not a stationary law.', '',
+           '| Rework | Demand/mo | Work min/video | Workload h/mo | Capacity/mo | Offered util | Busy util | Throughput/mo | Mean WIP | WIP growth/mo | Lead cal d | Cohort completion |',
+           '|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---|']
+    import json
+    records=[]
+    for label,(pc,ps,pf) in levels.items():
+        cfg=cfg_for('baseline',p_clar=pc,p_script=ps,p_final=pf)
+        work=eng.expected_work(cfg)
+        for lam in [15,17.5,20,22,25]:
+            runs=[run_full('baseline',cfg,lam=lam,months=36,warmup=16,seed=seed) for seed in (11,12,13)]
+            ms=[r['metrics'] for r in runs]
+            avg=lambda key:statistics.mean(m[key] for m in ms)
+            valid=all(m['stable'] and not m['censored'] for m in ms)
+            lead=f"{statistics.mean(r['mean_lead'] for r in runs):.2f}" if valid else ('overload' if not ms[0]['stable'] else 'censored')
+            completion=sum(m['cohort_completed'] for m in ms)/sum(m['cohort_size'] for m in ms)
+            lines.append(f"| {label} | {lam} | {work:.2f} | {lam*work/60:.2f} | {avg('capacity'):.2f} | {avg('offered_util'):.1%} | {avg('busy_util'):.1%} | {avg('throughput'):.2f} | {avg('mean_wip'):.2f} | {avg('wip_growth'):.2f} | {lead} | {completion:.1%} |")
+            records.append(dict(rework=label,demand=lam,work=work,lead=lead,metrics=ms))
+    lines+=['', 'Analytical link: workload = demand x E[work]; capacity = 14,150.4 / E[work]; offered utilization = demand / capacity. Rework increases both required labour and repeated client waits. At demand >= capacity, report backlog growth, not an infinite-horizon mean lead. Little law requires consistent units and a stable common boundary; it is not applied to the overloaded rows.', '',
+            'These simulations quantify conditional consequences of assumed rates. They do not identify real rejection rates or independently validate proposed improvements.']
+    (OUT/'rework-demand-results.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
+    (OUT/'rework-demand-results.json').write_text(json.dumps(records,indent=2),encoding='utf-8')
+
+if __name__ == '__main__':
+    rework_demand_report()
+
+if __name__ == '__main__':
+    (OUT/'measurement-diagnostics.json').write_text(json.dumps(MEASUREMENT_LOG,indent=2)+'\n',encoding='utf-8')

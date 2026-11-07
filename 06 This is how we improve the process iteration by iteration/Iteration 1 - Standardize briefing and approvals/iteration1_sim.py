@@ -25,7 +25,7 @@ Iteration-1 loop probabilities are solved the 04 way (two anchors):
   → ps ≈ 0.214, pf ≈ 0.428 (pf = 2·ps, as calibrated in Section 4)
 
 Outputs (console): baseline sanity check, baseline vs Iter 1 at λ=17.5,
-demand sweep (practical capacity = highest λ with mean lead ≤ 14 d, the top
+demand sweep (practical capacity = highest λ with mean lead ≤ 28 d, the top
 of the company-reported band [C]), SLA-compliance sensitivity.
 
 Run:  ../../.venv/bin/python iteration1_sim.py   (or: python3 — stdlib only)
@@ -37,12 +37,16 @@ import heapq
 import random
 import statistics
 from collections import deque
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from simulation_metrics import measure
 
 # ----------------------------------------------------------------------
 # Shared constants — identical to the Section-4 simulation.
 # ----------------------------------------------------------------------
 WD_MONTH = 22.0
-CAL = 30.4 / 21.7                    # calendar days per working day ≈ 1.40
+CAL = 30.4 / 22.0                    # calendar days per working day ≈ 1.40
 DEDICATION = 0.67
 MIN_PER_DAY = 480 * DEDICATION       # ≈ 321.6 effective producer-minutes/day
 BUDGET_MIN = 2 * WD_MONTH * MIN_PER_DAY   # ≈ 14,150 min/month (67% budget)
@@ -50,7 +54,7 @@ BUDGET_MIN = 2 * WD_MONTH * MIN_PER_DAY   # ≈ 14,150 min/month (67% budget)
 MONTHS = 28
 WARMUP_MONTHS = 10
 CUTOFF_MONTHS = 3
-LAMBDA = 17.5                        # demand, videos/month [C]
+LAMBDA = 17.5                        # arrival-rate assumption [E], midpoint of reported output
 
 # ----------------------------------------------------------------------
 # Process versions.  "minutes" = hands-on task minutes; the engine check
@@ -132,6 +136,7 @@ class Sim:
         self.lam_wd = lam_per_month / WD_MONTH
         self.intake = deque()
         self.work_queue = deque()
+        self.videos = []
         self.finished = []
         self.series = []
         self.next_vid = 0
@@ -172,7 +177,7 @@ class Owner:
 
 def dispatch(sim):
     while sim.work_queue:
-        owner = next((o for o in sim.owners if not o.busy), None)
+        owner = next((o for o in sim.owners if not o.busy and getattr(o, "available", True)), None)
         if owner is None:
             return
         minutes, video, label, cb = sim.work_queue.popleft()
@@ -269,6 +274,7 @@ def run_scenario(name, cfg, lam=LAMBDA, months=MONTHS, seed=7,
     def arrival():
         v = Video(sim.next_vid, sim.t)
         sim.next_vid += 1
+        sim.videos.append(v)
         sim.intake.append(v)
         drive(sim, v, video_steps(sim, v, cfg))
         sim.schedule(sim.rng.expovariate(sim.lam_wd), arrival)
@@ -293,12 +299,13 @@ def run_scenario(name, cfg, lam=LAMBDA, months=MONTHS, seed=7,
     util = sum(o.busy_days for o in sim.owners) / (2 * months * WD_MONTH)
     series = [(t, wip) for (t, _q, wip) in sim.series if t >= t0]
 
+    metrics = measure(sim, t0, cutoff, months*WD_MONTH, expected_work(cfg), MIN_PER_DAY, lam)
     return dict(
-        name=name, leads=leads, works=works, loops=loops, util=util,
-        mean_wip=statistics.mean([w for _, w in series]) if series else float("nan"),
-        capacity=(BUDGET_MIN / statistics.mean(works) if works else float("nan")),
-        mean_lead=statistics.mean(leads) if leads else float("nan"),
-        p90_lead=(sorted(leads)[int(0.9 * len(leads))] if leads else float("nan")),
+        metrics=metrics, name=name, leads=leads, works=works, loops=loops, util=metrics["busy_util"],
+        mean_wip=metrics["mean_wip"],
+        capacity=metrics["capacity"],
+        mean_lead=statistics.mean(leads) if leads and metrics["stable"] and not metrics["censored"] else float("nan"),
+        p90_lead=(sorted(leads)[int(0.9 * len(leads))] if leads and metrics["stable"] and not metrics["censored"] else float("nan")),
         mean_work=statistics.mean(works) if works else float("nan"),
         rework_share=statistics.mean(loops) if loops else float("nan"),
     )
@@ -364,7 +371,7 @@ def part2_sweep() -> dict:
   would be a to-be standard the baseline can never meet; 28 d asks only
   'no worse than the client's worst experience today'.)""")
     for j, name in enumerate(levels):
-        ok = [lam for lam in lambdas if sweep[lam][j][0] <= 28.0]
+        ok = [lam for lam in lambdas if lam < BUDGET_MIN / expected_work(CONFIGS[name]) and sweep[lam][j][0] <= 28.0]
         cap = max(ok) if ok else 0.0
         nxt = min((lam for lam in lambdas if lam > cap), default=None)
         print(f"  {name:<12} practical capacity ≈ {cap:.0f}/mo "

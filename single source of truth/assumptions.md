@@ -8,14 +8,14 @@ anchors; every one is replaceable when HiLegal shares real data (the pilot's
 
 | Assumption | Value | Basis | Used in |
 |---|---|---|---|
-| Producer gross salary | ¥10,000/month | Shenzhen market ¥8–14k | S2, all cost figures |
-| Employer burden (五险一金) | ~35% → ¥3,500/month | statutory band 30–40% | S2 |
+| Producer gross salary | ¥10,000/month | illustrative Shenzhen salary assumption; no verified salary sample | S2, all cost figures |
+| Employer burden (五险一金) | ~35% → ¥3,500/month | illustrative loading assumption; not a verified statutory rate | S2 |
 | Equipment/software/office | ¥1,500/month | | S2 |
 | **Fully-loaded producer** | **¥15,000/month ÷ 176 h = ≈ ¥85/h** | 22 d × 8 h | S2, S5, S8 |
 | FX | USD/CNY 7.2 | $100 tier ≈ ¥720 | S2, S8 |
 | Manual tool credits | ¥90/video | ChatGPT + Seedance + TTS + stock | S2 ¥940 build |
 | Two producers fully loaded | ≈ ¥360k/year | 2 × ¥15k × 12 | S4 skills waste, S8 |
-| Payroll released after Iter 3 | ≈ **¥270k/year** (~1.5 FTE) | management decision to reallocate | S8, S9 |
+| Payroll released after Iter 3 | ≈ **¥137.7–183.6k/year** of labour-time value at 15–20 videos/month (135–180 h/month, 0.77–1.02 paid FTE); not automatic cash savings | management decision to reallocate | S8, S9 |
 | Iter-3 tech costs | render API ¥45 · self-hosted LLM ¥20 · amortized pipeline ¥30 /video | market rates, dual-vendor | S5 cost ladder |
 | Typical customer usage | ~2 of the 10 promised videos/month | [E] | S2/S8 tables |
 
@@ -27,7 +27,7 @@ anchors; every one is replaceable when HiLegal shares real data (the pilot's
 | Productive hours (KPI) | **160 h/month** | KPI capacity math |
 | KPI utilization | **60%** → 2 × 160 × 60% ≈ **11,500 productive min/month** (back-solved from output 15–20 [C]) | S5 §4, S7 |
 | Video dedication (models) | **67%** → 480 × 0.67 ≈ **322 effective min/producer-day** | queue model, rework sim |
-| Calendar conversion | 1 working day ≈ 1.4 calendar days (30.4 ÷ 21.7); 1 month = 22 wd | all models |
+| Calendar conversion | 1 working day ≈ 1.4 calendar days (30.4 ÷ 22); 1 model month = 22 wd = 30.4 calendar days | all models |
 
 ## Decomposition of the ~10 h per video [C]
 
@@ -42,17 +42,17 @@ quoted figures, split is [E]):
 | Script editing & QC (AI refinement) | 40 |
 | Video generation ops | 60 |
 | Audio generation ops | 35 |
-| AV sync | **150 [C 2–3 h]** |
-| Platform adaptation | **100 [C ~2 h]** |
-| Delivery & publishing | 25 |
+| AV sync | **150 [E; within reported 2–3 h]** |
+| Platform adaptation | **100 [E; decomposition of approximate ~2 h]** |
+| Delivery & administration | 25 |
 | **Total** | **600 = 10 h [C]** |
 
 **Version B — rework-simulation task minutes** (`03 .../Rework/rework_simulation.py`
-`MIN` dict; first-time-right = 516, loops add the rest):
+`MIN` dict; first-time-right = 516, loops add 83.17 min in expectation):
 
 intake review 15 · clarification reply 8/round · brief 45 · drafting 70 ·
-AI refinement 35 · video gen 55 · audio 30 · **AV sync 140 [C]** ·
-**platform adaptation 95 [C]** · delivery & admin 23 → **516**; loops:
+AI refinement 35 · video gen 55 · audio 30 · AV sync 140 [E; consistent with reported 2–3 h] ·
+platform adaptation 95 [E; approximate reported ~2 h] · delivery & admin 23 → **516**; loops:
 script rework 50, final rework 70. Baseline expectation 599, simulated 600
 (p_script = 0.20, p_final = 0.40 — final rejection likelier; solved from the 600-min anchor).
 
@@ -65,7 +65,7 @@ the pilot time-log when it exists.
 |---|---|---|
 | Clarification wait | U(1–2) working days per round | rework sim |
 | Script / final approval wait | U(1–3) working days | rework sim, S3 trace |
-| Baseline loop probabilities | p_clar 0.75 (→ mean 4 rounds [C]) · p_script = p_final 0.30 (→ work ≈ 600 [C]) | rework sim calibration |
+| Baseline loop probabilities | p_clar 0.75 (→ mean 4 rounds [C]) · p_script 0.20, p_final 0.40 [E] (current code; E[work] = 599.17 min) | rework sim calibration |
 | Rework incidence | ~90% of videos loop ≥ 1 gate (QAR ~10%) | S5 KPI-5/6 |
 | Arrival process | Poisson at λ = 15–20/month [C range], 17.5 typical | all queue/sim models |
 | Iter-3 render | batch ~20–30 min wall-clock, ~0.5 d incl. queue | S6 Iter 3, S7 |
@@ -77,3 +77,9 @@ the pilot time-log when it exists.
 | Cross-border lawyer billing | $200–500/h |
 | Worth of one won engagement | multiples of the ¥8.6k annual subscription |
 | Campaign damage mechanisms | momentum loss, content expiry, lost inbound [E — standard platform behavior] |
+
+## Reconciliation notes 7 November 2026
+
+The reported output range is not a measured Poisson arrival series. Mapping 15–20 outputs/month to arrivals and assigning 3 d to 15 arrivals and 7 d to 20 arrivals are assumptions. Dedication (60%/67%) allocates time to video work; offered utilization is demand x expected work / that allocated budget. The two must not share a label.
+
+The reported ≥4 clarification iterations do not identify a population mean or rejection probability. p_clar = .75 is a representative geometric assumption with mean four rounds. p_final = 2 x p_script is another assumption, not a company fact. The rounded .20/.40 settings approximate 600 minutes; .30/.30 is an obsolete alternative, not the implemented baseline. QAR is first-pass acceptance, not a legal-accuracy measurement.
