@@ -58,7 +58,7 @@ button:disabled, select:disabled { opacity: 0.45; cursor: default; }
 .thumb-label { font-size: 12px; color: var(--ui-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .main { display: flex; flex-direction: column; min-width: 0; min-height: 0; padding: 16px; gap: 12px; }
-.stage { position: relative; flex: 1; min-height: 240px; overflow: hidden; }
+.stage { position: relative; flex: 1; min-height: 240px; overflow: hidden; background: #2b2d31; }
 .meta { display: flex; flex-direction: column; gap: 8px; flex: 0 0 auto; max-height: 30vh; min-height: 0; }
 .meta-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 14px; }
 .slide-no { font-weight: 600; }
