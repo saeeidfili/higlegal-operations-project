@@ -1,6 +1,6 @@
 # OM-Project_Presentation_HiLegal – web version
 
-Group 9 · Peking University HSBC Business School · Operations Management
+Group 9 | Peking University HSBC Business School | Operations Management
 
 HTML version of our presentation "Scaling HiLegal's lawyer video production". One file per slide, a viewer with a slide preview and a present mode, live animations on the current-process and final-iteration slides.
 
@@ -46,7 +46,7 @@ The browser viewer displays slides, notes and earlier versions. Changes are made
 ## Present mode
 
 - Click **▶ Present** or press **P**. Opens full screen from the current slide.
-- → / Space / Page Down: next · ← / Page Up: back · Home / End: first / last
+- → / Space / Page Down: next | ← / Page Up: back | Home / End: first / last
 - Click the right half of the screen for next, the left half for back.
 
 ## Presenter notes (several devices, synced)
@@ -58,7 +58,7 @@ The browser viewer displays slides, notes and earlier versions. Changes are made
 3. **Open on projector** opens Present mode in the same room: the projector follows the ◀ ▶ buttons, and its own keys or clicks move everyone else.
 
 Sync runs through the public relay ntfy.sh (only slide id and timer state; anyone with the room code can join). Needs internet.
-- **N** shows or hides speaker notes · **Esc** exits.
+- **N** shows or hides speaker notes | **Esc** exits.
 - Slides marked `hidden` (the internal team-questions and review slides) are skipped.
 - Direct link to present: `http://localhost:8000/?present#cover`
 

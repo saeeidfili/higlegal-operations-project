@@ -66,7 +66,7 @@ Use the existing Lucide SVG assets in `assets/icons/` for service diagrams. Keep
 - Background `#0A0A0A` or `#101010`. Logo top right (or top left on cover). Red or gold rules as accents.
 
 ### Internal slide (team questions, review)
-- White background, red eyebrow "Internal · …", 56 px title, `hidden` on the section, footer says how to remove it. Never shown in Present mode.
+- White background, red eyebrow "Internal | …", 56 px title, `hidden` on the section, footer says how to remove it. Never shown in Present mode.
 
 ### Text block
 - Label 24 px 600 in `accent`, body 24 px `body`, separated by a 2 px top rule (`#101010`).
@@ -104,3 +104,12 @@ Colour never carries meaning alone: every box also says "Work", "Wait", "Gate", 
 - Sources on slides: the HiLegal team, company-provided information, our own analysis, or lecture slides. Do not cite our own proposal or briefing.
 - Titles: short statements, one grammar throughout.
 - Speaker notes go in one `<aside>` at the end of the slide: TIME, MAIN MESSAGE, SPEAKING POINTS, DATA STATUS / CALCULATION where relevant.
+
+### Text separators
+
+- Do not use the middle-dot separator (Unicode U+00B7), including HTML entities, anywhere in slide text, speaker notes, animations or viewer labels.
+- Use a spaced vertical bar (` | `) between independent labels, chapter metadata, legend entries or source statements.
+- Use commas for closely related phrases and short process-step qualifiers, such as `Work, team` or `Wait, 3–7 days`.
+- Use full stops to separate complete sentences. Choose punctuation by meaning rather than replacing every separator with the same character.
+- Example footer: `Targets, not tested | baseline est. from HiLegal input | calc. in Appendix A`.
+- Apply this rule to all new or revised slides and check the final rendered text before committing.

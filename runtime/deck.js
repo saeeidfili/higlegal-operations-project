@@ -195,7 +195,7 @@
       var label = document.createElement('div');
       label.className = 'thumb-label';
       var n = slideNumber(i);
-      label.textContent = (n === null ? 'hidden' : n) + ' · ' + s.id;
+      label.textContent = (n === null ? 'hidden' : n) + ' | ' + s.id;
       item.title = s.title;
       item.appendChild(box);
       item.appendChild(label);
@@ -280,7 +280,7 @@
         if (!list.length) addOption(sel, '', 'No versions on GitHub yet', true);
         list.forEach(function (v) {
           var when = new Date(v.date).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-          addOption(sel, v.sha, when + ' · ' + v.sha.slice(0, 7) + ' · ' + v.author + ' · ' + v.msg);
+          addOption(sel, v.sha, when + ' | ' + v.sha.slice(0, 7) + ' | ' + v.author + ' | ' + v.msg);
         });
         sel.value = state.view ? state.view.sha : '';
       }, function (err) {
@@ -321,12 +321,12 @@
     stage.appendChild(canvas);
     fit(stage, canvas);
     var n = slideNumber(state.index);
-    $('slideNo').textContent = (n === null ? 'Hidden slide' : 'Slide ' + n) + ' · ' + s.title;
+    $('slideNo').textContent = (n === null ? 'Hidden slide' : 'Slide ' + n) + ' | ' + s.title;
     $('slidePath').textContent = 'slides/' + s.id + '.html';
     $('hiddenBadge').hidden = !s.hidden;
     $('notes').textContent = s.notes || '(no notes)';
     $('versionBadge').hidden = !state.view;
-    if (state.view) $('versionBadge').textContent = 'Old version ' + state.view.sha.slice(0, 7) + ' · view only';
+    if (state.view) $('versionBadge').textContent = 'Old version ' + state.view.sha.slice(0, 7) + ' | view only';
     updateVersionMenu();
     requestAnimationFrame(function () { fit(stage, canvas); });
     document.querySelectorAll('.thumb').forEach(function (t, i) { t.classList.toggle('active', i === state.index); });
