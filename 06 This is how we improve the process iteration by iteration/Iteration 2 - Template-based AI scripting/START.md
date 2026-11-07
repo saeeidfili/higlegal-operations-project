@@ -64,7 +64,7 @@ flowchart TD
 | Lead time | ~9 d | **~4 d (3–5) [T]** | −56% | −81% | Script exists in ~1 min; in-app approvals answer faster (~24 h avg with reminders); production queue shrinks |
 | Human time | 7 h 15 | **5 h 50 [T]** | −20% | −42% | Script work 80→35 min; video gen 60→45 (scene-level prompt hints); audio 35→25; adaptation 90→75 (aspect-safe templates) |
 | Cost/video | ¥705 | **¥595 [T]** | −16% | −37% | Labour −¥120; tool credits ¥90 → ¥65 (ChatGPT replaced by self-hosted LLM) + LLM inference ¥20 + template amort ¥15 |
-| Capacity | ~26/mo | **~33/mo [T]** | +27% | +74% | 350 min/video — note: **now ≈ HiLegal's stated ceiling of 35–40 [C] — approached in a proposed scenario with unchanged headcount** |
+| Capacity | ~26/mo | **~33/mo [T]** | +27% | +74% | 350 min/video — note: **now ≈ HiLegal's stated ceiling of 35–40 [C] — reached without hiring** |
 | Rework rate | ~55% | **~30% [T]** | −25 pts | −67% | Lawyer approves a structure they already chose (template); surprises become edit-level, not structural |
 | QAR | ~45% | **~70% [T]** | +25 pts | +63% | Same mechanism |
 

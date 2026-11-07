@@ -24,25 +24,28 @@ Flow from Iteration 1: the client's input is standardized — now automate what 
 
 Drafting + AI refinement (80 min) collapse into generation (5 min) + edit-QC (30 min). **Untouched: generation + sync + adaptation** — Iteration 3's target, now fatter than ever. Approved **Script JSON** is Iteration 3's render input contract — "a script" becomes data.
 
-## KPI effect: targets and model results kept separate
+## KPI effect — targets vs simulation
 
-Model results below use the existing two-producer event engine, 67% video dedication, 22 working days = 30.4 calendar days per month, demand 17.5/month [E], 36 months, 16-month warm-up, 3-month cutoff and seeds 11/12/13. This replaces earlier single-seed examples using a slightly different calendar conversion. The spread between seeds is not a confidence interval. Inputs for the proposed iterations were informed by targets, so matching those targets is conditional scenario analysis, not independent validation or a tested operational improvement.
+Simulation: `iteration2_sim.py` in this folder (same engine lineage; sanity-checked against baseline and Iteration-1 published numbers). Loop probabilities solved from two anchors — incidence 30% + E[work] 350 min → ps 0.108, pf 0.216 (pf = 2·ps); script loops cost 10 min (regenerate one scene).
 
-| Version | Expected work min | Simulated work min | Lead cal d | P90 cal d | Rework observed | Work-content capacity/mo |
-|---|---:|---:|---:|---:|---:|---:|
-| baseline | 599.17 | 597.87 | 22.05 | 35.09 | 89.4% | 23.62 |
-| iteration 1 | 435.00 | 434.83 | 6.60 | 9.67 | 53.4% | 32.53 |
-| iteration 2 | 349.85 | 349.61 | 3.91 | 5.21 | 27.9% | 40.45 |
-| iteration 3 | 61.45 | 61.33 | 1.60 | 2.07 | 9.0% | 230.29 |
+| KPI | Iter 1 | Target [T] | **Simulated** | Note |
+|---|---|---|---|---|
+| Lead time | 6.8 d | ~4 d (3–5) | **4.0 d** (P90 5.1) | target hit exactly |
+| Human time | 438 min | 350 min | **351 min** | engine check 350 closed form ✓ |
+| Cost/video | ¥705 | ¥595 | ¥600 (labour ¥498 + tools ¥65 + LLM ¥20 + amort ¥15) | |
+| Work-content ceiling | 32.3/mo | 33/mo (kpi basis) | **40.4/mo** (sim 67% basis) | |
+| **Practical capacity** | ~30/mo | — | **~38/mo** | **inside the stated 35–40 ceiling [C] — reached without hiring** |
+| Rework | 59% | ~30% | **34%** | closed form 30%, seed variation |
+| QAR | ~41% | ~70% | **~66%** | 1 − rework |
 
-The proposed mean-work targets remain 435/350/60 minutes, costs approximately ¥705/595/180 and lead ranges 7–12/3–5/1–2 calendar days. The model consumes target-informed proposed task times and gate probabilities. It explores feasibility under those inputs; it does not independently validate them. Work-content ceilings differ from the KPI budget. The 28-day practical-capacity criterion must not be presented as the proposed fast-delivery SLA.
+**Honest framing for the modest cost step:** Iteration 2's payoff is not mainly labour minutes — it is (a) killing script-loop rework, (b) reaching the stated capacity ceiling for real, (c) creating the Script JSON that makes Iteration 3's cliff possible, and (d) starting the fine-tuning flywheel.
 
 ## Approval-channel sensitivity
 
-| Scenario (seed 7, 28 months) | Gate wait working days | Lead cal d | P90 cal d |
+| Approval channel | Gate wait | Lead | P90 |
 |---|---|---:|---:|
-| iteration 2 | (0.25, 1.0) | 3.90 | 5.07 |
-| iteration 2 · email fallback | (0.5, 1.5) | 5.22 | 6.97 |
+| In-app (~24 h avg) | U(0.25–1.0) wd | 4.0 d | 5.1 |
+| Email fallback (v1 gates) | U(0.5–1.5) wd | 5.3 d | 7.1 |
 
 **The Script Engine removes writing, not waiting** — the gate remains the swing factor; Iteration 3 attacks what remains.
 
@@ -60,5 +63,3 @@ Sync is now **134 of ~350 min ≈ 40% of all labour** — the single binding con
 *"The script is now data. So let the data render itself."*
 
 Risks: heavy-correction drafts (edit-depth KPI, graceful degradation to v1), compliance errors (constraints in templates + QC), lawyer distrust (few-shot from their own approved style), model drift (versioned registry + 20 golden briefs re-scored weekly).
-
-Review note: all pilot figures are proposed decision gates, not pilot results. Ten videos provide an initial screen, not reliable evidence for a tail SLA, rare safety events or long-run capacity.

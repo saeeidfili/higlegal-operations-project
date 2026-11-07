@@ -31,7 +31,7 @@ Baseline parameters used in the simulation (calibrated; see §4): clarification 
 
 Rework is usually managed as a *work* problem ("it costs us extra hours"). Operationally it is mostly a *queue* problem. Five mechanisms, each visible in the simulation:
 
-**① Work inflation → utilization rises.** Every loop adds minutes: 516 (none) → 600 (baseline) → 686 (heavy) min/video. Utilization of the video-dedicated budget rises 63.8% → 74.1% → 84.9% (offered workload at 17.5/month). And near the utilization cliff, a few extra minutes per video are not "a few extra minutes" — they multiply into waiting (the ρ/(1−ρ) multiplier in `../queue/queue_model-explained.md`).
+**① Work inflation → utilization rises.** Every loop adds minutes: 516 (none) → 600 (baseline) → 686 (heavy) min/video. Utilization of the video-dedicated budget rises 65% → 70% → 87%. And near the utilization cliff, a few extra minutes per video are not "a few extra minutes" — they multiply into waiting (the ρ/(1−ρ) multiplier in `../queue/queue_model-explained.md`).
 
 **② Every loop adds a wait, not just work.** A redraft does not just add 50 minutes; it adds a **new gate wait** (1–3 days) and **a new turn in the work queue**, and it holds the video in the system while everything else moves. This is why +84 min of work costs +10.8 days of lead time. The queue cost dominates.
 
@@ -41,12 +41,11 @@ Rework is usually managed as a *work* problem ("it costs us extra hours"). Opera
 
 **⑤ Capacity erosion — the moving ceiling.** At realistic dedication (67% of paid hours), the effective capacity ceiling falls:
 
-| scenario | p_clar / p_script / p_final | rework | lead cal d | P90 cal d | work min | capacity/mo |
-|---|---|---:|---:|---:|---:|---:|
-| no rework | 0.00 / 0.00 / 0.00 | 0.0% | 10.90 | 12.92 | 516.00 | 27.42 |
-| reduced rework | 0.50 / 0.10 / 0.20 | 66.0% | 14.86 | 21.55 | 550.82 | 25.87 |
-| baseline | 0.75 / 0.20 / 0.40 | 86.9% | 21.55 | 33.68 | 600.16 | 23.62 |
-| heavy rework | 0.80 / 0.40 / 0.60 | 93.0% | 30.71 | 54.06 | 686.44 | 20.62 |
+| Scenario | Capacity (videos/month) |
+|---|---:|
+| No rework | ~27.4 |
+| Baseline (~90% rework) | ~23.6 |
+| Heavy rework | ~20.6 |
 
 The company's stated ceiling of 35–40 [C] assumes 100% dedication; at operational dedication, **rework pulls the real ceiling down to ~24**. At 22/month heavy rework is past its ~21 capacity — WIP grows to ~86 videos and lead time to ~117 days, and no amount of effort fixes it.
 
@@ -80,12 +79,12 @@ A **discrete-event simulation of the full 12-step process**, not a queueing form
 
 ### 5.1 Rework intensity (λ = 17.5 videos/month)
 
-| scenario | p_clar / p_script / p_final | rework | lead cal d | P90 cal d | work min | capacity/mo |
-|---|---|---:|---:|---:|---:|---:|
-| no rework | 0.00 / 0.00 / 0.00 | 0.0% | 10.90 | 12.92 | 516.00 | 27.42 |
-| reduced rework | 0.50 / 0.10 / 0.20 | 66.0% | 14.86 | 21.55 | 550.82 | 25.87 |
-| baseline | 0.75 / 0.20 / 0.40 | 86.9% | 21.55 | 33.68 | 600.16 | 23.62 |
-| heavy rework | 0.80 / 0.40 / 0.60 | 93.0% | 30.71 | 54.06 | 686.44 | 20.62 |
+| Scenario | Lead time | P90 | Hands-on work | Rework incidence | Capacity/mo | Utilization |
+|---|---:|---:|---:|---:|---:|---:|
+| No rework | **11.0 d** | 13.1 | 516 min | 0% | 27.4 | 65% |
+| Rework halved | **15.1 d** | 21.8 | 551 min | 66% | 25.7 | 67% |
+| Baseline (~90%) | **21.8 d** | 34.1 | 600 min | 87% | 23.6 | 70% |
+| Heavy rework | **31.1 d** | 54.8 | 686 min | 93% | 20.6 | 87% |
 
 **Read it as:** removing rework cuts lead time by 49% (21.8 → 11.0 d) while cutting work by only 14%. Rework's queue cost dwarfs its work cost. The P90 tells the same story harder: half of all rework pain lands on the worst-served 10% of lawyers (34.1 vs 13.1 days).
 
@@ -153,5 +152,3 @@ python3 rework_simulation.py
 ```
 
 Change `SCENARIOS` (loop probabilities), `MONTHS`, or the demand `λ` in `main()` to explore. All randomness is seeded, so results are reproducible.
-
-Review correction: all gate probabilities and individual task minutes are assumptions. Current common-window demand/rework output is in Section 7 rework-demand-results.md. Completed-only finite-horizon lead figures for overloaded or censored cohorts are withdrawn from decision use. The intake M/M/1 is a separate aggregate surrogate and is not added to this task simulation.

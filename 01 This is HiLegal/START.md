@@ -8,7 +8,7 @@
 
 ## Suggested slide plan (4–5 slides)
 
-1. **HiLegal in one slide** — cross-border legal-tech platform operated by Fadada (a leading Shenzhen-based electronic-signature provider); connects Chinese companies expanding abroad with international lawyers. [C]
+1. **HiLegal in one slide** — cross-border legal-tech platform operated by FaDaDa (a leading Shenzhen-based electronic-signature provider); connects Chinese companies expanding abroad with international lawyers. [C]
 2. **Business model** — subscription software company: lawyers pay a recurring subscription (most popular tier ≈ **$100/month, promising 10 videos/month** [C]); the promotional video service is bundled with that subscription as a **core paid service and stated differentiator** (no major competitor offers AI-video promotion for lawyers in the cross-border space). [C] Add the one-line unit-economics teaser: ¥720/month of fixed subscription revenue on one side, up to 100 hours of variable manual labour per fully-using customer on the other → margin pressure at scale.
 3. **Why videos matter** — lawyers are high-trust service providers; Chinese companies selecting an international lawyer need face/voice/credibility signals; video compresses that trust-building across borders. One or two bullets, no more.
 4. **Example video** — embed/screenshot one real promotional video produced by the current process (screenshot + QR/link if the deck is shared).

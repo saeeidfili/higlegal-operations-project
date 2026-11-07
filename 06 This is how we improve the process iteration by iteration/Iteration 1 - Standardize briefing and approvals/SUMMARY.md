@@ -9,7 +9,7 @@ Flow from Section 5: scoreboard set — first iteration attacks the front door. 
 | 3–7 d before work starts | Intake queue [C] — free-form requests clarified by email |
 | Brief loop ≥4 iterations [C] | No format previews; free-text feedback |
 | ~90% rework [E] | Un-SLA'd email approvals, manual chasing |
-| 21 d lead, mostly waiting | Three looping gates + intake queue |
+| 21 d lead, ~94% waiting | Three looping gates + intake queue |
 
 ## The change (5 pieces)
 
@@ -23,26 +23,29 @@ Flow from Section 5: scoreboard set — first iteration attacks the front door. 
 
 Intake queue + clarification collapse into form + auto-check; approvals become instrumented SLA gates. **Deliberately untouched: the manual production middle** (drafting, generation, sync) — Iterations 2–3's job. `POST /v1/requests` stores **Brief JSON** — the input contract Iteration 2 consumes.
 
-## KPI effect: targets and model results kept separate
+## KPI effect — targets vs simulation
 
-Model results below use the existing two-producer event engine, 67% video dedication, 22 working days = 30.4 calendar days per month, demand 17.5/month [E], 36 months, 16-month warm-up, 3-month cutoff and seeds 11/12/13. This replaces earlier single-seed examples using a slightly different calendar conversion. The spread between seeds is not a confidence interval. Inputs for the proposed iterations were informed by targets, so matching those targets is conditional scenario analysis, not independent validation or a tested operational improvement.
+Simulation: `iteration1_sim.py` in this folder (engine copied from the Section 4 rework study, baseline sanity-checked: reproduces 21.8 d / 600 min / 87%). Loop probabilities solved the Section-4 way — two anchors: rework incidence 55% and E[work] = 435 min → ps ≈ 0.214, pf ≈ 0.428; structured change requests make loops *cheaper* (script 50→25, final 70→35 min), previews kill clarification entirely.
 
-| Version | Expected work min | Simulated work min | Lead cal d | P90 cal d | Rework observed | Work-content capacity/mo |
-|---|---:|---:|---:|---:|---:|---:|
-| baseline | 599.17 | 597.87 | 22.05 | 35.09 | 89.4% | 23.62 |
-| iteration 1 | 435.00 | 434.83 | 6.60 | 9.67 | 53.4% | 32.53 |
-| iteration 2 | 349.85 | 349.61 | 3.91 | 5.21 | 27.9% | 40.45 |
-| iteration 3 | 61.45 | 61.33 | 1.60 | 2.07 | 9.0% | 230.29 |
+| KPI | Baseline | Target [T] | **Simulated** | Note |
+|---|---|---|---|---|
+| Lead time | 21.8 d | ~9 d (7–12) | **6.8 d** (P90 9.9) | target holds with headroom |
+| Human time | 600 min | 435 min | **438 min** | engine check 435 closed form ✓ |
+| Cost/video | ¥940 | ¥705 | **¥710** (labour 438 min ≈ ¥620 + tools ¥90) | |
+| Work-content ceiling | 23.6/mo | 26/mo (kpi 60% basis) | **32.5/mo** (sim 67% basis) | basis difference documented in kpi-data §4 |
+| **Practical capacity** | **~20/mo** | — | **~30/mo** | criterion: lead ≤ 28 d; 32/mo → 45 d |
+| Rework | 87% | ~55% | **59%** | closed form 55%, seed variation |
+| QAR | ~13% | ~45% | **~41%** | 1 − rework |
 
-The proposed mean-work targets remain 435/350/60 minutes, costs approximately ¥705/595/180 and lead ranges 7–12/3–5/1–2 calendar days. The model consumes target-informed proposed task times and gate probabilities. It explores feasibility under those inputs; it does not independently validate them. Work-content ceilings differ from the KPI budget. The 28-day practical-capacity criterion must not be presented as the proposed fast-delivery SLA.
+**The self-validation:** baseline's simulated practical capacity (~20/mo) reproduces the company-reported output 15–20 [C] — the criterion proves itself before we trust its Iter-1 answer.
 
 ## SLA sensitivity (what the lead time actually depends on)
 
-| Scenario (seed 7, 28 months) | Gate wait working days | Lead cal d | P90 cal d |
+| Lawyer behaviour | Gate wait | Lead | P90 |
 |---|---|---:|---:|
-| iteration 1 | (0.5, 1.5) | 6.68 | 9.80 |
-| iteration 1 · fast lawyer | (0.25, 1.0) | 5.07 | 7.31 |
-| iteration 1 · SLA breached | (1.0, 1.6) | 8.06 | 12.18 |
+| Approves in ~1 d | U(0.25–1.0) wd | 5.1 d | 7.4 |
+| Typical | U(0.5–1.5) wd | 6.8 d | 9.9 |
+| Always near 48 h cap | U(1.0–1.6) wd | 8.2 d | 12.4 |
 
 **Iteration 1's lead time is gate-dominated** — lawyer behaviour swings it more than any internal production change. Even the breach case stays inside the 7–12 d target range.
 
@@ -59,5 +62,3 @@ Labour still ~7 h 20, ~6 h 40 of it the manual middle (drafting 50 + editing 22 
 *"We standardized what the client sends us. Now let's make the machine do the writing."*
 
 Risks covered: adoption (pre-filled form, ≤3 manual fields), SLA breach by lawyer (reminders + escalation + terms), rigidity (free-text alongside codes), bypass (system IS the delivery channel).
-
-Review note: all pilot figures are proposed decision gates, not pilot results. Ten videos provide an initial screen, not reliable evidence for a tail SLA, rare safety events or long-run capacity.
