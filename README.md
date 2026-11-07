@@ -79,3 +79,9 @@ animations/       full-screen animation pages (play buttons)
 runtime/          viewer code (deck.js, deck.css)
 tools/serve.ps1   local server for Windows
 ```
+
+### Preview controls
+
+- Scroll over the slide preview to move between slides. The sidebar and notes scroll independently.
+- Use the panel icons beside **Notes** to show speaker notes below or on the right. The chevron collapses or reopens them; **N** does the same.
+- The browser remembers the notes position and whether the panel is collapsed.

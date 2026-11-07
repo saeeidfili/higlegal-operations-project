@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Momo+Trust+Display&family=Inter:wght@400;600;700;800&display=swap">
-<link rel="stylesheet" href="runtime/deck.css?v=7">
+<link rel="stylesheet" href="runtime/deck.css?v=8">
 </head>
 <body>
 <div id="app">
@@ -34,8 +34,9 @@
       <button id="btnCollapseAll" type="button" aria-controls="rail">Collapse all</button>
     </div>
   </aside>
-  <main class="main">
-    <div class="stage" id="stage"></div>
+  <main class="main" id="workspace">
+    <div class="slide-area">
+    <div class="stage" id="stage" title="Scroll here to change slides"></div>
     <div class="meta">
       <div class="meta-row">
         <span id="slideNo" class="slide-no"></span>
@@ -43,13 +44,20 @@
         <button id="btnCopy" type="button">Copy path</button>
         <span id="hiddenBadge" class="badge" hidden>Hidden in Present mode</span>
         <span id="versionBadge" class="badge old" hidden></span>
-        <span id="status" class="status"></span>
-      </div>
-      <div class="notes">
-        <div class="notes-label">Speaker notes</div>
-        <div id="notes"></div>
+        <span id="status" class="status" role="status"></span>
+        <div class="notes-tools" role="group" aria-label="Speaker notes layout">
+          <span>Notes</span>
+          <button id="btnNotesBottom" type="button" class="icon-button" title="Show notes below" aria-label="Show speaker notes below" aria-pressed="true" aria-controls="notesPanel"><img src="assets/icons/panel-bottom.svg" alt=""></button>
+          <button id="btnNotesRight" type="button" class="icon-button" title="Show notes on the right" aria-label="Show speaker notes on the right" aria-pressed="false" aria-controls="notesPanel"><img src="assets/icons/panel-right.svg" alt=""></button>
+          <button id="btnNotesToggle" type="button" class="icon-button" title="Hide notes (N)" aria-label="Hide speaker notes" aria-expanded="true" aria-controls="notesPanel"><img id="notesToggleIcon" src="assets/icons/chevron-down.svg" alt=""></button>
+        </div>
       </div>
     </div>
+    </div>
+    <aside class="notes" id="notesPanel" aria-labelledby="notesHeading">
+      <div class="notes-label" id="notesHeading">Speaker notes</div>
+      <div id="notes" tabindex="0"></div>
+    </aside>
   </main>
 </div>
 <div id="present" hidden>
@@ -58,6 +66,6 @@
   <div class="pcount" id="pcount"></div>
 </div>
 <script src="runtime/sync.js?v=1"></script>
-<script src="runtime/deck.js?v=8"></script>
+<script src="runtime/deck.js?v=9"></script>
 </body>
 </html>

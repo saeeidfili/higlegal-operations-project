@@ -43,7 +43,8 @@ Taken from hilegal.com CSS, except the gold tones, which are derived from the si
 | Big number | Inter | 96 px | 800 | |
 | Lead text | Inter | 32 px | 400 | |
 | Eyebrow (chapter line) | Inter | 24 px | 600 | uppercase, letter-spacing 2 px |
-| Body, labels, tables, footers | Inter | 24 px | 400 / 600 | **never below 24 px** |
+| Body, labels, tables, slide numbers | Inter | 24 px or larger | 400 / 600 | **never below 24 px** |
+| Source and qualification footers | Inter | 18 px | 400 | Compact secondary text, 24 px from the bottom |
 
 Both fonts are Google Fonts and load in `index.html`. Do not add other fonts.
 
@@ -60,7 +61,7 @@ Use the existing Lucide SVG assets in `assets/icons/` for service diagrams. Keep
 - Title h2 `left:64px; top:80px; width:1551px`, white.
 - HiLegal logo (white) `left:1726px; top:52px; width:130px; height:80px`.
 - Flow content starts at `padding-top:232px` (or absolute content from `top:216px`).
-- Footer: source text `left:64px; bottom:24px; width:1600px; 24px; #6A7282`, page number `left:1736px; width:120px; text-align:right`.
+- Footer: source text `left:64px; bottom:24px; width:1600px; 18px; #6A7282`, page number `left:1736px; width:120px; text-align:right; font-size:24px`.
 
 ### Dark slide (cover, challenge, decision, thanks, appendix divider)
 - Background `#0A0A0A` or `#101010`. Logo top right (or top left on cover). Red or gold rules as accents.

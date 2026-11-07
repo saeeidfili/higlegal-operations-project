@@ -33,7 +33,7 @@ Keeping this format means slides can still be imported back into the original Cl
 
 1. Run the viewer (see README), open the slide, note its file path (shown under the slide).
 2. Edit only the slide files you were asked to change. Keep the process-map geometry identical across current, wastes and the three iteration slides, including their shared scale wrapper.
-3. Check the slide in the viewer at full size: nothing overlaps, body content stays above y 1008 and the footer sits 24 px from the bottom, no text below 24 px.
+3. Check the slide in the viewer at full size: nothing overlaps, body content stays above y 1008 and the footer sits 24 px from the bottom, body text and slide numbers at least 24 px. Source and qualification footers use 18 px as specified in STYLE.md.
 4. Commit one logical change per commit, e.g. `slide iter2: shorten KPI table`.
 5. Pull before you start: team members also update slide files through Git. If two people edit the same slide file, resolve the conflict by hand.
 

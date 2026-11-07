@@ -7,6 +7,14 @@
   var state = { deck: null, slides: [], index: 0, presenting: false, signature: '', view: null, versions: {} };
   var $ = function (id) { return document.getElementById(id); };
   var sectionOpen = {};
+  var notesPosition = 'bottom', notesCollapsed = false;
+  try {
+    var savedNotes = JSON.parse(localStorage.getItem('hilegal-notes-layout') || 'null');
+    if (savedNotes) {
+      notesPosition = savedNotes.position === 'right' ? 'right' : 'bottom';
+      notesCollapsed = savedNotes.collapsed === true;
+    }
+  } catch (e) {}
   // Clear credentials left by the retired browser editor.
   try { localStorage.removeItem('gh-token'); } catch (e) {}
 
@@ -325,6 +333,7 @@
     $('slidePath').textContent = 'slides/' + s.id + '.html';
     $('hiddenBadge').hidden = !s.hidden;
     $('notes').textContent = s.notes || '(no notes)';
+    $('notes').scrollTop = 0;
     $('versionBadge').hidden = !state.view;
     if (state.view) $('versionBadge').textContent = 'Old version ' + state.view.sha.slice(0, 7) + ' | view only';
     updateVersionMenu();
@@ -445,7 +454,46 @@
 
   function setStatus(msg) { $('status').textContent = msg; }
 
+  function setNotesLayout(position, collapsed) {
+    notesPosition = position;
+    notesCollapsed = collapsed;
+    $('workspace').classList.toggle('notes-right', position === 'right');
+    $('workspace').classList.toggle('notes-collapsed', collapsed);
+    $('notesPanel').hidden = collapsed;
+    $('btnNotesBottom').setAttribute('aria-pressed', String(position === 'bottom' && !collapsed));
+    $('btnNotesRight').setAttribute('aria-pressed', String(position === 'right' && !collapsed));
+    var toggle = $('btnNotesToggle');
+    toggle.setAttribute('aria-expanded', String(!collapsed));
+    toggle.setAttribute('aria-label', collapsed ? 'Show speaker notes' : 'Hide speaker notes');
+    toggle.title = (collapsed ? 'Show notes' : 'Hide notes') + ' (N)';
+    var direction = position === 'right' ? (collapsed ? 'left' : 'right') : (collapsed ? 'up' : 'down');
+    $('notesToggleIcon').src = 'assets/icons/chevron-' + direction + '.svg';
+    try { localStorage.setItem('hilegal-notes-layout', JSON.stringify({ position: position, collapsed: collapsed })); } catch (e) {}
+  }
+
   function bind() {
+    setNotesLayout(notesPosition, notesCollapsed);
+    $('btnNotesBottom').addEventListener('click', function () { setNotesLayout('bottom', false); });
+    $('btnNotesRight').addEventListener('click', function () { setNotesLayout('right', false); });
+    $('btnNotesToggle').addEventListener('click', function () { setNotesLayout(notesPosition, !notesCollapsed); });
+    // Handle only vertical wheel gestures over the slide preview. Notes and the rail scroll normally.
+    var wheelTotal = 0, wheelLast = 0, wheelChangedAt = -1000;
+    $('stage').addEventListener('wheel', function (e) {
+      if (state.presenting || !state.slides.length || e.ctrlKey || e.metaKey || Math.abs(e.deltaX) >= Math.abs(e.deltaY)) return;
+      if (e.target.closest('a, button, input, textarea, select, iframe')) return;
+      e.preventDefault();
+      var now = performance.now();
+      var delta = e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? $('stage').clientHeight : 1);
+      if (now - wheelLast > 180 || wheelTotal * delta < 0) wheelTotal = 0;
+      wheelLast = now;
+      if (now - wheelChangedAt < 320) return;
+      wheelTotal += delta;
+      if (Math.abs(wheelTotal) >= 40) {
+        wheelTotal = 0;
+        wheelChangedAt = now;
+        step(delta > 0 ? 1 : -1);
+      }
+    }, { passive: false });
     function setAllSections(open) {
       $('rail').querySelectorAll('.rail-section').forEach(function (group) {
         sectionOpen[group.dataset.section] = open;
@@ -480,6 +528,7 @@
       }
       if (k === 'ArrowRight' || k === 'ArrowDown' || k === 'PageDown') { e.preventDefault(); step(1); }
       else if (k === 'ArrowLeft' || k === 'ArrowUp' || k === 'PageUp') { e.preventDefault(); step(-1); }
+      else if (k === 'n' || k === 'N') { setNotesLayout(notesPosition, !notesCollapsed); }
       else if (k === 'p' || k === 'P') { startPresent(); }
       else if (k === 'r' || k === 'R') { reload(false); }
     });
