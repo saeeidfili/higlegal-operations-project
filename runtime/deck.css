@@ -40,13 +40,6 @@ button.primary { background: var(--ui-accent); border-color: var(--ui-accent); c
 .live input { accent-color: var(--ui-accent); }
 .version[hidden] { display: none; }
 button:disabled, select:disabled { opacity: 0.45; cursor: default; }
-.canvas.editing [data-eid] { outline: 3px dashed rgba(217, 38, 5, 0.45); outline-offset: 2px; cursor: text; }
-.canvas.editing [data-eid]:focus { outline: 3px solid #d92605; }
-#notes[contenteditable="plaintext-only"], #notes[contenteditable="true"] { outline: 2px dashed rgba(217, 38, 5, 0.45); outline-offset: 4px; }
-#tokenDlg { max-width: 560px; border: 0; border-top: 3px solid var(--ui-accent); border-radius: 8px; padding: 24px; font-size: 15px; line-height: 1.5; }
-#tokenDlg h3 { margin: 0 0 8px; }
-#tokenDlg input { width: 100%; font: inherit; padding: 8px; margin: 8px 0 16px; border: 1px solid var(--ui-line); border-radius: 6px; }
-.dlg-actions { display: flex; gap: 8px; justify-content: flex-end; }
 .badge.old { background: #f6eedf; color: #6b5223; }
 .live { display: flex; align-items: center; gap: 6px; font-size: 14px; color: #d1d5dc; }
 

@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Momo+Trust+Display&family=Inter:wght@400;600;700;800&display=swap">
-<link rel="stylesheet" href="runtime/deck.css?v=6">
+<link rel="stylesheet" href="runtime/deck.css?v=7">
 </head>
 <body>
 <div id="app">
@@ -21,9 +21,6 @@
       <label class="version" title="Earlier versions of this slide from the GitHub history">Version
         <select id="version"><option value="">Current file</option></select>
       </label>
-      <button id="btnEdit" type="button" hidden title="Edit text and notes of this slide, saved to GitHub">&#9998; Edit</button>
-      <button id="btnCancel" type="button" hidden>Cancel</button>
-      <button id="btnSave" type="button" class="primary" hidden>Save to GitHub</button>
       <label class="live" title="Reload automatically when slide files change"><input type="checkbox" id="live" checked> Live reload</label>
       <button id="btnReload" type="button" title="Reload slides (R)">Reload</button>
       <a id="lnkPresenter" class="bar-link" href="presenter.html" target="_blank" rel="noopener" title="Notes, slide arrows and a shared timer for several devices">Presenter notes</a>
@@ -46,7 +43,6 @@
         <button id="btnCopy" type="button">Copy path</button>
         <span id="hiddenBadge" class="badge" hidden>Hidden in Present mode</span>
         <span id="versionBadge" class="badge old" hidden></span>
-        <button id="btnRestore" type="button" hidden title="Copy a request for your agent to restore this version">Copy restore request</button>
         <span id="status" class="status"></span>
       </div>
       <div class="notes">
@@ -56,28 +52,12 @@
     </div>
   </main>
 </div>
-<dialog id="tokenDlg">
-  <form method="dialog">
-    <h3>Save to GitHub</h3>
-    <p>Saving creates a commit on the <code>presentation</code> branch. You need write access to the repository and a GitHub token.</p>
-    <ol>
-      <li><a id="tokenLink" href="https://github.com/settings/tokens/new?scopes=public_repo&amp;description=HiLegal%20deck%20editor" target="_blank" rel="noopener">Create a classic token</a> with the scope <code>public_repo</code>.</li>
-      <li>Paste it here. It stays in this browser only.</li>
-    </ol>
-    <input id="tokenInput" type="password" placeholder="ghp_…" autocomplete="off">
-    <div class="dlg-actions">
-      <button value="forget" type="submit" id="tokenForget">Forget saved token</button>
-      <button value="cancel" type="submit">Cancel</button>
-      <button value="ok" type="submit" class="primary">Save token and continue</button>
-    </div>
-  </form>
-</dialog>
 <div id="present" hidden>
   <div class="pstage" id="pstage"></div>
   <div class="pnotes" id="pnotes" hidden></div>
   <div class="pcount" id="pcount"></div>
 </div>
 <script src="runtime/sync.js?v=1"></script>
-<script src="runtime/deck.js?v=7"></script>
+<script src="runtime/deck.js?v=8"></script>
 </body>
 </html>
