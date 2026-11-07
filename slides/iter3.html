@@ -75,14 +75,14 @@ function f(n){var a=S[i];if(ph==0){put(a[0],a[1]);lab(a,a[0],a[1]);if(n-t0>=a[2]
 requestAnimationFrame(f);
 </script></body></html></x-embed>
 <p style="position:absolute;left:128px;bottom:64px;width:1400px;font-size:24px;color:#6A7282">Moving dot shows the cumulative process; not to scale · Baseline from HiLegal; targets ours; calc. in Appendix A</p>
-<p style="position:absolute;left:1672px;bottom:64px;width:120px;text-align:right;font-size:24px;color:#6A7282">9</p>
+<p style="position:absolute;left:1672px;bottom:64px;width:120px;text-align:right;font-size:24px;color:#6A7282">10</p>
 <aside>TIME: 1:15. MAIN MESSAGE: Iteration 3 attacks the capacity constraint directly: one avatar render produces voice, lip-sync and video together, removing the separate audio track, the 2–3 hours of manual synchronization and the ~2 hours of manual platform adaptation (16:9, 9:16 and 1:1 come out of the same render). A human still checks every render.
 CHANGED STEPS: new in Iteration 3 (thick red): "Single Avatar Render" replaces Video Gen, Audio Gen and manual platform adaptation; "Human Render Check" (~20 min QA) replaces manual Audio-Visual Sync. Everything from Iterations 1 and 2 stays (thin red). The on-slide animation follows the cumulative process: no intake queue and no clarification loop in the normal case, one lawyer approval under the 48 h SLA, one render, one check.
 MECHANISM → KPI (targets): (1) Human time 5 h 50 → ~1 h at steady state (sync 135→0, adaptation 75→0, generation 70→0; remaining: brief exceptions 10, parameters 5, script edit 15, render QA 20, delivery 5 min); expect 75–90 min during the pilot. (2) Capacity ~33 → ~190/month calculated (11,500 productive min ÷ 60), ~10× baseline; throughput rises only if demand exists. (3) Cost ¥180 = ¥85 labour + render API ¥45 + LLM ¥20 + pipeline ¥30 (estimates). (4) Lead ~1.5 d (1–2) target; the residual wait is the lawyer's script approval. (5) Rework ~30 → ~10%, QAR ~70 → ~90%: new failure modes (render failures, lip-sync errors, likeness issues) must be caught at the render QA.
 PILOT GATE: lead ≤ 2 business days, human ≤ 1 h 30 in the pilot, render success ≥ 90% first pass, 3/3 formats, rework ≤ 12%, consent 100% (stop-the-line).
 TECHNICAL LIMITS AND CONDITIONS: tool compatibility and render failures; batch render queue time not measured; written consent for each lawyer's likeness and voice (proposal §5); vendor lock-in → interchangeable components.
 INCREMENTAL VS CUMULATIVE: vs Iteration 2 the gain is the sync work; vs baseline it adds Iteration 1's fewer loops and Iteration 2's drafting saving (script work 80 → 35 min, target).
-DESIGN NOTE: the proposal's eight-step to-be design has a single lawyer approval. We keep a final approval of the rendered video as a quality and consent safeguard; HiLegal should decide whether it stays (it affects lead time, slide 11).
+DESIGN NOTE: the proposal's eight-step to-be design has a single lawyer approval. We keep a final approval of the rendered video as a quality and consent safeguard; HiLegal should decide whether it stays (it affects lead time, slide 12).
 ANIMATION: illustrates the flow only; it does not validate any numbers.
 STATUS: proposed; not tested.</aside>
 </section>
