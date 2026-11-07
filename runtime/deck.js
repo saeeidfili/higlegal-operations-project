@@ -6,6 +6,7 @@
   var SVG_NS = 'http://www.w3.org/2000/svg';
   var state = { deck: null, slides: [], index: 0, presenting: false, signature: '', view: null, versions: {}, editing: null, saved: {} };
   var $ = function (id) { return document.getElementById(id); };
+  var sectionOpen = {};
 
   function fetchText(url) {
     return fetch(url, { cache: 'no-store' }).then(function (r) {
@@ -123,8 +124,12 @@
   function fit(box, canvas) {
     var w = box.clientWidth, h = box.clientHeight;
     if (!w || !h) return;
-    var k = Math.min(w / 1920, h / 1080);
-    canvas.style.transform = 'translate(' + ((w - 1920 * k) / 2) + 'px,' + ((h - 1080 * k) / 2) + 'px) scale(' + k + ')';
+    var style = getComputedStyle(box);
+    var left = parseFloat(style.paddingLeft) || 0, right = parseFloat(style.paddingRight) || 0;
+    var top = parseFloat(style.paddingTop) || 0, bottom = parseFloat(style.paddingBottom) || 0;
+    var availableWidth = Math.max(1, w - left - right), availableHeight = Math.max(1, h - top - bottom);
+    var k = Math.min(availableWidth / 1920, availableHeight / 1080);
+    canvas.style.transform = 'translate(' + (left + (availableWidth - 1920 * k) / 2) + 'px,' + (top + (availableHeight - 1080 * k) / 2) + 'px) scale(' + k + ')';
   }
 
   function slideNumber(i) {
@@ -135,10 +140,50 @@
   }
 
   // Edit view
+  function railSection(key, section, count) {
+    var group = document.createElement('details');
+    group.className = 'rail-section';
+    group.dataset.section = key;
+    group.open = sectionOpen[key] !== false;
+    var heading = document.createElement('summary');
+    var title = document.createElement('span');
+    title.className = 'section-title';
+    var names = { internal: 'Internal', intro: 'Introduction', appendix: 'Appendix' };
+    title.textContent = names[key] || ((/^s[1-9]$/.test(key) ? '0' + key.slice(1) + '  ' : '') + section.description);
+    var total = document.createElement('span');
+    total.className = 'section-count';
+    total.textContent = count;
+    total.setAttribute('aria-label', count + (count === 1 ? ' slide' : ' slides'));
+    heading.appendChild(title);
+    heading.appendChild(total);
+    var body = document.createElement('div');
+    body.className = 'section-slides';
+    group.appendChild(heading);
+    group.appendChild(body);
+    group.addEventListener('toggle', function () {
+      sectionOpen[key] = group.open;
+      if (group.open) requestAnimationFrame(function () {
+        group.querySelectorAll('.thumb-box').forEach(function (box) { fit(box, box.querySelector('.canvas')); });
+      });
+    });
+    $('rail').appendChild(group);
+    return body;
+  }
+
   function renderRail() {
     var rail = $('rail');
     rail.innerHTML = '';
+    var starts = {}, sections = state.deck.sections || {};
+    Object.keys(sections).forEach(function (key) {
+      starts[sections[key].start] = { key: key, section: sections[key] };
+    });
+    var target = rail;
     state.slides.forEach(function (s, i) {
+      if (starts[s.id]) {
+        var group = starts[s.id], end = i + 1;
+        while (end < state.slides.length && !starts[state.slides[end].id]) end++;
+        target = railSection(group.key, group.section, end - i);
+      }
       var item = document.createElement('button');
       item.type = 'button';
       item.className = 'thumb' + (i === state.index ? ' active' : '') + (s.hidden ? ' is-hidden' : '');
@@ -154,7 +199,7 @@
       item.appendChild(box);
       item.appendChild(label);
       item.addEventListener('click', function () { select(i); });
-      rail.appendChild(item);
+      target.appendChild(item);
       requestAnimationFrame(function () { fit(box, canvas); });
     });
   }
@@ -501,7 +546,11 @@
     requestAnimationFrame(function () { fit(stage, canvas); });
     document.querySelectorAll('.thumb').forEach(function (t, i) { t.classList.toggle('active', i === state.index); });
     var active = document.querySelectorAll('.thumb')[state.index];
-    if (active && active.scrollIntoView) active.scrollIntoView({ block: 'nearest' });
+    if (active) {
+      var group = active.closest('.rail-section');
+      if (group) group.open = true;
+      if (active.scrollIntoView) active.scrollIntoView({ block: 'nearest' });
+    }
   }
 
   function select(i) {
@@ -647,7 +696,7 @@
       if (state.editing && collectEdits()) { e.preventDefault(); e.returnValue = ''; }
     });
     document.addEventListener('keydown', function (e) {
-      if (e.target && (/INPUT|TEXTAREA|SELECT/.test(e.target.tagName) || e.target.isContentEditable)) return;
+      if (e.target && (/INPUT|TEXTAREA|SELECT|SUMMARY/.test(e.target.tagName) || e.target.isContentEditable)) return;
       var k = e.key;
       if (state.presenting) {
         if (k === 'ArrowRight' || k === 'ArrowDown' || k === 'PageDown' || k === ' ' || k === 'Enter') { e.preventDefault(); step(1); }
