@@ -17,7 +17,7 @@ One-paragraph answer: at the company's ~10 h per video, rework adds **84 minutes
 - Time runs in **working days**; one month = 22 working days.
 - A producer's paid day is 8 h, but only **67%** is available for videos (the rest is platform work) → **322 effective minutes per producer-day** (480 × 0.67). All work durations are converted: `duration_days = minutes / 322`.
 - Lead times are reported in **calendar days** (×1.4 to account for weekends).
-- This 67% factor is the same dedication assumption used in `kpi-data.md` §4 and in the queueing model.
+- This 67% factor is the same dedication assumption used in `single source of truth/kpi-data.md` §4 and in the queueing model.
 
 ## 2. The engine: events on a timeline
 

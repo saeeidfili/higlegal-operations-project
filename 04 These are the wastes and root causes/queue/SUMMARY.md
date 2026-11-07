@@ -41,7 +41,7 @@ Real-world fit is carried by the other checks:
 ### The 67% / 65% cross-check
 
 - **67% = implied by μ:** 23.5 videos/month × 10 h = 235 h ÷ 352 h available = 67% of producer time on video work
-- **~65% = independent estimate** (kpi-data.md): producers aren't 100% dedicated — meetings, admin, context switching
+- **~65% = independent estimate** (kpi-data.md, single source of truth): producers aren't 100% dedicated — meetings, admin, context switching
 - Had calibration landed at e.g. μ = 33 (94% busy) it would contradict reality. 67% ≈ 65% → the number fitted from *wait times* agrees with the number reasoned from *time availability* → μ = 23.5 is credible
 
 ## Charts

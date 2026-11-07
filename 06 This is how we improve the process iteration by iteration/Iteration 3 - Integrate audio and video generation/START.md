@@ -88,7 +88,7 @@ flowchart TD
 
 - **The constraint is now the lawyer's own approval time.** Residual lead time ≈ 100% client-side (24–48 h script approval). Further improvement requires managing the client (SLAs in subscription terms, reminders, escalation) — not more internal automation. Iteration 1's SLA machinery is already in place; the process is as fast as its slowest client.
 - **AI-vendor dependency** (proposal risk): render + LLM pricing and lock-in → dual-vendor evaluation and interchangeable components; the Script JSON layer keeps the pipeline renderer-agnostic.
-- Volume ceiling is now demand, not capacity: at 40 videos/month the two producers spend **~4 h/month** total on video (see `kpi-data.md` §4) — the staffing question inverts from "can we hire enough producers?" to "what should the company do with the payroll and the management attention that no longer go into video?" → Section 8's answer: fund the legal LLM.
+- Volume ceiling is now demand, not capacity: at 40 videos/month the two producers spend **~4 h/month** total on video (see `single source of truth/kpi-data.md` §4) — the staffing question inverts from "can we hire enough producers?" to "what should the company do with the payroll and the management attention that no longer go into video?" → Section 8's answer: fund the legal LLM.
 
 ## 8. Risks & guardrails
 

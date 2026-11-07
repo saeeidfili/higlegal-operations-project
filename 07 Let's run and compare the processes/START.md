@@ -8,9 +8,9 @@
 
 ## Model design (one paragraph you can say on stage)
 
-Each video is an entity flowing through the version's process map. Steps consume **producer time (capacity constraint: 2 producers)**; queues and gates add **calendar waiting**; gates can **loop** with scenario-dependent probability. Lead time = request → published. All parameters come from `05 .../kpi-data.md`; distributions are uniform over the stated ranges [E] — we model ranges, not fake precision. Little's Law provides the sanity check on every run.
+Each video is an entity flowing through the version's process map. Steps consume **producer time (capacity constraint: 2 producers)**; queues and gates add **calendar waiting**; gates can **loop** with scenario-dependent probability. Lead time = request → published. All parameters come from `single source of truth/kpi-data.md`; distributions are uniform over the stated ranges [E] — we model ranges, not fake precision. Little's Law provides the sanity check on every run.
 
-## Input parameters per process version (all from `kpi-data.md`, tagged there)
+## Input parameters per process version (all from `single source of truth/kpi-data.md`, tagged there)
 
 | Parameter | Baseline | Iter 1 | Iter 2 | Iter 3 |
 |---|---:|---:|---:|---:|
@@ -61,7 +61,7 @@ If a run contradicts these expectations, **show it anyway** and explain — a st
 ```python
 import simpy, random
 
-VERSIONS = {  # fill from the parameter table / kpi-data.md
+VERSIONS = {  # fill from the parameter table / single source of truth/kpi-data.md
   "baseline": dict(work_min=600, intake=(3,7), clar_rounds=(2,4), clar_day=(1,2),
                    script_wait=(1,3), final_wait=(1,3), loop_p=0.9, render_days=None),
   "v1":       dict(work_min=435, intake=(0,0), clar_rounds=(0,0), clar_day=(0,0),
@@ -105,12 +105,12 @@ def run(version, demand_pm, days=90):
 # scenarios: for v, k in VERSIONS.items(): print(v, run(v, demand_pm=20))
 ```
 
-*(Skeleton: adjust work-split fractions per version so first-pass work ≈ waterfall values; calibrate S0 output to reproduce `kpi-data.md` §2 midpoints before running S1–S5 — calibration against company-reported baselines [C] is what makes the model defensible.)*
+*(Skeleton: adjust work-split fractions per version so first-pass work ≈ waterfall values; calibrate S0 output to reproduce `single source of truth/kpi-data.md` §2 midpoints before running S1–S5 — calibration against company-reported baselines [C] is what makes the model defensible.)*
 
 ## Assumptions to state on the slide (the honesty box)
 
 - Producers = 2 [C]; utilization ~60% [E]; 8 h working day, ~21.7 working days/month [E]
-- Waits uniform over stated ranges [E]; loop rates from `kpi-data.md` targets [T]
+- Waits uniform over stated ranges [E]; loop rates from `single source of truth/kpi-data.md` targets [T]
 - Calendar-day waits include weekends; render queue is FIFO batch [E]
 - Model ignores seasonality and marketing-driven demand spikes (add a scenario if asked)
 - Calibrated so S0 reproduces company-reported baseline output 15–20/mo [C] and lead time 14–28 d [C]

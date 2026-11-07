@@ -37,7 +37,7 @@
 - Consent record: "Likeness + voice consent — signed 12 Oct 2026, valid 12 months"
 - Objection window: "19 h left"
 - Engagement: 3 platforms, ~1.2k views combined after 48 h
-- Stats bar (must match `05 .../kpi-data.md`): lead time 4 d → 1.5 d · labour 5h50 → 1h00 · cost ¥595 → ¥180 · capacity 33 → ~190/mo · rework 30% → 10% · QAR 70% → 90% · steps 9 → 8
+- Stats bar (must match `single source of truth/kpi-data.md`): lead time 4 d → 1.5 d · labour 5h50 → 1h00 · cost ¥595 → ¥180 · capacity 33 → ~190/mo · rework 30% → 10% · QAR 70% → 90% · steps 9 → 8
 
 ## API surface the UI exercises
 

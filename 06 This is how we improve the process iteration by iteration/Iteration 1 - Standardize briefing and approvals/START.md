@@ -72,7 +72,7 @@ Baseline has no system APIs — coordination runs on email/Excel. Iteration 1 in
 | Rework rate | ~90% [E] | **~55% [T]** | −35 pts | Brief/clarification loops eliminated at source |
 | QAR | ~10% [E] | **~45% [T]** | +35 pts | Format previews + structured change requests |
 
-Full waterfall: `05 .../kpi-data.md` §1–2.
+Full waterfall: `single source of truth/kpi-data.md` §1–2.
 
 ## 6. KPI-check methodology (how we verify — the pilot gate)
 
@@ -93,7 +93,7 @@ Full waterfall: `05 .../kpi-data.md` §1–2.
 
 ## 7. Remaining limitation (the setup for Iteration 2)
 
-- Labour is still **7 h 15**, of which ~6 h 40 is the manual production middle (drafting 55 + script editing 25 + video gen 60 + audio gen 35 + sync 135 + adaptation 90 min — see the waterfall in `05 .../kpi-data.md` §1). The front end is fixed; **the middle is untouched.**
+- Labour is still **7 h 15**, of which ~6 h 40 is the manual production middle (drafting 55 + script editing 25 + video gen 60 + audio gen 35 + sync 135 + adaptation 90 min — see the waterfall in `single source of truth/kpi-data.md` §1). The front end is fixed; **the middle is untouched.**
 - Producers now spend their freed hours almost entirely on writing scripts and synchronizing audio-video — **manual scripting is the next constraint to attack, and it needs structured Briefs to automate — which now exist.**
 - One-line bridge: *"We standardized what the client sends us. Now let's make the machine do the writing."*
 

@@ -35,7 +35,7 @@
 - One complete generated script (4 scenes, ~200 words, 90 s duration) with per-scene compliance badges
 - One version diff pre-populated + the change request that caused it
 - Training-feed counter: 27 examples this week
-- v1→v2 comparison stats (must match `05 .../kpi-data.md`): script work 80 → 35 min · labour 7h15 → 5h50 · lead time 9 → 4 days · rework 55% → 30% · QAR 45% → 70% · capacity 26 → 33/month
+- v1→v2 comparison stats (must match `single source of truth/kpi-data.md`): script work 80 → 35 min · labour 7h15 → 5h50 · lead time 9 → 4 days · rework 55% → 30% · QAR 45% → 70% · capacity 26 → 33/month
 
 ## API surface the UI exercises
 

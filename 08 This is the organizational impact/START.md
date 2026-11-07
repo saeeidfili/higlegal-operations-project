@@ -8,7 +8,7 @@
 
 ## The impact map (operational gain → mechanism → business outcome)
 
-| # | Operational gain (from `kpi-data.md`) | Connecting assumption (state it!) | Business outcome |
+| # | Operational gain (from `single source of truth/kpi-data.md`) | Connecting assumption (state it!) | Business outcome |
 |---|---|---|---|
 | 1 | Capacity ~19 → ~190/mo with the same two producers | Demand for the differentiator exceeds 19/mo (marketing waitlist) and grows with subscriber base [E] | **The paid service can scale** to every subscriber tier without hiring producers — video stops being the reason to say "no" |
 | 2 | Cost/video ¥940 → ¥180 | Typical customer uses ~2 of the 10 promised videos/month [E]; volumes 15–40/mo | **The typical customer flips positive**: −¥1,160 → +¥360 per customer-month; delivered-volume burn −¥150–195k/yr → ≈ break-even [E] |
@@ -27,7 +27,7 @@
 
 | Assumption | Value | Basis | Risk if wrong |
 |---|---|---|---|
-| Labour rate / utilization | ¥85/h [E] · 60% [E] | Shenzhen fully-loaded build-up (`kpi-data.md` §3); utilization back-solved from company-reported output [C] | Cost figures shift proportionally; ranking of iterations unchanged |
+| Labour rate / utilization | ¥85/h [E] · 60% [E] | Shenzhen fully-loaded build-up (`single source of truth/kpi-data.md` §3); utilization back-solved from company-reported output [C] | Cost figures shift proportionally; ranking of iterations unchanged |
 | Revenue attribution per video | ¥117 [C] | HiLegal's own first assumption: model costs + 30% overhead | Attribution needs re-basing; direction robust (cost falls 81%) |
 | Demand at scale | 20 → 40+/mo | Marketing ambition consistent with stated ceiling 35–40 [C] | If demand stays 20/mo, gains 2–3 (profit, headcount) still hold; gain 1 partially idles |
 | Payroll reallocation to the core | ≈ ¥270k/yr (1.5 FTE) | Management decision [E] | If savings are absorbed by overhead, the strategic gain deflates — mitigate via an explicit budget decision (Section 9) |

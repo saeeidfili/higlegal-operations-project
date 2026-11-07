@@ -25,7 +25,7 @@ Three approval gates can send work backwards (Section 3's map):
 | G2 Script approval | script drafting | rejected → redraft + re-approve |
 | G3 Final approval | production (partial redo) | changes → re-edit, re-sync, re-adapt |
 
-Baseline parameters used in the simulation (calibrated; see §4): clarification loops with probability 0.75 per round (mean 4 rounds), script gate loops with probability 0.20 and final gate with 0.40 — late-stage rejection is twice as likely, since the client sees the real product only at the final gate (solved from the 600-min anchor by `calibrate_loops.py`) → **≈87% of videos go through at least one rework loop** [E], matching the 90% rework rate in `kpi-data.md`.
+Baseline parameters used in the simulation (calibrated; see §4): clarification loops with probability 0.75 per round (mean 4 rounds), script gate loops with probability 0.20 and final gate with 0.40 — late-stage rejection is twice as likely, since the client sees the real product only at the final gate (solved from the 600-min anchor by `calibrate_loops.py`) → **≈87% of videos go through at least one rework loop** [E], matching the 90% rework rate in `single source of truth/kpi-data.md`.
 
 ## 2. How rework hits the queue — five mechanisms
 
@@ -130,7 +130,7 @@ The simulation gives the iterations a quantitative target path:
 | 1 — structured brief + SLA approvals | G1 clarification (mean 4 → ~2 rounds) | between baseline and "halved" | −5 to −7 days lead time |
 | 2 — templates + AI scripting | G2 script loops | "halved" → better | −2 to −4 days |
 | 3 — single render | G3 final loops (deterministic render) | toward "no rework" | −1 to −2 days; residual = client approval |
-| **Chain target** | rework 90% → 10% (`kpi-data.md`) | **≈ the no-rework scenario (11 d)** | **lead time ≈ 2 weeks → ≈ 1.5 days once approval SLAs are included** |
+| **Chain target** | rework 90% → 10% (`single source of truth/kpi-data.md`) | **≈ the no-rework scenario (11 d)** | **lead time ≈ 2 weeks → ≈ 1.5 days once approval SLAs are included** |
 
 The table is honest about the direction: **rework reduction is the single largest lever on lead time** — larger than working faster, because effort cannot escape the ρ/(1−ρ) curve. The simulated 11 days still includes 2–3-day client gates; the SLA machinery in the real iteration plan compresses those further (Section 6 targets 1–2 days).
 
@@ -138,7 +138,7 @@ The table is honest about the direction: **rework reduction is the single larges
 
 - **Two producers, pooled task queue, no preemption of tasks.** Tasks are fine-grained (minutes to hours); videos wait at gates without occupying a producer.
 - **Gate loop probabilities are independent of load.** The congestion→rushed-review→more-rework feedback loop is not modeled (would worsen results).
-- **Availability factor 0.67** (platform-work share) is an assumption [E], consistent with `kpi-data.md` §4.
+- **Availability factor 0.67** (platform-work share) is an assumption [E], consistent with `single source of truth/kpi-data.md` §4.
 - **Intake wait is a lower bound** (work-conserving); the true 3–7-day intake queue is modeled in `../queue/queue_model-explained.md`.
 - **Stochastic:** seeded runs; single-seed scenario table (±5–10% run-to-run), sweep averaged over 3 seeds. Treat differences under ~2 days as noise.
 - **Heavy rework is a stress scenario**, not a forecast; P90 = 54.8 days means "the queue is out of control", not "some lawyer will wait 55 days".

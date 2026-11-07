@@ -52,7 +52,7 @@ Each iteration's API additions consume the previous iteration's outputs. Nothing
 | `02 This is the challenge` | 2 | Scaling problem, customer needs, consequences |
 | `03 This is the current process` | 3 | As-is process map, one-order walkthrough, work vs waiting |
 | `04 These are the wastes and root causes` | 4 | TIMWOODS, Five Whys, bottleneck vs lead-time drivers; **queue + rework evidence models and charts** (`queue/`, `Rework/`) |
-| `05 These are our operational KPIs` | 5 | KPI definitions, baselines, targets — **master data in `kpi-data.md`** |
+| `05 These are our operational KPIs` | 5 | KPI definitions, baselines, targets — **master data in `single source of truth/kpi-data.md`** |
 | `06 This is how we improve the process iteration by iteration` | 6 | Chain overview + one sub-folder per iteration (each has `START.md` + `ux-flow.md`) |
 | `06 .../Iteration 1 - Standardize briefing and approvals` | 6 | Front-end standardization: forms, previews, SLA approvals |
 | `06 .../Iteration 2 - Template-based AI scripting` | 6 | LLM drafting from templates + lawyer profile |
@@ -70,9 +70,9 @@ Each folder contains a `START.md` with suggestions, ready-to-use tables, and (wh
 - **[E]** = **Estimate** — our assumption or derived figure; plausible, must be sanity-checked, replace when better data arrives.
 - **[T]** = **Target** — a value we commit to for a future iteration, not an observation.
 
-**Currency note:** all money figures are in **RMB (¥)** — HiLegal is a Shenzhen-based company. Fully-loaded producer rate **¥85/h [E]** (build-up in `05 .../kpi-data.md` §3), FX **USD/CNY 7.2 [E]** ($100 tier ≈ ¥720/month). Subscription facts [C]: most popular tier $100/month, promising 10 videos/month. HiLegal's own revenue attribution: model costs + 30% overhead ≈ ¥117/video [C].
+**Currency note:** all money figures are in **RMB (¥)** — HiLegal is a Shenzhen-based company. Fully-loaded producer rate **¥85/h [E]** (build-up in `single source of truth/kpi-data.md` §3), FX **USD/CNY 7.2 [E]** ($100 tier ≈ ¥720/month). Subscription facts [C]: most popular tier $100/month, promising 10 videos/month. HiLegal's own revenue attribution: model costs + 30% overhead ≈ ¥117/video [C].
 
-## Master KPI snapshot (full detail and waterfall tables in `05 .../kpi-data.md`)
+## Master KPI snapshot (full detail and waterfall tables in `single source of truth/kpi-data.md`)
 
 | KPI | Baseline | Iter 1 | Iter 2 | Iter 3 |
 |---|---|---|---|---|

@@ -32,7 +32,7 @@
 6. Order tracker animates to "Delivered" — total elapsed shown: **8 days** (vs. baseline overlay: 21)
 7. Before/after toggle: replay in the old flow, watch the days burn in the intake queue animation
 
-## Data the demo must be seeded with (use exactly these — consistent with `05 .../kpi-data.md`)
+## Data the demo must be seeded with (use exactly these — consistent with `single source of truth/kpi-data.md`)
 
 - Lawyer: "Mei Chen — Corporate Law, cross-border M&A, EN/中文" (profile: 14 years, PwC alumni, 3 jurisdictions)
 - Baseline ghost stats for the before/after toggle: intake queue 3–7 days · brief loop ≥4 iterations · lead time 14–28 days · rework ~90%

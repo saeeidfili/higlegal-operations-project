@@ -69,7 +69,7 @@ Verify (μ = 23.5):
          Note: heavy end pins μ — Wq grows exponentially in ρ.
 
 Cross-checks:
-         labour:   23.5 × 10 h = 235 h = 67% of 352 h ✓ (~65% per kpi-data)
+         labour:   23.5 × 10 h = 235 h = 67% of 352 h ✓ (~65% per kpi-data.md, single source of truth)
                    (352 h = 2 producers × 22 wd × 8 h, same input as Section 2's table)
 ```
 

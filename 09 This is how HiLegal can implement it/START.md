@@ -39,7 +39,7 @@
 | Template library + prompt engineering (v2) | ¥25–40k | Mostly content work, not engineering |
 | Render/LLM integration (v3) | ¥45–75k | Includes dual-vendor abstraction layer |
 | Producer training | 2 × ½ day per phase | Playbooks are the deliverable |
-| Run-rate tooling (already in KPI cost) | ¥65–95/video | See `kpi-data.md` §3 |
+| Run-rate tooling (already in KPI cost) | ¥65–95/video | See `single source of truth/kpi-data.md` §3 |
 | **Total one-time** | **≈ ¥105–180k [E]** | Payback at ¥760/video saving ≈ **140–240 videos ≈ 5–8 months** at 20–35 videos/month |
 
 ## Pilot validation (the evidence engine — reuse Section 6 gates)
