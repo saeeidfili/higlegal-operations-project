@@ -74,7 +74,7 @@ Python 3.12, Matplotlib 3.11.2 and NumPy 2.5.4 were used in an isolated task dep
 
 M/M/1 single-server assumptions and the matched-boundary Little-law identity were checked against the [MIT primary teaching note](https://www.ocw.mit.edu/courses/2-854-introduction-to-manufacturing-systems-fall-2016/927056a1af54772a587fd84ad4951e71_MIT2_854F16_Mm1Queue.pdf). Algebra/engine verification and calibration are explicitly distinguished from empirical validation.
 
-The remote presentation reference observed before publishing this review was `2bdd4761f69e243a65bcf24ac1bf79520a48c156`. This task edits and pushes main only; a final remote-reference check verifies that this main push does not advance presentation. The earlier presentation work in this chat is separate from this reconciliation.
+The remote presentation reference observed before publishing this review was `2bdd4761f69e243a65bcf24ac1bf79520a48c156`. This task edits and pushes main only; the only push target used was refs/heads/main. The post-push remote read observed presentation at 034b91adfd171536ec41a280854f846b80d5094d, so the reference advanced separately during the review. This review did not edit, merge or push presentation; its remote ref cannot truthfully be described as unchanged across the entire elapsed interval. The earlier presentation work in this chat is separate from this reconciliation.
 
 ## Exact file manifest
 
