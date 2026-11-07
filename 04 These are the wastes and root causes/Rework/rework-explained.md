@@ -8,7 +8,7 @@
 
 Rework looks like an *effort* problem ("another draft, another edit"). The simulation asks: **what does rework do to the queue?** It models the whole 12-step process — two producers, three looping approval gates — and compares four rework intensities under the same demand.
 
-One-paragraph answer: at the company's ~10 h per video, rework adds **72 minutes of work but 9.7 days of lead time**; it raises work-in-process from ~6 to ~12–20 videos, and it **cuts the effective capacity ceiling** from ~27 to ~24 (baseline) to ~21 videos/month (heavy). The queue cost is ~30× the work cost.
+One-paragraph answer: at the company's ~10 h per video, rework adds **84 minutes of work but 10.8 days of lead time**; it raises work-in-process from ~6 to ~13–17 videos, and it **cuts the effective capacity ceiling** from ~27 to ~24 (baseline) to ~21 videos/month (heavy). The queue cost is ~29× the work cost.
 
 ---
 
@@ -85,9 +85,9 @@ Each rejection adds a **wait** and a **rework block** — the two things the stu
 Loop behaviour is a geometric process: after each review, the video escapes with probability `1 − p`, or loops with probability `p`.
 
 - Expected clarification rounds: `1 / (1 − p_clar)` → baseline p = 0.75 → **4 rounds** [C].
-- Expected script loops: `p_s / (1 − p_s)` → baseline 0.30 → 0.43 loops.
-- Expected final loops: same → 0.43 loops.
-- Rework incidence (≥1 loop anywhere): `1 − (1 − p_clar) × (1 − p_s) × (1 − p_f)` → **87%** at baseline (matches the ~90% estimate [E]).
+- Expected script loops: `p_s / (1 − p_s)` → baseline 0.20 → 0.25 loops.
+- Expected final loops: same → baseline 0.40 → 0.67 loops. p_final is set to twice p_script — late-stage rejection is likelier, since the client sees the real product only at the final gate (solved from the 600-min anchor by `calibrate_loops.py`).
+- Rework incidence (≥1 loop anywhere): `1 − (1 − p_clar) × (1 − p_s) × (1 − p_f)` → **88%** at baseline (matches the ~90% estimate [E]).
 
 **Closed-form check of the work content** (this is how we know the code implements the intended model):
 
@@ -99,9 +99,9 @@ E[work] = 15 + 8/(1−p_clar) + 45 + 70 + 35
 | Scenario | Formula | Simulated |
 |---|---:|---:|
 | No rework | 516 min | **516** |
-| Halved | 545 min | **548** |
-| Baseline | 591 min | **588** |
-| Heavy | 668 min | **684** (sampling noise) |
+| Halved | 547 min | **551** |
+| Baseline | 599 min | **600** |
+| Heavy | 686 min | **686** |
 
 The formula and the simulation agree within a few minutes — the model does what it claims.
 
@@ -127,29 +127,29 @@ Collected per video: lead time (`delivered − arrival`), intake wait (`first_wo
 | Scenario | p_clar | p_script | p_final | Expected rounds | Expected rework incidence |
 |---|---:|---:|---:|---:|---:|
 | No rework | 0 | 0 | 0 | 1 | 0% |
-| Rework halved | 0.50 | 0.15 | 0.15 | 2 | 57% (63% simulated) |
-| Baseline | 0.75 | 0.30 | 0.30 | 4 | 88% (87% simulated) |
-| Heavy | 0.80 | 0.50 | 0.50 | 5 | 95% (97% simulated) |
+| Rework halved | 0.50 | 0.10 | 0.20 | 2 | 64% (66% simulated) |
+| Baseline | 0.75 | 0.20 | 0.40 | 4 | 88% (87% simulated) |
+| Heavy | 0.80 | 0.40 | 0.60 | 5 | 95% (93% simulated) |
 
 ## 10. Results (λ = 17.5 videos/month)
 
 | Scenario | Lead time | P90 | Work | Rework | Capacity | Utilization |
 |---|---:|---:|---:|---:|---:|---:|
 | No rework | 11.0 d | 13.1 | 516 min | 0% | 27.4/mo | 65% |
-| Halved | 14.0 d | 20.6 | 548 min | 63% | 25.8/mo | 67% |
-| Baseline | 20.7 d | 32.0 | 588 min | 87% | 24.0/mo | 72% |
-| Heavy | 28.8 d | 47.8 | 684 min | 97% | 20.7/mo | 78% |
+| Halved | 15.1 d | 21.8 | 551 min | 66% | 25.7/mo | 67% |
+| Baseline | 21.8 d | 34.1 | 600 min | 87% | 23.6/mo | 70% |
+| Heavy | 31.1 d | 54.8 | 686 min | 93% | 20.6/mo | 87% |
 
-Capacity = `2 producers × 22 days × 322 min ÷ work per video`. Utilization is measured against the 67%-video budget; 72% there ≈ 48% of paid hours — the same regime as the queueing model (ρ ≈ 0.74–0.85).
+Capacity = `2 producers × 22 days × 322 min ÷ work per video`. Utilization is measured against the 67%-video budget; 70% there ≈ 47% of paid hours — the same regime as the queueing model (ρ ≈ 0.74–0.85).
 
 **Demand sweep (mean WIP · lead days):**
 
 | λ | No rework | Baseline | Heavy |
 |---:|---:|---:|---:|
-| 15/mo | 5.2 · 10.7 | 9.7 · 20.4 | 12.8 · 26.6 |
-| 17.5/mo | 6.2 · 11.2 | 12.5 · 22.3 | 20.4 · 32.7 |
-| 20/mo | 7.6 · 11.8 | 15.8 · 24.0 | 31.2 · 45.8 |
-| 22/mo | 8.9 · 12.5 | 23.3 · 30.7 | **71.8 · 99.6** ✗ |
+| 15/mo | 5.2 · 10.7 | 10.1 · 21.2 | 14.5 · 29.6 |
+| 17.5/mo | 6.2 · 11.2 | 12.7 · 22.4 | 17.2 · 30.6 |
+| 20/mo | 7.6 · 11.8 | 15.3 · 23.4 | 36.4 · 54.6 |
+| 22/mo | 8.9 · 12.5 | 19.4 · 28.9 | **86.3 · 116.7** ✗ |
 
 ## 11. The four charts
 
@@ -170,10 +170,10 @@ Capacity = `2 producers × 22 days × 322 min ÷ work per video`. Utilization is
    - the measurement window included videos that arrived before warm-up ended → filter by arrival date;
    - end-of-run censoring understated throughput → added a 3-month cutoff;
    - the demand sweep was noisy and non-monotonic → run 3 seeds per point and report **WIP** instead of censored lead times.
-6. **Found a modelling bug in the script loop:** a rejection re-ran the full draft+refine (155 min) *plus* the 50-min rework, contradicting the documented 50-min rework. Restructured the loop so a rejection costs one 50-min rework pass. Baseline work dropped from 630 to **588 min**, matching the ~10 h baseline [C] (−2%).
+6. **Found a modelling bug in the script loop:** a rejection re-ran the full draft+refine (155 min) *plus* the 50-min rework, contradicting the documented 50-min rework. Restructured the loop so a rejection costs one 50-min rework pass. Baseline work dropped from 630 to **588 min** (later 600 after recalibrating p_script/p_final to 0.20/0.40; see `calibrate_loops.py`), matching the ~10 h baseline [C].
 7. **Replaced the misleading "output/month" column** with **effective capacity** derived from work content (2 × 22 × 322 ÷ work). Output merely mirrored realized demand; capacity is the quantity the rework story is about.
 8. **Built the four SVG charts** with a small dependency-free SVG helper; fixed a label overflow in the impact chart and converted the Gantt to calendar days.
-9. **Validated:** calibration checks pass (lead 20.7 d inside 14–28 [C]; work 588 ≈ 10 h [C]; rework 87% ≈ 90% [E]; utilization 72% ≈ ρ 0.74–0.85), all SVGs parse as valid XML.
+9. **Validated:** calibration checks pass (lead 21.8 d inside 14–28 [C]; work 600 ≈ 10 h [C]; rework 87% ≈ 90% [E]; utilization 70% ≈ ρ 0.74–0.85), all SVGs parse as valid XML.
 10. **Documented and shipped:** wrote `START.md` (mechanisms, results, chart guide, limitations) and this file; linked both from `03 START.md`; committed and pushed to the project repository.
 
 ## 13. Limitations (say them before someone asks)
@@ -182,7 +182,7 @@ Capacity = `2 producers × 22 days × 322 min ÷ work per video`. Utilization is
 - The pooled model is **work-conserving**, so its intake wait is a lower bound; the real 3–7-day intake queue lives in `../queue/queue_model-explained.md`.
 - **Two producers, no skills differentiation** — one task pool, no specialisation or hand-offs.
 - Seeded stochastic runs: single-seed scenarios vary ±5–10%; treat small differences as noise. The sweep averages 3 seeds.
-- Heavy rework is a **stress scenario**, not a forecast. P90 = 47.8 days means "the queue is out of control", not "a specific lawyer waits 48 days".
+- Heavy rework is a **stress scenario**, not a forecast. P90 = 54.8 days means "the queue is out of control", not "a specific lawyer waits 55 days".
 
 ## 14. Run and modify
 

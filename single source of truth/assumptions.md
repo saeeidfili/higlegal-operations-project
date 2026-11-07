@@ -53,7 +53,8 @@ quoted figures, split is [E]):
 intake review 15 · clarification reply 8/round · brief 45 · drafting 70 ·
 AI refinement 35 · video gen 55 · audio 30 · **AV sync 140 [C]** ·
 **platform adaptation 95 [C]** · delivery & admin 23 → **516**; loops:
-script rework 50, final rework 70. Baseline expectation 591, simulated 588.
+script rework 50, final rework 70. Baseline expectation 599, simulated 600
+(p_script = 0.20, p_final = 0.40 — final rejection likelier; solved from the 600-min anchor).
 
 Both decompose the same [C] total; **only the total is data** — replace with
 the pilot time-log when it exists.

@@ -28,8 +28,8 @@ simulation asks what rework does to **lead time, work-in-process (WIP) and
 capacity** — and the answer is that rework is mostly a *queue* problem:
 
 > Going from "no rework" to the baseline (~90% of videos looping) adds
-> **72 minutes of hands-on work but 9.7 days of lead time** — the queue cost
-> is ~30× the work cost. WIP rises 6 → 12 → 20 videos and the capacity
+> **84 minutes of hands-on work but 10.8 days of lead time** — the queue cost
+> is ~29× the work cost. WIP rises 6 → 13 → 17 videos and the capacity
 > ceiling falls 27 → 24 → 21 videos/month. Rework doesn't just slow the
 > queue; it **moves the wall closer**: demand that was manageable becomes a
 > runaway backlog.
@@ -54,14 +54,14 @@ capacity** — and the answer is that rework is mostly a *queue* problem:
        3 content brief 45 · 4 script drafting 70 · 5 AI refinement 35
                        │
    ┌────────────────────────────────────────────────────────┐
-   │ 6  script approval ── loop (p = 0.30) ──┐               │
+   │ 6  script approval ── loop (p = 0.20) ──┐               │
    │    wait U(1–3 wd) → reject ⇒ 50 min rework + wait again │
    └────────────────────────────────────────────────────────┘
                        │
        7 video generation 55 · 8 audio 30 · 9 AV sync 140
                        │
    ┌────────────────────────────────────────────────────────┐
-   │ 10 final approval ── loop (p = 0.30) ──┐                │
+   │ 10 final approval ── loop (p = 0.40) ──┐                │
    │    wait U(1–3 wd) → reject ⇒ 70 min rework + wait again │
    └────────────────────────────────────────────────────────┘
                        │
@@ -81,9 +81,9 @@ The loop probabilities define the four scenarios:
 | Scenario | p_clar | p_script | p_final | Mean clar rounds | Rework incidence |
 |---|---:|---:|---:|---:|---:|
 | no rework | 0 | 0 | 0 | 1 | 0% |
-| rework halved | 0.50 | 0.15 | 0.15 | 2 | 63% |
-| baseline | 0.75 | 0.30 | 0.30 | 4 [C] | 87% (~90% [E]) |
-| heavy rework | 0.80 | 0.50 | 0.50 | 5 | 97% |
+| rework halved | 0.50 | 0.10 | 0.20 | 2 | 66% |
+| baseline | 0.75 | 0.20 | 0.40 | 4 [C] | 87% (~90% [E]) |
+| heavy rework | 0.80 | 0.40 | 0.60 | 5 | 93% |
 
 ### Where the scenarios come from — and why #3 is *the* baseline
 
@@ -103,32 +103,33 @@ equal to the reported 4 rounds:
 1/(1−p) = 4   →   1−p = 0.25   →   p = 0.75
 ```
 
-#### Calculation 2 — p_script = p_final = 0.30 comes from "~10 h ≈ 600 min per video" [C]
+#### Calculation 2 — p_script = 0.20 and p_final = 0.40 come from "~10 h ≈ 600 min per video" [C]
 
 The 12 tasks with no loops at all sum to **516 min**
 (15+8+45+70+35+55+30+140+95+23). The loops add:
 
 ```
 extra clarification replies : (4 rounds − 1) × 8 min          =  24.0 min
-script rework               : 50 × 0.30/(1−0.30)             =  21.4 min
-final rework                : 70 × 0.30/(1−0.30)             =  30.0 min
+script rework               : 50 × 0.20/(1−0.20)             =  12.5 min
+final rework                : 70 × 0.40/(1−0.40)             =  46.7 min
                                                              ─────────
-total expected work         : 516 + 24 + 21.4 + 30           = 591 ≈ 600 [C]
+total expected work         : 516 + 24 + 12.5 + 46.7          = 599 ≈ 600 [C]
 ```
 
 (p/(1−p) is the expected number of loops per gate; each script loop costs
-50 min, each final loop 70 min.) The two probabilities are set **equal**
-because no data distinguishes script rejections from final ones — the
-600-min anchor only constrains their *combined* minutes, and 0.30 lands on
-it.
+50 min, each final loop 70 min.) The two probabilities are **not** set
+equal: late-stage rejection is likelier — the client sees the real product
+only at the final gate — so **p_final = 2 × p_script**. The 600-min anchor
+then pins the pair (0.20, 0.40): script loops 12.5 min + final loops
+46.7 min ≈ the 60-min loop budget. Solved by `calibrate_loops.py`.
 
 #### The two numbers that were *not* used for fitting (the proof)
 
 - **Rework incidence:** with those p's, P(a video loops at least once)
-  = 1 − (0.25 × 0.70 × 0.70) = **88%** (simulated 87%) — matches the ~90%
+  = 1 − (0.25 × 0.80 × 0.60) = **88%** (simulated 87%) — matches the ~90%
   estimate [E] as a consequence, not an input.
 - **Lead time:** never fitted. Run the simulation with these probabilities
-  and it produces **20.7 days**, inside the reported 14–28 [C]. That's the
+  and it produces **21.8 days**, inside the reported 14–28 [C]. That's the
   out-of-sample evidence this scenario *is* the current process.
 
 So: **baseline = "today, in simulation"**. The other rows are defined
@@ -162,8 +163,8 @@ decomposition of that total, anchored to the Section-3 walkthrough table
 | final rework (per loop) | 70 | [E] estimate — partial re-edit + re-sync |
 
 The **hard constraint is the total**: first-time-right 516 + baseline loop
-costs 75 ≈ 591 ≈ the reported 600 [C] (and the simulated baseline lands at
-588). How that total is *split* across tasks is our estimate, shaped by the
+costs 83 ≈ 599 ≈ the reported 600 [C] (and the simulated baseline lands at
+600). How that total is *split* across tasks is our estimate, shaped by the
 trace table and slightly normalized — exactly what the parent audit trail
 says: *"per-step minutes in the trace are [E] — our decomposition; sums to
 the reported ~10 h; replace individual steps with time-log data if HiLegal
@@ -231,9 +232,9 @@ lifetimes.
 | scenario | lead d | P90 d | work min | rework | cap/mo | util |
 |---|---:|---:|---:|---:|---:|---:|
 | no rework | **11.0** | 13.1 | 516 | 0% | 27.4 | 65% |
-| rework halved | **14.0** | 20.6 | 548 | 63% | 25.8 | 67% |
-| baseline | **20.7** | 32.0 | 588 | 87% | 24.0 | 72% |
-| heavy rework | **28.8** | 47.8 | 684 | 97% | 20.7 | 78% |
+| rework halved | **15.1** | 21.8 | 551 | 66% | 25.7 | 67% |
+| baseline | **21.8** | 34.1 | 600 | 87% | 23.6 | 70% |
+| heavy rework | **31.1** | 54.8 | 686 | 93% | 20.6 | 87% |
 
 **What each column means.** *lead d* = calendar days from request to
 delivery. *P90* = 1 in 10 orders takes at least this long. *work min* =
@@ -242,29 +243,29 @@ hands-on producer minutes per video (company reports ~600 incl. rework [C]).
 min ÷ work per video. *util* = share of the video-dedicated budget that is
 busy (72% there ≈ 48% of paid hours).
 
-**How to read it.** No rework → baseline: **+72 min of work (+14%) but +9.7
-days of lead (+88%)**. Each loop does not just add its rework minutes — it
+**How to read it.** No rework → baseline: **+84 min of work (+16%) but +10.8
+days of lead (+98%)**. Each loop does not just add its rework minutes — it
 adds a fresh gate wait and another turn in the work queue, while holding the
 video in the system (Little's Law: everything else waits behind it). Removing
-rework cuts lead time **47%** while cutting work only **12%** — that gap is
+rework cuts lead time **49%** while cutting work only **14%** — that gap is
 the whole argument.
 
 **Engine check (printed every run):** closed-form expected work vs simulated:
-516/516, 545/548, 591/588, 668/684 min — the code implements the intended
+516/516, 547/551, 599/600, 686/686 min — the code implements the intended
 model.
 
-**Calibration (baseline vs company [C]):** lead 20.7 d inside 14–28 ✓ · work
-588 min vs ~600 (−2%) ✓ · rework 87% vs ~90% [E] ✓ · capacity 24.0 vs demand
+**Calibration (baseline vs company [C]):** lead 21.8 d inside 14–28 ✓ · work
+600 min vs ~600 (±0%) ✓ · rework 87% vs ~90% [E] ✓ · capacity 23.6 vs demand
 15–20 ✓.
 
 ## Part 2 results — rework × demand (lead days / mean WIP)
 
 | λ | no rework | baseline | heavy rework |
 |---:|---:|---:|---:|
-| 15/mo | 10.7 d / 5.2 | 20.4 d / 9.7 | 26.6 d / 12.8 |
-| 17.5/mo | 11.2 d / 6.2 | 22.3 d / 12.5 | 32.7 d / 20.4 |
-| 20/mo | 11.8 d / 7.6 | 24.0 d / 15.8 | 45.8 d / 31.2 |
-| 22/mo | 12.5 d / 8.9 | 30.7 d / 23.3 | **99.6 d / 71.8** ✗ |
+| 15/mo | 10.7 d / 5.2 | 21.2 d / 10.1 | 29.6 d / 14.5 |
+| 17.5/mo | 11.2 d / 6.2 | 22.4 d / 12.7 | 30.6 d / 17.2 |
+| 20/mo | 11.8 d / 7.6 | 23.4 d / 15.3 | 54.6 d / 36.4 |
+| 22/mo | 12.5 d / 8.9 | 28.9 d / 19.4 | **116.7 d / 86.3** ✗ |
 
 **How each cell is calculated.** Every (demand, rework) pair is its own
 simulation: 36 months of Poisson arrivals at that λ flow through that
@@ -282,9 +283,9 @@ to reach steady state.
 **How to read it.** Each cell is mean lead time / mean videos-in-system.
 Little's Law ties them: lead ≈ WIP ÷ throughput, so climbing WIP *is*
 climbing waits. Without rework the process absorbs 22/month comfortably.
-Baseline rework degrades steeply past 20 (WIP 16 → 23). Heavy rework at
+Baseline rework degrades steeply past 20 (WIP 15 → 19). Heavy rework at
 22/month — a level the company wants to reach — is **past capacity**: WIP
-≈ 72 and lead ≈ 100 days, growing without bound. The ceiling is not a
+≈ 86 and lead ≈ 117 days, growing without bound. The ceiling is not a
 property of the team; it is a property of **the team plus its rework**
 (compare the calculated ceiling in `../queue/queue_model-explained.md`).
 
@@ -306,7 +307,7 @@ property of the team; it is a property of **the team plus its rework**
    rework feedback loop is *not* modeled; real results are likely worse.
 3. **Stochastic, seeded** — scenario table is single-seed (±5–10% run-to-run);
    the sweep averages 3 seeds. Treat differences under ~2 days as noise.
-4. **Heavy rework is a stress scenario**, not a forecast — P90 = 47.8 d means
+4. **Heavy rework is a stress scenario**, not a forecast — P90 = 54.8 d means
    "the queue is out of control", not "this lawyer will wait 48 days".
 5. **Two undifferentiated producers**, no skills or hand-offs; 67% dedication
    is an assumption [E] shared with the queue model.
@@ -318,6 +319,6 @@ property of the team; it is a property of **the team plus its rework**
 
 ## The one line to remember
 
-> "Rework adds an hour of work and ten days of waiting — and it moves the
+> "Rework adds 84 minutes of work and eleven days of waiting — and it moves the
 > capacity wall from 27 down to 21 videos a month. Kill the loops, not the
 > overtime."

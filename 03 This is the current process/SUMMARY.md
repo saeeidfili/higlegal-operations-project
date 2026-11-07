@@ -88,7 +88,7 @@ Cross-checks:
 ## Rework (full-process simulation)
 
 - Baseline ~90% of videos loop [E]; simulated 87%
-- Rework cost is mostly queue, not work: **+72 min hands-on vs +9.7 days lead time** (~30×)
-- At 17.5 videos/month, WIP: **6.2 → 12.5 → 20.4** (no rework → baseline → heavy)
-- Capacity ceiling drops: **27.4 → 24.0 → 20.7 videos/month**; at 22/month with heavy rework the process is past capacity (WIP ~72, ~100 days)
-- Calibration: baseline 20.7 d lead (vs 14–28 d [C]), 588 min work (vs ~10 h [C]), capacity ~24/month (vs demand 15–20 [C])
+- Rework cost is mostly queue, not work: **+84 min hands-on vs +10.8 days lead time** (~29×)
+- At 17.5 videos/month, WIP: **6.2 → 12.7 → 17.2** (no rework → baseline → heavy)
+- Capacity ceiling drops: **27.4 → 23.6 → 20.6 videos/month**; at 22/month with heavy rework the process is past capacity (WIP ~86, ~117 days)
+- Calibration: baseline 21.8 d lead (vs 14–28 d [C]), 600 min work (vs ~10 h [C]), capacity ~23.6/month (vs demand 15–20 [C])

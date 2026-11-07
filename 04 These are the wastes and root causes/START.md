@@ -12,10 +12,10 @@
 |---|---|---|---|
 | **Waiting** | Step 2 intake queue (3–7 d [C]); gates 7, 12a; loop re-queues | Work ≈ 6% of lead time. The queue model reproduces the whole intake band from first principles: at μ ≈ 23.5/month the observed demand 15–20 gives ρ = 0.64–0.85 and an expected wait of 2.3–7.5 days — the reported 3–7 d is *the mathematics of utilization*, not slowness; P90 ≈ 10 d, and demand ×1.33 makes the wait ×3.2 | **Dominant (lead time)** |
 | **Overprocessing** | Steps 5–6 (human drafts, AI only refines — order reversed from optimal); steps 9–11 (video and audio generated **separately**, then synced **manually**); step 12b (manual platform adaptation) | Sync 2–3 h [C] + adaptation ~2 h [C] = ~40–45% of all labour [E]; the rework simulation confirms these blocks dominate every scenario untouched by loops | **Dominant (labour/capacity)** |
-| **Defects** | Rejection loops at all three gates; clarification may loop multiple times [C] | ≥4 brief iterations [C]; rework ≈ 90% of videos [E]. Simulated: the loops add **72 minutes of work but 9.7 days of lead time** — the queue cost is ~30× the work cost — and they pull the capacity ceiling down 27.4 → 24.0 → 20.7/month | High |
+| **Defects** | Rejection loops at all three gates; clarification may loop multiple times [C] | ≥4 brief iterations [C]; rework ≈ 90% of videos [E]. Simulated: the loops add **84 minutes of work but 10.8 days of lead time** — the queue cost is ~29× the work cost — and they pull the capacity ceiling down 27.4 → 23.6 → 20.6/month | High |
 | **Skills — strategic cost mismatch** | The two producers are video makers by trade: their skills are fully used — but they cannot cross over to the core product (LLM fine-tuning is a different discipline). The waste is the cost structure: ¥360k/year [E] of manual video production payroll inside an AI-native software company | An AI-native company should create value through software leverage; carrying agency-style human production economics — expensive people doing what the platform should produce — destroys value against that model. No amount of effort by these two people converts their hours into core-product progress | **High (strategic)** |
 | **Transportation** | Files moved by copy-paste across 5+ tools (email → ChatGPT → Seedance → TTS → editor) | Manual handoffs at every green box [C — tool stack confirmed] | Medium |
-| **Inventory (WIP)** | Videos sitting in queues between all steps | Queue-gated process (Little's Law). The models make the invisible inventory countable: the intake inbox should hold **≈ 2–5 parked requests** (falsifiable — go count it), and the whole system ≈ 12.5 videos in process at typical demand, rising to 20+ with heavy rework | Medium |
+| **Inventory (WIP)** | Videos sitting in queues between all steps | Queue-gated process (Little's Law). The models make the invisible inventory countable: the intake inbox should hold **≈ 2–5 parked requests** (falsifiable — go count it), and the whole system ≈ 12.7 videos in process at typical demand, rising to 17+ with heavy rework | Medium |
 | **Motion** | Searching emails/Assets for brief versions, brand files, prior feedback | No single source of truth per order [E] | Medium |
 | **Overproduction** | Minor — occasional unused format variants produced "just in case" | Low | Low |
 
@@ -50,7 +50,7 @@
 4. Why no structure? → No approval workflow exists — the producer manually chases each gate.
 5. **Root cause: unstructured, un-SLA'd approvals.**
 
-*The model agrees — loudly:* a loop looks like 50–70 minutes of extra work, but each one also plants a fresh 1–3-day gate wait and another turn in the work queue while every other video waits behind it (Little's Law). 72 minutes bought 9.7 days.
+*The model agrees — loudly:* a loop looks like 50–70 minutes of extra work, but each one also plants a fresh 1–3-day gate wait and another turn in the work queue while every other video waits behind it (Little's Law). 84 minutes bought 10.8 days.
 
 **One-line synthesis for the slide:** *three root causes — unstructured intake, no data spine, unstructured approvals — generate all three dominant wastes.*
 
@@ -89,26 +89,26 @@ self-serve intake kills either mechanism.
 
 Simulate the entire 12-step process — two pooled producers, three looping
 gates, arrivals at 17.5/month — and calibrate it to today (it reproduces the
-reported lead time 20.7 d inside 14–28 [C], the work 588 min ≈ 600 [C], and
+reported lead time 21.8 d inside 14–28 [C], the work 600 min ≈ 600 [C], and
 the ~90% rework incidence [E]). Then switch the loops off and compare:
 
 | | no rework | baseline (today) | heavy rework |
 |---|---:|---:|---:|
-| Lead time | 11.0 d | **20.7 d** | 28.8 d (P90 47.8) |
-| Hands-on work | 516 min | **588 min** | 684 min |
-| Videos in system | 6.2 | **12.5** | 20.4 |
-| Capacity ceiling | 27.4/mo | **24.0/mo** | 20.7/mo |
+| Lead time | 11.0 d | **21.8 d** | 31.1 d (P90 54.8) |
+| Hands-on work | 516 min | **600 min** | 686 min |
+| Videos in system | 6.2 | **12.7** | 17.2 |
+| Capacity ceiling | 27.4/mo | **23.6/mo** | 20.6/mo |
 
-Read the gap between the columns: going from no-rework to today adds **72
-minutes of work but 9.7 days of lead time** — the queue cost of rework is
-~30× its work cost. The mechanism is Little's Law: every loop parks the video
+Read the gap between the columns: going from no-rework to today adds **84
+minutes of work but 10.8 days of lead time** — the queue cost of rework is
+~29× its work cost. The mechanism is Little's Law: every loop parks the video
 at a gate for 1–3 days, adds another turn in the work queue, and holds it in
 the system while everything else waits behind it. And because loops inflate
-work content, they also **eat the ceiling**: 27.4 → 24.0 → 20.7/month as
+work content, they also **eat the ceiling**: 27.4 → 23.6 → 20.6/month as
 rework grows. The ceiling is not a property of the team; it is a property of
 **the team plus its rework**. At 22/month with heavy rework — a level the
-company wants to reach — the simulation's queue grows without bound (WIP ≈ 72,
-lead ≈ 100 days): past the wall, every month adds permanent backlog.
+company wants to reach — the simulation's queue grows without bound (WIP ≈ 86,
+lead ≈ 117 days): past the wall, every month adds permanent backlog.
 
 ### Beat 3 — One system, three wastes, one accounting identity
 
@@ -133,8 +133,8 @@ true.
 
 | Lens | What limits it | Evidence | Which iteration fixes it |
 |---|---|---|---|
-| **Output volume (capacity)** | Manual audio-visual synchronization — largest single labour block (2–3 h [C]), serialized per video, cannot be parallelized by adding effort — **plus the rework that inflates every other task** | Company operates at 15–20/month vs. a stated ceiling of 35–40 [C]; labour math ~19/month at observed utilization [E]; simulation: rework pulls the ceiling 27.4 → 24.0 → 20.7/month; the stated ceiling equals the calculated 100%-dedication wall 35.2 | Iterations 2–3 (scripting automation shrinks upstream labour; single render deletes sync + adaptation entirely) |
-| **Lead time (speed)** | Queues: intake queue (3–7 d [C]) + three looping approval gates [C] | Work ≈ 6% of lead time; queue model: expected wait 2.3–7.5 d, P90 ≈ 10 d, ×3.2 nonlinearity; simulation: loops are worth +9.7 d of waiting | **Iteration 1** (structured intake kills the intake queue and clarification loop; SLA'd mobile approvals cap gate waits) |
+| **Output volume (capacity)** | Manual audio-visual synchronization — largest single labour block (2–3 h [C]), serialized per video, cannot be parallelized by adding effort — **plus the rework that inflates every other task** | Company operates at 15–20/month vs. a stated ceiling of 35–40 [C]; labour math ~19/month at observed utilization [E]; simulation: rework pulls the ceiling 27.4 → 23.6 → 20.6/month; the stated ceiling equals the calculated 100%-dedication wall 35.2 | Iterations 2–3 (scripting automation shrinks upstream labour; single render deletes sync + adaptation entirely) |
+| **Lead time (speed)** | Queues: intake queue (3–7 d [C]) + three looping approval gates [C] | Work ≈ 6% of lead time; queue model: expected wait 2.3–7.5 d, P90 ≈ 10 d, ×3.2 nonlinearity; simulation: loops are worth +10.8 d of waiting | **Iteration 1** (structured intake kills the intake queue and clarification loop; SLA'd mobile approvals cap gate waits) |
 | **Unit economics** | Labour content per video (every manual minute is recurring cost) | ¥940/video [E] vs. ¥117 revenue attribution [C — HiLegal's own assumption: model costs + 30% overhead] | All three iterations (labour waterfall in `05 .../kpi-data.md`) |
 
 **The key sentence to say out loud:** *"Fixing the bottleneck alone would not fix the lead time — queues, not capacity, gate this process. And fixing the queues alone would not fix the cost — the manual middle is the cost. That is why we need a chain of iterations, not one silver bullet."* This is also exactly why Iteration 1 (lead time) precedes Iterations 2–3 (capacity/cost) — and why each iteration's design assumes the previous one is already in place.
@@ -151,9 +151,8 @@ Regenerate with the two scripts; reference from slides by relative path:
 | Chart | Use in this section as |
 |---|---|
 | `queue/queue-cliff.svg` | THE waiting-waste slide: the utilization cliff with the observed 3–7 d band and the ρ = 1 wall = the "ceiling" |
-| `queue/why-one-server.svg` | the modeling-choice sidebar (why the team counts as one pooled unit) |
 | `queue/order-timeline.svg` | work ≈ 6% — red dominates Lawyer Chen's 18.8 days |
-| `Rework/rework-impact.svg` | the defects-waste headline: +72 min ↔ +9.7 d, whiskers show the P90 tail |
+| `Rework/rework-impact.svg` | the defects-waste headline: +84 min ↔ +10.8 d, whiskers show the P90 tail |
 | `Rework/rework-vs-demand.svg` | capacity erosion: three rework levels, three different walls |
 | `Rework/queue-sample-path.svg` · `Rework/gantt-rework.svg` | backup slides: the backlog forming at 22/mo; one order's loops |
 

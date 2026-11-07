@@ -100,9 +100,13 @@ GATE_WAIT = (1.0, 3.0)                # script/final approval waits, working day
 # Expected clarification rounds = 1/(1−p_clar): 0.75 → 4 rounds [C].
 SCENARIOS = [
     ("no rework",       dict(p_clar=0.00, p_script=0.00, p_final=0.00)),
-    ("rework halved",   dict(p_clar=0.50, p_script=0.15, p_final=0.15)),
-    ("baseline",        dict(p_clar=0.75, p_script=0.30, p_final=0.30)),
-    ("heavy rework",    dict(p_clar=0.80, p_script=0.50, p_final=0.50)),
+    ("rework halved",   dict(p_clar=0.50, p_script=0.10, p_final=0.20)),
+
+    # p_final = 2 x p_script: late-stage rejection is likelier - the client
+    # sees the real product only at the final gate. Solved from the 600-min
+    # anchor by calibrate_loops.py (E[work] = 600.0, incidence 88.1%).
+    ("baseline",        dict(p_clar=0.75, p_script=0.20, p_final=0.40)),
+    ("heavy rework",    dict(p_clar=0.80, p_script=0.40, p_final=0.60)),
 ]
 
 NAVY, GOLD, RED, GREEN, GREY = ("#0F2A43", "#C9A227", "#C62828", "#2E7D32",
@@ -419,8 +423,8 @@ how to read the table
 
 what the numbers say
   * without rework the process absorbs 22/month (WIP ≈ 9, lead ≈ 12 d)
-  * baseline rework degrades steeply past 20/month (WIP 16 → 23)
-  * heavy rework at 22/month is PAST CAPACITY: WIP ≈ 72 and lead ≈ 100 d —
+  * baseline rework degrades steeply past 20/month (WIP 15 → 19)
+  * heavy rework at 22/month is PAST CAPACITY: WIP ≈ 86 and lead ≈ 117 d —
     the backlog grows without bound; no amount of effort drains it""")
 
     # WIP time series at 22/month for the queue chart
@@ -545,7 +549,7 @@ def chart_sweep(lambdas, levels, sweep) -> None:
         ys = [sweep[lam][j][1] for lam in lambdas]
         ax.plot(lambdas, ys, "o-", color=colors[j], lw=2.6, ms=6,
                 label=name)
-    ax.annotate("past capacity:\nWIP ≈ 72 · lead ≈ 100 d",
+    ax.annotate("past capacity:\nWIP ≈ 86 · lead ≈ 117 d",
                 xy=(22.0, sweep[22.0][2][1]), xytext=(19.0, 62),
                 fontsize=10, color=RED, weight="bold",
                 arrowprops=dict(arrowstyle="->", color=RED, lw=1.2))

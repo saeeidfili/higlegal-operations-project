@@ -66,7 +66,7 @@ that matches your frame:
 |---|---|---|---|
 | KPI capacity (baseline) | ~19/mo | 2 × 160 h × **60%** utilization = 11,500 min ÷ **600 min** | kpi-data §4 |
 | Queue-model capacity μ | ~23.5/mo | calibrated to the 3–7 d wait; 67% of 2 × 176 h | queue_model-explained.md |
-| Rework-sim capacity (baseline) | ~24/mo | 2 × 22 d × 322 min (**67%**) ÷ **588 min** simulated | rework-flow.md |
+| Rework-sim capacity (baseline) | ~23.6/mo | 2 × 22 d × 322 min (**67%**) ÷ **600 min** simulated | rework-flow.md |
 | Theoretical ceiling | 35.2/mo | **100%** of 2 × 176 paid hours ÷ 10 h — ≈ stated 35–40 [C] | queue_model-explained.md |
 | No-rework ceiling (sim) | ~27.4/mo | same 67% budget ÷ 516 min first-time-right | rework-flow.md |
 
@@ -74,7 +74,7 @@ Other deliberate differences:
 - **Hours base:** 176 h = 22 d × 8 h paid (models) vs 160 h productive (KPI math) vs
   21.7 working days/month (calendar conversion).
 - **Minute split of the ~10 h:** the KPI waterfall (600) and the rework simulation's
-  task minutes (516 first-time-right + loops → 588) are two decompositions of the same
+  task minutes (516 first-time-right + loops → 600) are two decompositions of the same
   [C] total — side by side in `assumptions.md`.
 - **Labour share of ¥940:** ¥850/¥940 = 90.4%; some drafts say 90.6% or "91%". Use ~90%.
 - **Utilization vs dedication:** 60% (KPI) and 67% (models) are the same concept at

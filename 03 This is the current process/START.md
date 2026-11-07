@@ -73,10 +73,10 @@ Lawyers wait **3–7 days in the intake queue** before anyone looks at their req
 
 Rework is usually managed as extra *work*; operationally it is mostly extra *queue*. The `Rework/` folder (now in Section 4) simulates the **whole 12-step process** (two producers, three looping gates) and isolates the effect:
 
-- Baseline (~90% of videos loop) vs. no rework: **+72 min of hands-on work but +9.7 days of lead time** — the queue cost of rework is ~30× its work cost [E]
-- At 17.5 videos/month, work-in-process rises **6.2 → 12.5 → 20.4** videos from no-rework to baseline to heavy — and lead time = WIP ÷ throughput (Little's Law)
-- Rework lowers the effective capacity ceiling: **~27.4 → ~24.0 → ~20.7 videos/month** (no rework → baseline → heavy, at realistic dedication); at 22/month with heavy rework the process is past capacity (WIP ~72, ~100 days)
-- Calibration checks: baseline 20.7 d lead (14–28 d [C]), 588 min work (~10 h [C]), 87% rework (~90% [E]), capacity ~24/month (demand 15–20 [C])
+- Baseline (~90% of videos loop) vs. no rework: **+84 min of hands-on work but +10.8 days of lead time** — the queue cost of rework is ~29× its work cost [E]
+- At 17.5 videos/month, work-in-process rises **6.2 → 12.7 → 17.2** videos from no-rework to baseline to heavy — and lead time = WIP ÷ throughput (Little's Law)
+- Rework lowers the effective capacity ceiling: **~27.4 → ~23.6 → ~20.6 videos/month** (no rework → baseline → heavy, at realistic dedication); at 22/month with heavy rework the process is past capacity (WIP ~86, ~117 days)
+- Calibration checks: baseline 21.8 d lead (14–28 d [C]), 600 min work (~10 h [C]), 87% rework (~90% [E]), capacity ~23.6/month (demand 15–20 [C])
 
 Files: `rework_simulation.py`, `rework-flow.md` (the flow + results guide), `rework-impact.svg`, `queue-sample-path.svg`, `rework-vs-demand.svg`, `gantt-rework.svg`.
 
