@@ -27,14 +27,14 @@ The script, in four parts (each is one function, run in order by main()):
           calculate the company's 35–40/month ceiling from first principles
   Part 2  Predictions: backlog, wait tail, P90, nonlinearity, the ρ = 1 wall
   Part 3  Validate every formula with a discrete-event simulation
-  Part 4  Render the three SVG charts with matplotlib (transparent
+  Part 4  Render the two SVG charts with matplotlib (transparent
             backgrounds, for slides):
             queue-cliff.svg (utilization cliff + demand sweep, merged)
-            order-timeline.svg · why-one-server.svg
+            order-timeline.svg
 
 Run:      uv run queue_model.py            (auto-installs matplotlib)
       or  .venv/bin/python queue_model.py  (project venv, matplotlib installed)
-Output:   console tables + the three SVG files, written next to this script.
+Output:   console tables + the two SVG files, written next to this script.
 """
 
 from __future__ import annotations
@@ -50,7 +50,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.patches import FancyArrowPatch, FancyBboxPatch, Patch
+from matplotlib.patches import Patch
 
 # ----------------------------------------------------------------------
 # Parameters — the single source of truth; every table and chart flows
@@ -86,7 +86,7 @@ STEPS = [
 ]
 
 NAVY, GOLD, RED, GREEN = "#0F2A43", "#C9A227", "#C62828", "#2E7D32"
-AMBER, BLUE, GREY = "#F9A825", "#1565C0", "#9AA5B1"
+AMBER, BLUE = "#F9A825", "#1565C0"
 
 
 # ----------------------------------------------------------------------
@@ -341,94 +341,10 @@ def chart_order_timeline() -> None:
     _save(fig, "order-timeline.svg")
 
 
-def chart_why_one_server() -> None:
-    """The model-choice slide: textbook M/M/c vs HiLegal's order rail."""
-    fig = plt.figure(figsize=(11.2, 7.0))
-    gs = fig.add_gridspec(2, 2, height_ratios=(2.6, 1), hspace=0.34,
-                          wspace=0.14, top=0.90, bottom=0.04)
-
-    def rbox(ax, x, y, w, h, text, fc="white", ec=NAVY, tc="#222",
-             fs=9.5, weight="normal", lw=1.6):
-        ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.10",
-                                    fc=fc, ec=ec, lw=lw))
-        ax.text(x + w / 2, y + h / 2, text, ha="center", va="center",
-                fontsize=fs, color=tc, weight=weight)
-
-    def arrow(ax, p1, p2, color=NAVY, dashed=False):
-        ax.add_patch(FancyArrowPatch(p1, p2, arrowstyle="-|>", mutation_scale=14,
-                                     color=color, lw=1.4,
-                                     linestyle="--" if dashed else "-"))
-
-    # ---- left panel: textbook M/M/c -----------------------------------
-    axl = fig.add_subplot(gs[0, 0])
-    axl.set_xlim(0, 10); axl.set_ylim(0, 10)
-    axl.axis("off")
-    axl.set_title("Textbook M/M/c — tills & call centres",
-                  color=NAVY, weight="bold", fontsize=12)
-    for i, x in enumerate((0.8, 1.7, 2.6)):           # the shared line
-        axl.add_patch(FancyBboxPatch((x, 4.6), 0.7, 0.7,
-                                     boxstyle="round,pad=0.04",
-                                     fc="#ECEFF3", ec=GREY, lw=1.2))
-    axl.text(2.05, 3.7, "one shared line", ha="center", fontsize=9.5,
-             color="#555")
-    for y, name in ((7.2, "Server 1"), (4.5, "Server 2"), (1.8, "Server 3")):
-        rbox(axl, 5.0, y, 4.5, 1.7,
-             f"{name}\ntakes the next customer\nthe instant it is free")
-        arrow(axl, (3.8, 4.95), (5.0, y + 0.85), dashed=True)
-    axl.text(5.0, 0.35, "jobs take minutes · handover is free → M/M/c fits",
-             ha="center", fontsize=10, color="#555", style="italic")
-
-    # ---- right panel: HiLegal's order rail ----------------------------
-    axr = fig.add_subplot(gs[0, 1])
-    axr.set_xlim(0, 10); axr.set_ylim(0, 10)
-    axr.axis("off")
-    axr.set_title("HiLegal — the order rail (no preemption)",
-                  color=NAVY, weight="bold", fontsize=12)
-    rbox(axr, 0.3, 7.0, 3.2, 1.9, "INTAKE INBOX\nrequests wait\n3–7 days [C]",
-         fc=RED, ec=RED, tc="white", weight="bold")
-    rbox(axr, 4.5, 7.0, 3.4, 1.9,
-         "PICKUP GATE\nonly at a completion\nboundary — no preemption",
-         fc="#FFF8E1", ec=AMBER, tc="#6d5300", weight="bold")
-    arrow(axr, (3.5, 7.95), (4.5, 7.95))
-    rbox(axr, 0.6, 2.2, 4.3, 1.2, "Producer A\nvideo in hands:\nstart → finish",
-         fc=GREEN, ec=GREEN, tc="white", fs=9)
-    rbox(axr, 5.1, 2.2, 4.3, 1.2, "Producer B\nvideo in hands:\nstart → finish",
-         fc=GREEN, ec=GREEN, tc="white", fs=9)
-    arrow(axr, (6.2, 7.0), (2.75, 3.4))
-    arrow(axr, (6.2, 7.0), (7.25, 3.4))
-    axr.text(0.35, 4.55, "a slot frees only\nwhen a video finishes",
-             ha="left", fontsize=9, color="#555")
-    axr.text(5.0, 0.6, "both mid-video → nobody answers  ⇒  ONE pooled server (M/M/1)",
-             ha="center", fontsize=10, color=RED, weight="bold")
-
-    # ---- bottom band: the claim, tied to the calibration fit -----------
-    axb = fig.add_subplot(gs[1, :])
-    axb.set_xlim(0, 1); axb.set_ylim(0, 1)
-    axb.axis("off")
-    axb.add_patch(FancyBboxPatch((0.01, 0.02), 0.98, 0.96,
-                                 boxstyle="round,pad=0.01",
-                                 fc="#F5F6F8", ec="#D8DCE2", lw=1.2))
-    axb.text(0.5, 0.78, "One queue, one pooled answering function — that is M/M/1",
-             ha="center", fontsize=11.5, color=NAVY, weight="bold")
-    axb.text(0.5, 0.50, "A video is held start-to-finish, so a slot frees only"
-                        " when one finishes —\nthe inbox cannot be answered by"
-                        " “the other producer” mid-video.",
-             ha="center", fontsize=10.5, color="#333")
-    axb.text(0.5, 0.15, "And it fits: M/M/1 at μ ≈ 23.5 gives 2.3 / 3.8 / 7.5"
-                        " days across the demand range 15–20 — the reported"
-                        " 3–7 days [C].",
-             ha="center", fontsize=10.5, color=RED, weight="bold")
-
-    fig.suptitle("Why one server?  Two waiting lines, different physics",
-                 fontsize=13, weight="bold")
-    _save(fig, "why-one-server.svg")
-
-
 def part4_charts() -> None:
-    hr("PART 4 · CHARTS → three SVGs, transparent background, next to script")
+    hr("PART 4 · CHARTS → two SVGs, transparent background, next to script")
     chart_cliff_sweep()
     chart_order_timeline()
-    chart_why_one_server()
 
 
 def main() -> None:
@@ -437,8 +353,7 @@ def main() -> None:
     part3_simulation()
     part4_charts()
     print("\nDONE. Slide use:  queue-cliff.svg → THE chart (cliff + demand"
-          " sweep, one curve) · order-timeline.svg → work vs wait ·"
-          " why-one-server.svg → the model-choice slide\n")
+          " sweep, one curve) · order-timeline.svg → work vs wait\n")
 
 
 if __name__ == "__main__":
