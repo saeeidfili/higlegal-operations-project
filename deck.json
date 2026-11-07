@@ -12,7 +12,7 @@
         "current",
         "chapter-2",
         "wastes",
-        "rework",
+        "queue",
         "kpis",
         "chapter-3",
         "iter1",
@@ -27,7 +27,10 @@
         "thanks",
         "appx-divider",
         "appx-a",
-        "appx-b"
+        "appx-b",
+        "appx-c",
+        "appx-d",
+        "appx-e"
     ],
     "sections": {
         "internal": {

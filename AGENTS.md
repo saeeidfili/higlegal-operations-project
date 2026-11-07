@@ -10,7 +10,7 @@ This repo is a 15-minute Operations Management presentation (PHBS, Group 9) abou
 |---|---|---|
 | `deck.json` | Deck title, slide **order**, sections, `history` (repo and paths for the Version dropdown) | Yes, when adding/removing/reordering slides |
 | `slides/<id>.html` | One slide per file, one `<section id="<id>">` each | **Yes – this is where content lives** |
-| `assets/` | Logos, hero image, group photo | Add files; do not replace logos |
+| `assets/` | Logos, hero image, group photo, `charts/` (model charts copied from `main`, used in appendix C–E) | Add files; do not replace logos; refresh charts from `main` when the models change |
 | `animations/` | Full-screen animation pages linked by the play buttons | Only if asked |
 | `runtime/` | Viewer code (slide preview, present mode) | Only if asked |
 | `index.html` | Viewer entry point | Only if asked |
