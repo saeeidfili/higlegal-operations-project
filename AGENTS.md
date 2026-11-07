@@ -44,3 +44,5 @@ Keeping this format means slides can still be imported back into the original Cl
 - Do not cite the group's own proposal or briefing on slides; cite the HiLegal team, company information, our analysis or lecture slides.
 
 - Text separators: never use middle dots (Unicode U+00B7 or HTML entities). Use ` | ` for independent labels, commas for related phrases, and full stops between sentences. Apply this to slides, notes, animations and viewer labels. See STYLE.md, Text separators.
+
+- Company naming: write **Fadada** consistently in all presentation copy, headings, speaker notes and image descriptions.

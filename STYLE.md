@@ -50,7 +50,7 @@ Both fonts are Google Fonts and load in `index.html`. Do not add other fonts.
 
 ### Service overview icons
 
-Use the existing Lucide SVG assets in `assets/icons/` for service diagrams. Keep a consistent outline style and retain `assets/icons/LICENSE.txt`. Use the original FaDaDa and HiLegal logo images for brands. Service labels and company relationships stay editable in HTML.
+Use the existing Lucide SVG assets in `assets/icons/` for service diagrams. Keep a consistent outline style and retain `assets/icons/LICENSE.txt`. Use the original Fadada and HiLegal logo images for brands. Service labels and company relationships stay editable in HTML.
 
 ## 4. Layout patterns
 
@@ -114,3 +114,7 @@ Colour never carries meaning alone: every box also says "Work", "Wait", "Gate", 
 - Use full stops to separate complete sentences. Choose punctuation by meaning rather than replacing every separator with the same character.
 - Example footer: `Targets, not tested | baseline est. from HiLegal input | calc. in Appendix A`.
 - Apply this rule to all new or revised slides and check the final rendered text before committing.
+
+### Company naming
+
+- Write **Fadada** consistently in all presentation copy, headings, speaker notes and image descriptions.
