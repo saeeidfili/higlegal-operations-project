@@ -2,7 +2,7 @@
 
 Group 9 · Peking University HSBC Business School · Operations Management
 
-HTML version of our presentation "Scaling HiLegal's lawyer video production". One file per slide, a viewer with a slide preview and a present mode, live animations on slides 4 and 9.
+HTML version of our presentation "Scaling HiLegal's lawyer video production". One file per slide, a viewer with a slide preview and a present mode, live animations on the current-process and final-iteration slides.
 
 ## Run it
 

@@ -47,6 +47,10 @@ Taken from hilegal.com CSS, except the gold tones, which are derived from the si
 
 Both fonts are Google Fonts and load in `index.html`. Do not add other fonts.
 
+### Service overview icons
+
+Use the existing Lucide SVG assets in `assets/icons/` for service diagrams. Keep a consistent outline style and retain `assets/icons/LICENSE.txt`. Use the original FaDaDa and HiLegal logo images for brands. Service labels and company relationships stay editable in HTML.
+
 ## 4. Layout patterns
 
 ### Light content slide (header band)
