@@ -5,8 +5,8 @@ Every slide in `slides/` follows these rules. Agents and people: read this befor
 ## 1. Canvas
 
 - Every slide is exactly **1920 × 1080 px** (16:9). The viewer scales it to fit.
-- Safe margins: **128 px** left and right. Nothing important goes outside x 128–1792.
-- Content area on light slides: **y 216–960**. The footer sits at `bottom:64px`.
+- Safe margins: **64 px** left and right. Nothing important goes outside x 64–1856.
+- Content area on light slides: **y 216–1008**. The footer sits at `bottom:24px`.
 
 ## 2. Colour tokens
 
@@ -38,7 +38,7 @@ Taken from hilegal.com CSS, except the gold tones, which are derived from the si
 | Role | Font | Size | Weight | Notes |
 |---|---|---|---|---|
 | Cover / closing title (h1) | Momo Trust Display | 120 px | 400 | line-height 1.05 |
-| Slide title in header (h2) | Momo Trust Display | 52 px | 400 | white, `white-space:nowrap`, max 1440 px wide |
+| Slide title in header (h2) | Momo Trust Display | 52 px | 400 | white, `white-space:nowrap`, max 1551 px wide |
 | Title on dark slides (h2) | Momo Trust Display | 56 px | 400 | |
 | Big number | Inter | 96 px | 800 | |
 | Lead text | Inter | 32 px | 400 | |
@@ -52,12 +52,11 @@ Both fonts are Google Fonts and load in `index.html`. Do not add other fonts.
 ### Light content slide (header band)
 - Black band `left:0; top:0; width:1920px; height:184px; background:#0A0A0A`.
 - Gold line `top:184px; height:2px; background:#C9A86A`.
-- Eyebrow `left:128px; top:40px`, colour `#99A1AF`.
-- Title h2 `left:128px; top:80px; width:1440px`, white.
-- HiLegal logo (white) `left:1662px; top:52px; width:130px; height:80px`.
-- Optional play button `left:1370px; top:70px; width:260px`, gold 2 px border, radius 8 px.
+- Eyebrow `left:64px; top:40px`, colour `#99A1AF`.
+- Title h2 `left:64px; top:80px; width:1551px`, white.
+- HiLegal logo (white) `left:1726px; top:52px; width:130px; height:80px`.
 - Flow content starts at `padding-top:232px` (or absolute content from `top:216px`).
-- Footer: source text `left:128px; bottom:64px; width:1400px; 24px; #6A7282`, page number `left:1672px; width:120px; text-align:right`.
+- Footer: source text `left:64px; bottom:24px; width:1600px; 24px; #6A7282`, page number `left:1736px; width:120px; text-align:right`.
 
 ### Dark slide (cover, challenge, decision, thanks, appendix divider)
 - Background `#0A0A0A` or `#101010`. Logo top right (or top left on cover). Red or gold rules as accents.
@@ -69,9 +68,11 @@ Both fonts are Google Fonts and load in `index.html`. Do not add other fonts.
 - Label 24 px 600 in `accent`, body 24 px `body`, separated by a 2 px top rule (`#101010`).
 - Highlight block: same structure, white background, 2 px top rule in `accent`. No thick side bars, no shadows.
 
-## 5. Process map (slides 4–9)
+## 5. Process map (current, wastes, iter1, iter2, iter3)
 
 The process map must keep the **same geometry on every slide**, so changes are visible between iterations.
+
+The base coordinates below stay unchanged inside one absolutely positioned map wrapper. The wrapper uses `transform-origin:128px 230px; transform:translate(-64px,-8px) scale(1.076923)` to display the full map at x 64–1856. Keep the map's `x-embed` inside that wrapper so the animation follows the same geometry. Do not scale its children again. The analysis blocks below the map start at y 654 and span 1792 px from x 64.
 
 - 6 columns, x = **128, 413, 698, 983, 1268, 1553**, box width **239**.
 - Row 1 y = **270**, row 2 y = **446**, box height **112** (stacked half boxes: 52 px at 446 and 506).
