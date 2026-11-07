@@ -161,7 +161,7 @@
           if (!sec || sec.hasAttribute('hidden')) return;
           var aside = sec.querySelector('aside'), h = sec.querySelector('h1, h2');
           var notes = aside ? aside.textContent.trim() : '';
-          out.push({ id: id, title: h ? h.textContent.replace(/\s+/g, ' ').trim() : id, notes: notes, plan: planMs(notes) });
+          out.push({ id: id, chapter: sec.getAttribute('data-chapter'), title: h ? h.textContent.replace(/\s+/g, ' ').trim() : id, notes: notes, plan: planMs(notes) });
         });
         return out;
       });
@@ -176,7 +176,8 @@
   function render() {
     if (!slides.length) return;
     var i = index(), s = slides[i];
-    $('slideNo').textContent = 'Slide ' + (i + 1) + ' / ' + slides.length;
+    var numbered = slides.filter(function (x) { return !x.chapter; }), n = numbered.indexOf(s) + 1;
+    $('slideNo').textContent = s.chapter ? 'Chapter ' + s.chapter : 'Slide ' + n + ' / ' + numbered.length;
     $('title').textContent = s.title;
     $('notes').innerHTML = formatNotes(s.notes);
     $('next').textContent = i + 1 < slides.length ? 'Next: ' + slides[i + 1].title : 'Last slide';

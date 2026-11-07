@@ -51,6 +51,7 @@
       html: html,
       notes: aside ? aside.textContent.trim() : '',
       hidden: !!(sec && sec.hasAttribute('hidden')),
+      chapter: sec ? sec.getAttribute('data-chapter') : null,
       title: heading ? heading.textContent.replace(/\s+/g, ' ').trim() : id
     };
   }
@@ -141,11 +142,19 @@
     canvas.style.transform = 'translate(' + (left + (availableWidth - 1920 * k) / 2) + 'px,' + (top + (availableHeight - 1080 * k) / 2) + 'px) scale(' + k + ')';
   }
 
+  // Chapter dividers are not numbered, so the page numbers printed on the slides stay correct.
+  function isNumbered(s) { return !s.hidden && !s.chapter; }
+
   function slideNumber(i) {
-    if (state.slides[i].hidden) return null;
+    if (!isNumbered(state.slides[i])) return null;
     var n = 0;
-    for (var j = 0; j <= i; j++) if (!state.slides[j].hidden) n++;
+    for (var j = 0; j <= i; j++) if (isNumbered(state.slides[j])) n++;
     return n;
+  }
+
+  function slideLabel(s, n) {
+    if (s.chapter) return 'Chapter ' + s.chapter;
+    return n === null ? 'hidden' : String(n);
   }
 
   // Slide preview
@@ -203,7 +212,7 @@
       var label = document.createElement('div');
       label.className = 'thumb-label';
       var n = slideNumber(i);
-      label.textContent = (n === null ? 'hidden' : n) + ' | ' + s.id;
+      label.textContent = slideLabel(s, n) + ' | ' + s.id;
       item.title = s.title;
       item.appendChild(box);
       item.appendChild(label);
@@ -329,7 +338,7 @@
     stage.appendChild(canvas);
     fit(stage, canvas);
     var n = slideNumber(state.index);
-    $('slideNo').textContent = (n === null ? 'Hidden slide' : 'Slide ' + n) + ' | ' + s.title;
+    $('slideNo').textContent = (s.chapter ? 'Chapter divider ' + s.chapter : (n === null ? 'Hidden slide' : 'Slide ' + n)) + ' | ' + s.title;
     $('slidePath').textContent = 'slides/' + s.id + '.html';
     $('hiddenBadge').hidden = !s.hidden;
     $('notes').textContent = s.notes || '(no notes)';
@@ -369,8 +378,8 @@
     stage.appendChild(canvas);
     fit(stage, canvas);
     $('pnotes').textContent = s.notes || '';
-    var vis = visibleIndices();
-    $('pcount').textContent = (vis.indexOf(state.index) + 1) + ' / ' + vis.length;
+    var total = state.slides.filter(isNumbered).length, n = slideNumber(state.index);
+    $('pcount').textContent = n === null ? '' : n + ' / ' + total;
   }
 
   function startPresent() {

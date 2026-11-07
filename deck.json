@@ -8,12 +8,16 @@
         "visit",
         "scope",
         "challenge",
+        "chapter-1",
         "current",
+        "chapter-2",
         "wastes",
         "kpis",
+        "chapter-3",
         "iter1",
         "iter2",
         "iter3",
+        "chapter-4",
         "results",
         "scenarios",
         "impact",
@@ -43,11 +47,11 @@
         },
         "s3": {
             "description": "The current process",
-            "start": "current"
+            "start": "chapter-1"
         },
         "s4": {
             "description": "Waste and root causes",
-            "start": "wastes"
+            "start": "chapter-2"
         },
         "s5": {
             "description": "Operational KPIs",
@@ -55,11 +59,11 @@
         },
         "s6": {
             "description": "Three improvement iterations",
-            "start": "iter1"
+            "start": "chapter-3"
         },
         "s7": {
             "description": "Process comparison and scenarios",
-            "start": "results"
+            "start": "chapter-4"
         },
         "s8": {
             "description": "Organizational impact",

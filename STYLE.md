@@ -28,7 +28,7 @@ Taken from hilegal.com CSS, except the gold tones, which are derived from the si
 | `accent` | `#D92605` | Brand red: labels, process **changes**, key rules. Use sparingly. |
 | `accent-tint` | `#FBE4DF` | Fill of a box that is **new** in this iteration |
 | `accent-tint-2` | `#FDF3F1` | Fill of a box changed in an **earlier** iteration |
-| `gold` | `#C9A86A` | Fine 2 px line under the header, play-button outline, "company-reported" tags on dark |
+| `gold` | `#C9A86A` | Fine 2 px line under the header, chapter divider background, "company-reported" tags on dark |
 | `wait-fill` | `#F6EEDF` | Fill of **waiting** steps and approval gates |
 | `wait-line` | `#A8823F` | Border of waiting steps |
 | `wait-text` | `#6B5223` | Text in waiting steps |
@@ -68,6 +68,11 @@ Use the existing Lucide SVG assets in `assets/icons/` for service diagrams. Keep
 
 ### Internal slide (team questions, review)
 - White background, red eyebrow "Internal | …", 56 px title, `hidden` on the section, footer says how to remove it. Never shown in Present mode.
+
+### Chapter divider (chapter-1 to chapter-4)
+- Same layout as the appendix divider, in gold: background `#C9A86A`, dark HiLegal logo top right, title h1 Momo Trust Display 120 px `#101010`, then a `258 × 2 px` rule in `#101010`.
+- No numbering on the slide. `data-chapter="01 / 04"` on the section is for the viewer only: the slide is not numbered (printed page numbers stay correct) and fades in through `runtime/deck.css`.
+- Copy an existing `slides/chapter-*.html` for a new divider; notes say it lasts about 3 to 4 seconds with no separate time budget.
 
 ### Text block
 - Label 24 px 600 in `accent`, body 24 px `body`, separated by a 2 px top rule (`#101010`).

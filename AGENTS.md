@@ -25,6 +25,7 @@ This repo is a 15-minute Operations Management presentation (PHBS, Group 9) abou
 - Live animation layers: `<x-embed style="position:absolute;…">…small HTML page…</x-embed>`. The viewer runs it in a sandboxed iframe.
 - Speaker notes: one `<aside>` as the **last** child of the section, plain text.
 - `hidden` on the section hides it in Present mode (used for the internal slides `team-questions` and `review`).
+- `data-chapter="01 / 04"` marks a chapter divider (`chapter-1` to `chapter-4`): it is skipped in slide numbering and fades in. See STYLE.md, Chapter divider.
 - Images: `<img src="assets/…" alt="…" style="width;height;object-fit:cover|contain">`. Optional `data-crop="1 X% Y%"` sets the crop focus.
 
 Keeping this format means slides can still be imported back into the original Claude Slides deck.
