@@ -17,6 +17,8 @@
 
 ## 2. Change introduced
 
+**Demo artifact:** [`brief-form.html`](brief-form.html) — the 12-field intake form with format previews, profile auto-fill, and the instant completeness check.
+
 1. **Structured self-serve intake form** (in HiLegal Studio, web + mobile): 12 fields — video format (from a catalogue of 5), objective, practice areas, target audience, language(s), tone, key messages, length, avatar consent flag, deadline, asset links, notes. **Format previews** (30-second animated examples) shown at selection time — the lawyer sees the end-shape before requesting.
 2. **Profile auto-fill**: practice areas, credentials, languages, photo pulled from the lawyer's platform profile (`GET /profiles/{id}`).
 3. **Auto completeness check & routing**: incomplete briefs are bounced back instantly with specific missing fields — **the intake queue and the clarification loop are deleted at the source**. Complete briefs route directly to a producer.
