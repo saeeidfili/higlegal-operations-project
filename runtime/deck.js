@@ -667,6 +667,14 @@
   function setStatus(msg) { $('status').textContent = msg; }
 
   function bind() {
+    function setAllSections(open) {
+      $('rail').querySelectorAll('.rail-section').forEach(function (group) {
+        sectionOpen[group.dataset.section] = open;
+        group.open = open;
+      });
+    }
+    $('btnExpandAll').addEventListener('click', function () { setAllSections(true); });
+    $('btnCollapseAll').addEventListener('click', function () { setAllSections(false); });
     $('btnPresent').addEventListener('click', startPresent);
     $('btnReload').addEventListener('click', function () { reload(false); });
     $('btnCopy').addEventListener('click', function () {

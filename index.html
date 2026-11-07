@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Momo+Trust+Display&family=Inter:wght@400;600;700;800&display=swap">
-<link rel="stylesheet" href="runtime/deck.css?v=5">
+<link rel="stylesheet" href="runtime/deck.css?v=6">
 </head>
 <body>
 <div id="app">
@@ -30,7 +30,13 @@
       <button id="btnPresent" type="button" class="primary" title="Present (P)">&#9654; Present</button>
     </div>
   </header>
-  <nav class="rail" id="rail" aria-label="Slides"></nav>
+  <aside class="sidebar" aria-label="Slide navigation">
+    <nav class="rail" id="rail" aria-label="Slides"></nav>
+    <div class="rail-actions" aria-label="Chapter controls">
+      <button id="btnExpandAll" type="button" aria-controls="rail">Expand all</button>
+      <button id="btnCollapseAll" type="button" aria-controls="rail">Collapse all</button>
+    </div>
+  </aside>
   <main class="main">
     <div class="stage" id="stage"></div>
     <div class="meta">
@@ -72,6 +78,6 @@
   <div class="pcount" id="pcount"></div>
 </div>
 <script src="runtime/sync.js?v=1"></script>
-<script src="runtime/deck.js?v=6"></script>
+<script src="runtime/deck.js?v=7"></script>
 </body>
 </html>
