@@ -85,8 +85,9 @@ STEPS = [
     ("12b Publish + adapt",     17.8,  1.0, "work"),
 ]
 
-NAVY, GOLD, RED, GREEN = "#0F2A43", "#C9A227", "#C62828", "#2E7D32"
-AMBER, BLUE = "#F9A825", "#1565C0"
+# Colour tokens — presentation design system (STYLE.md, presentation branch)
+NAVY, GOLD, RED, GREEN = ("#101010", "#C9A86A", "#D92605", "#A8823F")  # ink, gold, accent, wait-line
+AMBER, BLUE = "#C9A86A", "#6A7282"
 
 
 # ----------------------------------------------------------------------
@@ -262,11 +263,11 @@ def chart_cliff_sweep() -> None:
     # observed band
     ax.axhspan(3, 7, color=GOLD, alpha=0.35, zorder=1)
     ax.text(0.06, 7.45, "company-reported intake wait: 3–7 days [C]",
-            fontsize=10.5, color="#8a6d1a")
+            fontsize=10.5, color="#6B5223")
 
     # the three observed demand points
     for lam, lab, col in ((LAMBDA_LOW, "light 15/mo", GREEN),
-                          (LAMBDA_MID, "typical 17.5/mo", "#8a6d1a"),
+                          (LAMBDA_MID, "typical 17.5/mo", "#6B5223"),
                           (LAMBDA_HIGH, "heavy 20/mo", RED)):
         r = mm1(lam, MU)
         ax.plot(r["rho"], r["Wq"] * CAL, "o", color=col, ms=7, zorder=4)
@@ -296,13 +297,13 @@ def chart_cliff_sweep() -> None:
     ax.set_ylabel("expected intake wait (calendar days)")
     ax.set_title("The utilization cliff = the demand sweep — one curve,"
                  " two axes (μ ≈ 23.5/month)", weight="bold")
-    ax.grid(axis="y", color="#E3E6EA", lw=0.8)
+    ax.grid(axis="y", color="#E5E7EB", lw=0.8)
     _save(fig, "queue-cliff.svg")
 
 
 def chart_order_timeline() -> None:
     """One order through the 12 steps — work vs. wait."""
-    colors = {"work": GREEN, "wait": RED, "mixed": AMBER, "client": BLUE}
+    colors = {"work": NAVY, "wait": RED, "mixed": GOLD, "client": BLUE}
     n = len(STEPS)
     fig, ax = plt.subplots(figsize=(10.8, 6.4))
 
@@ -323,13 +324,13 @@ def chart_order_timeline() -> None:
             lab.set_color(NAVY)
 
     for d in range(0, 20, 2):
-        ax.axvline(d, color="#E3E6EA", lw=0.8, zorder=1)
+        ax.axvline(d, color="#E5E7EB", lw=0.8, zorder=1)
     ax.set_xlim(0, 19.5)
     ax.set_ylim(-0.7, n - 0.3)
     ax.set_xlabel("calendar days")
     ax.set_xticks(range(0, 20, 2))
     ax.set_title("active work ≈ 10 h ≈ 6% of elapsed time — everything red is waiting",
-                 fontsize=11, color="#555")
+                 fontsize=11, color="#6A7282")
     fig.suptitle("Lawyer Chen's video — 18.8 days end-to-end (reported: 2–4 weeks [C])",
                  weight="bold")
 

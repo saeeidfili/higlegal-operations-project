@@ -47,13 +47,15 @@ import iteration3_sim as eng  # noqa: E402
 
 WD, CAL, BUDGET = eng.WD_MONTH, eng.CAL, eng.BUDGET_MIN
 OUT = HERE
-NAVY, GOLD, RED, GREEN, GREY = "#0F2A43", "#C9A227", "#C62828", "#2E7D32", "#9AA5B1"
-SLATE, BLUE, DARKRED = "#5C7A99", "#1565C0", "#7B1F1F"
+# Colour tokens — presentation design system (STYLE.md, presentation branch)
+NAVY, GOLD, RED, GREEN, GREY = ("#101010", "#C9A86A", "#D92605", "#A8823F",
+                                "#99A1AF")                # ink, gold, accent, wait-line, grey-400
+SLATE, BLUE, DARKRED = "#99A1AF", "#4A5565", "#D92605"    # grey-400, body, accent
 VERSIONS = ["baseline", "iteration 1", "iteration 2", "iteration 3"]
 SHORT = {"baseline": "baseline", "iteration 1": "v1 · standardize",
          "iteration 2": "v2 · AI scripting", "iteration 3": "v3 · single render"}
-VCOLORS = {"baseline": GREY, "iteration 1": GREEN, "iteration 2": GOLD,
-           "iteration 3": NAVY}
+VCOLORS = {"baseline": "#99A1AF", "iteration 1": "#A8823F",
+           "iteration 2": "#C9A86A", "iteration 3": "#101010"}
 TOOLS = {"baseline": 90, "iteration 1": 90, "iteration 2": 100, "iteration 3": 95}
 
 
@@ -204,7 +206,7 @@ def s0():
         ax.set_xticks(range(4))
         ax.set_xticklabels(["base", "v1", "v2", "v3"], fontsize=9)
         ax.set_title(title, fontsize=10)
-        ax.grid(axis="y", color="#E3E6EA", lw=0.8)
+        ax.grid(axis="y", color="#E5E7EB", lw=0.8)
         if "capacity" in title:
             ax.set_yscale("log")
     fig.suptitle("S0 · normal conditions (λ = 20/mo) — the four process versions",
@@ -226,7 +228,7 @@ def s0():
             if w <= 0:
                 continue
             if kind == "work":
-                c = DARKRED if "rework" in lab or "objection" in lab else GREEN
+                c = DARKRED if "rework" in lab or "objection" in lab else NAVY
             elif "clarification" in lab:
                 c = GOLD
             elif "render" in lab:
@@ -245,12 +247,12 @@ def s0():
                  weight="bold")
     from matplotlib.patches import Patch
     ax.legend(handles=[Patch(facecolor=c, label=l) for l, c in
-                       (("active work", GREEN), ("rework / objection", DARKRED),
+                       (("active work", NAVY), ("rework / objection", DARKRED),
                         ("approval wait", RED), ("clarification wait", GOLD),
                         ("machine render", BLUE), ("intake queue", SLATE))],
               ncol=6, loc="upper center", bbox_to_anchor=(0.5, -0.09),
               frameon=False, fontsize=9)
-    ax.grid(axis="x", color="#E3E6EA", lw=0.8)
+    ax.grid(axis="x", color="#E5E7EB", lw=0.8)
     save(fig, "timer-bars.svg")
 
 
@@ -280,7 +282,7 @@ def s1():
     ax.set_ylabel("mean lead time (calendar days, clipped at 65)")
     ax.set_title("S1 · demand surge — where each version saturates", weight="bold")
     ax.legend(frameon=False, fontsize=10)
-    ax.grid(color="#E3E6EA", lw=0.8)
+    ax.grid(color="#E5E7EB", lw=0.8)
     save(fig, "saturation.svg")
 
     # WIP paths at 40/mo
@@ -296,7 +298,7 @@ def s1():
     ax.set_title("S1 · WIP at 40 videos/month — backlog spiral vs flat line",
                  weight="bold")
     ax.legend(frameon=False, fontsize=10)
-    ax.grid(color="#E3E6EA", lw=0.8)
+    ax.grid(color="#E5E7EB", lw=0.8)
     save(fig, "wip-paths.svg")
     stable = {v: sweep[200][v]["mean_lead"] for v in VERSIONS}
     print(f"  at 200/mo: " + " · ".join(
@@ -325,7 +327,7 @@ def s2():
     x = np.arange(len(VERSIONS))
     w = 0.36
     ax.bar(x - w / 2, [res[v][0]["mean_lead"] for v in VERSIONS], w,
-           color=GREEN, label="normal gates")
+           color=NAVY, label="normal gates")
     ax.bar(x + w / 2, [res[v][1]["mean_lead"] for v in VERSIONS], w,
            color=RED, label="gates ×2.5 (slow lawyers)")
     for i, v in enumerate(VERSIONS):
@@ -339,7 +341,7 @@ def s2():
     ax.set_title("S2 · slow lawyers — v3's worst case ≈ baseline's best case",
                  weight="bold")
     ax.legend(frameon=False, fontsize=10)
-    ax.grid(axis="y", color="#E3E6EA", lw=0.8)
+    ax.grid(axis="y", color="#E5E7EB", lw=0.8)
     save(fig, "slow-lawyers.svg")
 
 
@@ -374,7 +376,7 @@ def s3():
     ax.set_ylabel("mean lead time (calendar days)")
     ax.set_title("S3 · every gate loops up to 4 iterations — worst-case robustness",
                  weight="bold")
-    ax.grid(axis="y", color="#E3E6EA", lw=0.8)
+    ax.grid(axis="y", color="#E5E7EB", lw=0.8)
     save(fig, "rework-stress.svg")
 
 

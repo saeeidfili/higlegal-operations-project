@@ -109,9 +109,10 @@ SCENARIOS = [
     ("heavy rework",    dict(p_clar=0.80, p_script=0.40, p_final=0.60)),
 ]
 
-NAVY, GOLD, RED, GREEN, GREY = ("#0F2A43", "#C9A227", "#C62828", "#2E7D32",
-                                "#9AA5B1")
-DARKRED, SLATE = "#7B1F1F", "#5C7A99"
+# Colour tokens — presentation design system (STYLE.md, presentation branch)
+NAVY, GOLD, RED, GREEN, GREY = ("#101010", "#C9A86A", "#D92605", "#A8823F",
+                                "#99A1AF")                       # ink gold accent wait-line grey-400
+DARKRED, SLATE = "#D92605", "#99A1AF"
 
 
 def expected_work(p: dict) -> float:
@@ -489,7 +490,7 @@ def chart_impact(results) -> None:
     ax1.set_ylabel("lead time (calendar days)")
     ax1.set_title("bar = mean · whisker = P90 (1 in 10 orders)", fontsize=10,
                   color="#555")
-    ax1.grid(axis="y", color="#E3E6EA", lw=0.8)
+    ax1.grid(axis="y", color="#E5E7EB", lw=0.8)
 
     for i, r in enumerate(results):
         y = len(results) - 1 - i
@@ -506,7 +507,7 @@ def chart_impact(results) -> None:
     ax2.text(600, len(results) - 0.35, " company baseline ≈ 600 min [C]",
              fontsize=9, color="#555", va="center")
     ax2.set_xlabel("hands-on work per video (minutes)")
-    ax2.grid(axis="x", color="#E3E6EA", lw=0.8)
+    ax2.grid(axis="x", color="#E5E7EB", lw=0.8)
 
     fig.suptitle("Rework: a little extra work, a lot of extra waiting "
                  "(same team, same demand)", weight="bold")
@@ -537,7 +538,7 @@ def chart_queue_path(queue_runs) -> None:
     ax.set_title("Videos in the system at 22/month — rework builds a backlog",
                  weight="bold")
     ax.legend(frameon=False, fontsize=10)
-    ax.grid(axis="y", color="#E3E6EA", lw=0.8)
+    ax.grid(axis="y", color="#E5E7EB", lw=0.8)
     _save(fig, "queue-sample-path.svg")
 
 
@@ -558,7 +559,7 @@ def chart_sweep(lambdas, levels, sweep) -> None:
     ax.set_title("Rework × demand: where work-in-process explodes",
                  weight="bold")
     ax.legend(frameon=False, fontsize=10)
-    ax.grid(axis="y", color="#E3E6EA", lw=0.8)
+    ax.grid(axis="y", color="#E5E7EB", lw=0.8)
     _save(fig, "rework-vs-demand.svg")
 
 
@@ -578,7 +579,7 @@ def chart_gantt(results) -> None:
 
     for label, v, y in rows:
         lead = (v.delivered - v.arrival) * CAL
-        ax.barh(y, lead, height=0.52, color="#ECEFF3", zorder=1)  # elapsed
+        ax.barh(y, lead, height=0.52, color="#E5E7EB", zorder=1)  # elapsed
         intake = ((v.first_work or v.arrival) - v.arrival) * CAL
         ax.barh(y, intake, height=0.52, color=SLATE, zorder=3)
         if intake > 2:
@@ -588,7 +589,7 @@ def chart_gantt(results) -> None:
             x = (s - v.arrival) * CAL
             w = (e - s) * CAL
             if kind == "work":
-                color = DARKRED if "rework" in lab else GREEN
+                color = DARKRED if "rework" in lab else NAVY
             else:
                 color = GOLD if "clarification" in lab else RED
             ax.barh(y, max(w, 0.15), left=x, height=0.52, color=color,
@@ -597,15 +598,15 @@ def chart_gantt(results) -> None:
     ax.set_yticks([y for _, _, y in rows])
     ax.set_yticklabels([l for l, _, _ in rows], fontsize=11)
     for d in range(0, int(tmax) + 1, 5):
-        ax.axvline(d, color="#E3E6EA", lw=0.8, zorder=0)
+        ax.axvline(d, color="#E5E7EB", lw=0.8, zorder=0)
     ax.set_xlim(0, tmax)
     ax.set_xlabel("calendar days since request")
     ax.set_title("One order, two worlds — where rework time actually goes",
                  weight="bold")
     handles = [Patch(facecolor=c, label=l) for l, c in
-               (("active work", GREEN), ("rework (extra work)", DARKRED),
+               (("active work", NAVY), ("rework (extra work)", DARKRED),
                 ("approval wait", RED), ("clarification wait", GOLD),
-                ("intake queue", SLATE), ("total elapsed (grey)", "#ECEFF3"))]
+                ("intake queue", SLATE), ("total elapsed (grey)", "#E5E7EB"))]
     ax.legend(handles=handles, ncol=3, loc="upper center",
               bbox_to_anchor=(0.5, -0.18), frameon=False, fontsize=9)
     _save(fig, "gantt-rework.svg")
