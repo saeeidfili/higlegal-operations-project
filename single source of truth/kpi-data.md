@@ -44,6 +44,8 @@ Key assumptions: **fully-loaded producer rate ¥85/h [E] (build-up in §3) · ut
 
 Little's Law framing: baseline WIP sits in untracked queues (inboxes); from Iteration 1 every queue is visible and SLA-capped. **After Iteration 3 the residual lead time is ~100% lawyer approval time — the constraint leaves HiLegal's building.** That sentence is the Section 6→8 pivot.
 
+**Simulated (Iteration 1, `iteration1_sim.py`, λ = 17.5/mo):** mean lead **6.8 d** (P90 9.9) vs the 9 d target — the target is achievable with headroom; the range 7–12 holds. Sensitivity: lawyers approving in ~1 d → 5.1 d; always riding the 48 h SLA cap → 8.2 d. Iteration 1's lead time is gate-dominated — lawyer behaviour swings it more than any internal production change.
+
 ## 3. Cost per video build-up
 
 **Human-factor pricing (Shenzhen, per producer):** gross salary ¥10,000 [E] + employer social insurance & housing fund (五险一金, ~35%) ¥3,500 [E] + equipment/software/office share ¥1,500 [E] → **¥15,000/month fully loaded ÷ 176 productive hours = ≈ ¥85/h**.
@@ -67,12 +69,21 @@ Assumptions [E]: 2 producers × 160 h/month × 60% effective utilization on this
 
 | | Baseline | Iter 1 | Iter 2 | Iter 3 |
 |---|---:|---:|---:|---:|
-| Capacity = 11,500 ÷ min/video | ~19/mo | ~26/mo | ~33/mo | ~190/mo |
+| **Work-content ceiling** = 11,500 ÷ min/video (division; assumes no queueing) | ~19/mo | ~26/mo | ~33/mo | ~190/mo |
 | Company-reported actual output | 15–20/mo [C] | — | — | — |
 | Company-stated ceiling | 35–40/mo [C] | — | — | — |
 | Consistency check | 19 ≈ reported 15–20 ✓ | — | 33 ≈ stated ceiling 35–40 ✓ | ~10× baseline ✓ (matches proposal's "tenfold" claim) |
 | Team time spent if demand = 40/mo | n/a (can't serve) | ~29 h/mo | ~23 h/mo | ~4 h/mo |
 | Production FTE no longer required (at 20/mo demand) | 0 | ~0.2 FTE | ~0.4 FTE | **~1.5 FTE** |
+
+**Simulated practical capacity** (process simulation, `06 .../Iteration 1/iteration1_sim.py`; 67%-dedication budget 14,150 min/month as in the Section 4 models; criterion = highest demand with mean lead ≤ 28 d, the top of today's reported band [C]; 3 seeds):
+
+| | Baseline | Iter 1 |
+|---|---:|---:|
+| Work-content ceiling (sim basis) | 23.6/mo | 32.5/mo |
+| **Simulated practical capacity** | **~20/mo** (22/mo already degrades to 29 d) | **~30/mo** (32/mo → 45 d, WIP 48) |
+
+The baseline's simulated practical capacity (~20/mo) reproduces the company-reported output 15–20 [C] — the criterion validates itself. Practical < work-content because near the ceiling queues, not work, dominate (ρ/(1−ρ) multiplier, Section 4). Update this table per iteration as each is simulated.
 
 **Read on the ceiling:** Iteration 2 alone roughly *reaches* the ceiling HiLegal stated (33 vs 35–40 [C]) — without new hires. Iteration 3 *breaks* it by ~5×, and at realistic demand the team's remaining effort is hours per week, not headcount. This is the quantitative bridge to Section 8's "release staff capacity to the LLM."
 
@@ -90,6 +101,7 @@ Definitions: **Rework rate** = % of delivered videos with ≥1 rework loop at an
 - Iter 2 kills **script-surprise loops** (template structure + lawyer profile; lawyer approves a structure they already chose).
 - Iter 3 kills **production-defect loops** (single render from the approved script — no transcription/sync errors, auto-consistent variants; residual = avatar glitches, name mispronunciation).
 - Worst case per proposal (all gates × 4 iterations [C]): Iteration 1's structured change requests + reason codes keep even this scenario inside the SLA'd windows; simulate in `07`.
+- **Simulated (Iteration 1):** rework **59%** simulated vs 55% target (λ = 17.5, seed variation ±few pts; loop probabilities solved from the 55% + 435-min anchors — engine check 435 vs 438 min ✓). QAR ≈ 1 − rework → ~41% vs 45% target.
 
 ## 6. Unit economics of the service (the Section 2/8 money story)
 
@@ -124,3 +136,4 @@ Definitions: **Rework rate** = % of delivered videos with ≥1 rework loop at an
 
 - 2026-10-29 initial dataset created from proposal Table 1 [C] + derived [E] estimates; targets [T] set per iteration. Update this log whenever a baseline number is replaced by observed pilot data.
 - 2026-10-29 currency switched to RMB: fully-loaded rate ¥85/h (Shenzhen build-up in §3), FX 7.2. Revenue side rebuilt on company facts: $100/month tier promising 10 videos/month, attribution = model costs + 30% overhead ≈ ¥117/video [C]. Cost curve recomputed: ¥940 → ¥705 → ¥595 → ¥180 (tool lines now persist correctly through Iter 2: Seedance/TTS credits remain until the single render replaces them in Iter 3).
+- 2026-11-07 Iteration 1 simulated (`06 .../Iteration 1/iteration1_sim.py`, engine copied from the Section 4 rework study; baseline sanity-checked: 21.8 d / 600 min / 87%). Results folded in: §2 simulated lead 6.8 d (target 9 d holds, gate-dominated — SLA sensitivity 5.1–8.2 d); §4 added work-content-ceiling relabel + simulated practical capacity (baseline ~20/mo ≈ reported 15–20 [C]; Iter 1 ~30/mo, work-content 32.5/mo on the 67% sim budget); §5 simulated rework 59% / QAR ~41% vs 55%/45% targets. Iterations 2–3 to be simulated the same way as they are reached.
