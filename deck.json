@@ -31,10 +31,16 @@
         "thanks",
         "appx-divider",
         "appx-a",
-        "appx-b",
-        "appx-c",
+        "appx-e",
+        "appx-f",
+        "appx-queue",
+        "appx-g",
         "appx-d",
-        "appx-e"
+        "appx-kpi",
+        "appx-h",
+        "appx-c",
+        "appx-i",
+        "appx-b"
     ],
     "sections": {
         "internal": {

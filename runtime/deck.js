@@ -90,7 +90,11 @@
 
     drawConnectors(sec);
 
-    sec.querySelectorAll('a[href]').forEach(function (a) { a.target = '_blank'; a.rel = 'noopener'; });
+    sec.querySelectorAll('a[href]').forEach(function (a) {
+      var href = a.getAttribute('href');
+      if (href.charAt(0) === '#') { a.dataset.goto = href.slice(1); a.style.cursor = 'pointer'; }
+      else { a.target = '_blank'; a.rel = 'noopener'; }
+    });
     canvas.appendChild(sec);
     return canvas;
   }
@@ -365,6 +369,20 @@
     renderStage();
   }
 
+  // In-deck links: href="#slide-id" jumps there; href="#back:slide-id" returns to where the jump came from.
+  function goTo(target) {
+    var id = target;
+    if (target.indexOf('back') === 0) {
+      id = state.returnTo || target.split(':')[1];
+      state.returnTo = null;
+    } else {
+      state.returnTo = state.slides[state.index].id;
+    }
+    var i = state.slides.findIndex(function (s) { return s.id === id; });
+    if (i < 0) return;
+    if (state.presenting) { state.index = i; renderPresent(); syncSend(); } else select(i);
+  }
+
   // Present mode
   function visibleIndices() {
     var out = [];
@@ -543,6 +561,15 @@
       if (navigator.clipboard) navigator.clipboard.writeText(path).then(function () { setStatus('Copied ' + path); });
     });
     $('version').addEventListener('change', function (e) { showVersion(e.target.value); });
+    ['stage', 'pstage'].forEach(function (id) {
+      $(id).addEventListener('click', function (e) {
+        var a = e.target.closest('a[data-goto]');
+        if (!a) return;
+        e.preventDefault();
+        e.stopPropagation();
+        goTo(a.dataset.goto);
+      });
+    });
     // Present mode: click the left half to go back, the right half to go forward.
     $('present').addEventListener('click', function (e) {
       if (!state.presenting || e.target.closest('a, button, iframe, #pnotes')) return;

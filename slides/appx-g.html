@@ -1,0 +1,20 @@
+<section id="appx-g" data-transition="fade" style="background:#FFFFFF;color:#101010;font-family:'Inter', Arial, sans-serif;padding:232px 64px 96px;display:flex;flex-direction:column;gap:24px">
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:184px;background:#0A0A0A"></div>
+<div style="position:absolute;left:0px;top:184px;width:1920px;height:2px;background:#C9A86A"></div>
+<p style="position:absolute;left:64px;top:40px;width:1550.769px;font-size:24px;letter-spacing:2px;text-transform:uppercase;color:#99A1AF;font-family:'Inter', Arial, sans-serif;font-weight:600">Appendix E | Rework simulation</p>
+<h2 style="position:absolute;left:64px;top:80px;width:1550.769px;font-size:52px;font-family:'Momo Trust Display', Arial, sans-serif;font-weight:400;line-height:1.15;color:#FFFFFF;white-space:nowrap">Rework scenarios in numbers</h2>
+<img src="assets/hilegal-logo-white.png" alt="HiLegal logo" style="position:absolute;left:1726px;top:52px;width:130px;height:80px;object-fit:contain">
+<a href="#back:rework" style="position:absolute;left:1260px;top:140px;width:440px;text-align:right;font-size:24px;font-weight:600;color:#C9A86A">← Back to slide 11</a>
+<table style="font-size:24px;line-height:1.25;color:#101010">
+<tr style="background:#101010"><th style="color:#F3F4F6;font-weight:600">Scenario</th><th style="color:#F3F4F6;font-weight:600">Loop chance: clarification, script, final</th><th style="color:#F3F4F6;font-weight:600">Videos reworked</th><th style="color:#F3F4F6;font-weight:600">Lead time</th><th style="color:#F3F4F6;font-weight:600">Work per video</th><th style="color:#F3F4F6;font-weight:600">Capacity</th></tr>
+<tr><td>No rework</td><td>0, 0, 0</td><td>0%</td><td>11.0 d</td><td>516 min</td><td>27.4 / mo</td></tr>
+<tr style="background:#F9FAFB"><td>Halved</td><td>0.50, 0.10, 0.20</td><td>66%</td><td>15.1 d</td><td>551 min</td><td>25.7 / mo</td></tr>
+<tr><td><b>Baseline</b></td><td><b>0.75, 0.20, 0.40</b></td><td><b>87%</b></td><td><b>21.8 d</b></td><td><b>600 min</b></td><td><b>23.6 / mo</b></td></tr>
+<tr style="background:#F9FAFB"><td>Heavy</td><td>0.80, 0.40, 0.60</td><td>93%</td><td>31.1 d</td><td>686 min</td><td>20.6 / mo</td></tr>
+</table>
+<p style="font-size:24px;line-height:1.35;color:#4A5565"><b style="color:#101010">Push demand to 22 per month:</b> no rework absorbs it (WIP 8.9, 12.5 days); heavy rework is past capacity (WIP 86.3, 116.7 days and still growing, an unbounded backlog, not a stable average).</p>
+<p style="font-size:24px;line-height:1.35;color:#4A5565">Baseline = simulation calibrated to company-reported ≥ 4 clarification rounds and ~10 h per video; the other rows are calculated scenarios at 17.5 requests per month.</p>
+<p style="position:absolute;left:64px;bottom:24px;width:1600px;font-size:18px;color:#6A7282">Calculated scenarios | Source: presentation-deck slide 8 (Saeed), rework simulation on main</p>
+<p style="position:absolute;left:1736px;bottom:24px;width:120px;text-align:right;font-size:24px;color:#6A7282">E</p>
+<aside>Backup for questions, linked from the rework slide. Values as in Saeed's deck (single-seed run). The reconciled 3-seed run on main gives 10.9 / 14.9 / 21.6 / 30.7 days and, at 22 per month with heavy rework, a finite-run WIP of about 81 (overloaded). See team questions.</aside>
+</section>
