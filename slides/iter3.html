@@ -70,33 +70,28 @@ requestAnimationFrame(f);
 </div>
 
 <div style="position:absolute;left:64px;top:654px;width:1792px;display:flex;flex-direction:row;gap:32px">
-<div style="width:560px;display:flex;flex-direction:column;gap:6px;border-top:3px solid #101010;padding:12px 0 0 0">
-<p style="font-size:24px;font-family:'Inter', Arial, sans-serif;font-weight:600;color:#D92605">Problem addressed</p>
+<div style="width:520px;display:flex;flex-direction:column;gap:6px;border-top:3px solid #101010;padding:12px 0 0 0">
+<p style="font-size:24px;font-weight:600;color:#D92605">Problem addressed</p>
 <p style="font-size:24px;line-height:1.3;color:#4A5565">Audio and video are made apart, synced by hand (2–3 h) and adapted per platform (~2 h).</p>
-<p style="font-size:24px;font-family:'Inter', Arial, sans-serif;font-weight:600;color:#D92605">Change</p>
-<p style="font-size:24px;line-height:1.3;color:#4A5565">One render makes voice, lip-sync, video and all formats; a person checks every render.</p>
+<p style="font-size:24px;font-weight:600;color:#D92605">Change</p>
+<p style="font-size:24px;line-height:1.3;color:#4A5565">One render makes voice, lip-sync, video and all formats; a person checks every render. Consent on file gates every render.</p>
 </div>
-<div style="width:732.308px;display:flex;flex-direction:column;border-top:3px solid #101010;padding:12px 0 0 0">
-<table style="font-size:24px;line-height:1.2;color:#101010">
-<tr style="background:#E5E7EB"><th style="width:32%">KPI</th><th style="width:34%">vs Iteration 2</th><th style="width:34%">vs baseline</th></tr>
-<tr><td>1 Lead Time</td><td>4→1.5 d −63%</td><td>21→1.5 d −93%</td></tr>
-<tr><td>2 Human Time</td><td>5h50→1h −83%</td><td>10h→1h −90%</td></tr>
-<tr><td>3 Cost</td><td>¥595→180 −70%</td><td>¥940→180 −81%</td></tr>
-<tr><td>4 Throughput</td><td>cap. 33→190</td><td>cap. 19→190</td></tr>
-<tr><td>5 Rework Rate</td><td>30→10% −20 pts</td><td>90→10% −80 pts</td></tr>
-<tr><td>6 Quality Acc.</td><td>70→90% +20 pts</td><td>10→90% +80 pts</td></tr>
-</table>
+<div style="width:780px;display:flex;flex-direction:column;gap:8px;border-top:3px solid #101010;padding:12px 0 0 0">
+<p style="font-size:24px;font-weight:600;color:#101010">Simulated result <span style="font-weight:400;color:#6A7282">(model, not tested)</span></p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+<div style="background:#FFFFFF;border-radius:8px;padding:12px 18px;display:flex;flex-direction:column;gap:2px"><p style="font-size:24px;font-weight:600;color:#6A7282">Lead time</p><p style="font-size:44px;font-weight:800;line-height:1.05;color:#101010">1.6 d</p><p style="font-size:24px;color:#4A5565">from 21.8 d <span style="color:#A8823F">| target ~1.5 d</span></p></div> <div style="background:#FFFFFF;border-radius:8px;padding:12px 18px;display:flex;flex-direction:column;gap:2px"><p style="font-size:24px;font-weight:600;color:#6A7282">Human time</p><p style="font-size:44px;font-weight:800;line-height:1.05;color:#101010">62 min</p><p style="font-size:24px;color:#4A5565">from 600 min <span style="color:#A8823F">| target 60 min</span></p></div> <div style="background:#FFFFFF;border-radius:8px;padding:12px 18px;display:flex;flex-direction:column;gap:2px"><p style="font-size:24px;font-weight:600;color:#6A7282">Cost per video</p><p style="font-size:44px;font-weight:800;line-height:1.05;color:#101010">¥183</p><p style="font-size:24px;color:#4A5565">from ¥940 <span style="color:#A8823F">| target ¥180</span></p></div> <div style="background:#FFFFFF;border-radius:8px;padding:12px 18px;display:flex;flex-direction:column;gap:2px"><p style="font-size:24px;font-weight:600;color:#6A7282">Rework rate</p><p style="font-size:44px;font-weight:800;line-height:1.05;color:#101010">11%</p><p style="font-size:24px;color:#4A5565">from 87% <span style="color:#A8823F">| target ~10%</span></p></div>
+</div>
 </div>
 <div style="flex:1;display:flex;flex-direction:column;gap:6px;border-top:3px solid #101010;padding:12px 0 0 0">
-<p style="font-size:24px;font-family:'Inter', Arial, sans-serif;font-weight:600;color:#D92605">Evidence</p>
-<p style="font-size:24px;line-height:1.3;color:#4A5565">Sync and adaptation reported; render ~¥45 and ~30 min estimated.</p>
-<p style="font-size:24px;font-family:'Inter', Arial, sans-serif;font-weight:600;color:#D92605">Remaining limit</p>
-<p style="font-size:24px;line-height:1.3;color:#4A5565">Lawyer approvals and AI vendors now set the pace.</p>
+<p style="font-size:24px;font-weight:600;color:#D92605">Capacity</p>
+<p style="font-size:24px;line-height:1.3;color:#4A5565">~230 videos a month; lead stays at 1.6–2.2 d from 15 to 200 requests (simulated).</p>
+<p style="font-size:24px;font-weight:600;color:#D92605">Remaining constraint</p>
+<p style="font-size:24px;line-height:1.3;color:#4A5565">Nearly all remaining lead time is the lawyer's approval, outside HiLegal.</p>
 </div>
 </div>
-<p style="position:absolute;left:64px;bottom:24px;width:1600px;font-size:18px;color:#6A7282">Moving dot shows the cumulative process; not to scale | Baseline from HiLegal; targets ours; calc. in Appendix A</p>
+<p style="position:absolute;left:64px;bottom:24px;width:1600px;font-size:18px;color:#6A7282">Moving dot shows the cumulative process; not to scale | simulated design with targets, not tested results</p>
 <p style="position:absolute;left:1736px;bottom:24px;width:120px;text-align:right;font-size:24px;color:#6A7282">16</p>
-<aside>TIME: 1:15. MAIN MESSAGE: Iteration 3 attacks the capacity constraint directly: one avatar render produces voice, lip-sync and video together, removing the separate audio track, the 2–3 hours of manual synchronization and the ~2 hours of manual platform adaptation (16:9, 9:16 and 1:1 come out of the same render). A human still checks every render.
+<aside>SPEAKER: Saeed Filizadeh. TIME: 1:15. SIMULATED (presentation-deck slide 12): lead 1.6 d (P90 2.1, target ~1.5 d), human time 62 min (target 60), cost ¥183 (target ¥180), rework 11% (target ~10%), utilisation of the video budget 8%. Practical capacity ~230 videos a month; lead stays flat at 1.6–2.2 d from 15 to 200 requests a month. Residual lead is almost entirely the lawyer's approval: the constraint has left HiLegal. Consent on file is a zero-tolerance guardrail for every render. Saeed's spec proposes a 24 h parallel objection window instead of the serial final approval; our map keeps the final approval (see team questions). MAIN MESSAGE: Iteration 3 attacks the capacity constraint directly: one avatar render produces voice, lip-sync and video together, removing the separate audio track, the 2–3 hours of manual synchronization and the ~2 hours of manual platform adaptation (16:9, 9:16 and 1:1 come out of the same render). A human still checks every render.
 CHANGED STEPS: new in Iteration 3 (thick red): "Avatar Render" replaces Video Gen and Audio Gen (steps 9 and 10) and outputs all platform formats, so manual Platform Adaptation (12b) is removed; "Render Check" (~20 min QA) replaces manual Audio-Visual Sync (11). Everything from Iterations 1 and 2 stays (thin red). The on-slide animation follows the cumulative process: no intake queue and no clarification loop in the normal case, one lawyer approval under the 48 h SLA, one render, one check.
 MECHANISM → KPI (targets): (1) Human time 5 h 50 → ~1 h at steady state (sync 135→0, adaptation 75→0, generation 70→0; remaining: brief exceptions 10, parameters 5, script edit 15, render QA 20, delivery 5 min); expect 75–90 min during the pilot. (2) Capacity ~33 → ~190/month calculated (11,500 productive min ÷ 60), ~10× baseline; throughput rises only if demand exists. (3) Cost ¥180 = ¥85 labour + render API ¥45 + LLM ¥20 + pipeline ¥30 (estimates). (4) Lead ~1.5 d (1–2) target; the residual wait is the lawyer's script approval. (5) Rework ~30 → ~10%, QAR ~70 → ~90%: new failure modes (render failures, lip-sync errors, likeness issues) must be caught at the render QA.
 PILOT GATE: lead ≤ 2 business days, human ≤ 1 h 30 in the pilot, render success ≥ 90% first pass, 3/3 formats, rework ≤ 12%, consent 100% (stop-the-line).

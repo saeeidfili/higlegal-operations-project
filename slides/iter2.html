@@ -65,33 +65,28 @@
 </div>
 
 <div style="position:absolute;left:64px;top:654px;width:1792px;display:flex;flex-direction:row;gap:32px">
-<div style="width:560px;display:flex;flex-direction:column;gap:6px;border-top:3px solid #101010;padding:12px 0 0 0">
-<p style="font-size:24px;font-family:'Inter', Arial, sans-serif;font-weight:600;color:#D92605">Problem addressed</p>
-<p style="font-size:24px;line-height:1.3;color:#4A5565">Scripts are written by hand, then refined by AI: 80 min in the wrong order.</p>
-<p style="font-size:24px;font-family:'Inter', Arial, sans-serif;font-weight:600;color:#D92605">Change</p>
-<p style="font-size:24px;line-height:1.3;color:#4A5565">HiLegal’s fine-tuned legal LLM drafts from templates and the lawyer’s profile; an employee edits and checks.</p>
+<div style="width:520px;display:flex;flex-direction:column;gap:6px;border-top:3px solid #101010;padding:12px 0 0 0">
+<p style="font-size:24px;font-weight:600;color:#D92605">Problem addressed</p>
+<p style="font-size:24px;line-height:1.3;color:#4A5565">Scripts are written by hand, then refined by AI: the slow step comes first.</p>
+<p style="font-size:24px;font-weight:600;color:#D92605">Change</p>
+<p style="font-size:24px;line-height:1.3;color:#4A5565">The fine-tuned legal LLM drafts from template and lawyer profile; people edit instead of write. Every edit becomes training data.</p>
 </div>
-<div style="width:732.308px;display:flex;flex-direction:column;border-top:3px solid #101010;padding:12px 0 0 0">
-<table style="font-size:24px;line-height:1.2;color:#101010">
-<tr style="background:#E5E7EB"><th style="width:32%">KPI</th><th style="width:34%">vs Iteration 1</th><th style="width:34%">vs baseline</th></tr>
-<tr><td>1 Lead Time</td><td>9→4 d −56%</td><td>21→4 d −81%</td></tr>
-<tr><td>2 Human Time</td><td>7h15→5h50 −20%</td><td>10h→5h50 −42%</td></tr>
-<tr><td>3 Cost</td><td>¥705→595 −16%</td><td>¥940→595 −37%</td></tr>
-<tr><td>4 Throughput</td><td>cap. 26→33</td><td>cap. 19→33</td></tr>
-<tr><td>5 Rework Rate</td><td>55→30% −25 pts</td><td>90→30% −60 pts</td></tr>
-<tr><td>6 Quality Acc.</td><td>45→70% +25 pts</td><td>10→70% +60 pts</td></tr>
-</table>
+<div style="width:780px;display:flex;flex-direction:column;gap:8px;border-top:3px solid #101010;padding:12px 0 0 0">
+<p style="font-size:24px;font-weight:600;color:#101010">Simulated result <span style="font-weight:400;color:#6A7282">(model, not tested)</span></p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+<div style="background:#FFFFFF;border-radius:8px;padding:12px 18px;display:flex;flex-direction:column;gap:2px"><p style="font-size:24px;font-weight:600;color:#6A7282">Lead time</p><p style="font-size:44px;font-weight:800;line-height:1.05;color:#101010">4.0 d</p><p style="font-size:24px;color:#4A5565">from 21.8 d <span style="color:#A8823F">| target ~4 d</span></p></div> <div style="background:#FFFFFF;border-radius:8px;padding:12px 18px;display:flex;flex-direction:column;gap:2px"><p style="font-size:24px;font-weight:600;color:#6A7282">Human time</p><p style="font-size:44px;font-weight:800;line-height:1.05;color:#101010">351 min</p><p style="font-size:24px;color:#4A5565">from 600 min <span style="color:#A8823F">| target 350 min</span></p></div> <div style="background:#FFFFFF;border-radius:8px;padding:12px 18px;display:flex;flex-direction:column;gap:2px"><p style="font-size:24px;font-weight:600;color:#6A7282">Cost per video</p><p style="font-size:44px;font-weight:800;line-height:1.05;color:#101010">¥600</p><p style="font-size:24px;color:#4A5565">from ¥940 <span style="color:#A8823F">| target ¥595</span></p></div> <div style="background:#FFFFFF;border-radius:8px;padding:12px 18px;display:flex;flex-direction:column;gap:2px"><p style="font-size:24px;font-weight:600;color:#6A7282">Rework rate</p><p style="font-size:44px;font-weight:800;line-height:1.05;color:#101010">34%</p><p style="font-size:24px;color:#4A5565">from 87% <span style="color:#A8823F">| target ~30%</span></p></div>
+</div>
 </div>
 <div style="flex:1;display:flex;flex-direction:column;gap:6px;border-top:3px solid #101010;padding:12px 0 0 0">
-<p style="font-size:24px;font-family:'Inter', Arial, sans-serif;font-weight:600;color:#D92605">Evidence</p>
-<p style="font-size:24px;line-height:1.3;color:#4A5565">Script work 80 → 35 min (est.); every edit becomes LLM training data.</p>
-<p style="font-size:24px;font-family:'Inter', Arial, sans-serif;font-weight:600;color:#D92605">Remaining limit</p>
-<p style="font-size:24px;line-height:1.3;color:#4A5565">Manual A/V sync is now ~40% of labour (135 of 350 min).</p>
+<p style="font-size:24px;font-weight:600;color:#D92605">Capacity</p>
+<p style="font-size:24px;line-height:1.3;color:#4A5565">~38 videos a month, inside the stated 35–40 ceiling, without hiring (simulated).</p>
+<p style="font-size:24px;font-weight:600;color:#D92605">Next constraint</p>
+<p style="font-size:24px;line-height:1.3;color:#4A5565">Separate audio and video with 2–3 h of manual sync.</p>
 </div>
 </div>
-<p style="position:absolute;left:64px;bottom:24px;width:1600px;font-size:18px;color:#6A7282">Thick red = new in this iteration | thin red = kept from Iteration 1 | Targets, not tested | calc. in App. A</p>
+<p style="position:absolute;left:64px;bottom:24px;width:1600px;font-size:18px;color:#6A7282">Thick red = new in this iteration | thin red = kept from Iteration 1 | simulated design with targets, not tested results</p>
 <p style="position:absolute;left:1736px;bottom:24px;width:120px;text-align:right;font-size:24px;color:#6A7282">15</p>
-<aside>TIME: 1:15. MAIN MESSAGE: On top of the standardized inputs from Iteration 1, HiLegal's fine-tuned legal LLM writes the first draft from a fixed template and the lawyer's profile, so employees edit instead of write. Quality stays with a human edit and check before the lawyer sees it.
+<aside>SPEAKER: Saeed Filizadeh. TIME: 1:00. SIMULATED (presentation-deck slide 11): lead 4.0 d (P90 5.1, target ~4 d), human work 351 min (target 350), rework 34% (target ~30%; closed form 30%, seed variation), cost ¥600 (target ¥595: labour ¥498 + tools ¥65 + LLM ¥20 + amortisation ¥15). Simulated practical capacity ~38 videos a month, inside the stated 35–40 ceiling, without hiring. The payoff is not mainly labour minutes: loops removed, ceiling reached, structured script data created for Iteration 3, and the training-data flywheel started. MAIN MESSAGE: On top of the standardized inputs from Iteration 1, HiLegal's fine-tuned legal LLM writes the first draft from a fixed template and the lawyer's profile, so employees edit instead of write. Quality stays with a human edit and check before the lawyer sees it.
 CHANGED STEPS: thick red = new in Iteration 2: "AI Draft + Edit" replaces Script Drafting and AI Refinement (steps 5 and 6). The legal LLM writes the first draft from the template and the lawyer's profile, and an employee edits it in the same step before the script approval, instead of a manual draft that is polished afterwards with ChatGPT. Thin red = changes kept from Iteration 1.
 MECHANISM → KPI (targets): (1) Human time 7 h 15 → 5 h 50: script work 80 → 35 min, video ops 60→45, audio 35→25, adaptation 90→75. (2) Capacity ~26 → ~33/month calculated, close to the stated 35–40 ceiling without hiring. (3) Cost ¥705 → ¥595: labour −¥120; ChatGPT credits replaced by the self-hosted LLM (¥90→¥65 tools + ¥20 inference + ¥15 template amortisation, estimates). (4) Lead ~9 → ~4 d (in-app approvals). (5) Rework ~55 → ~30%, QAR ~45 → ~70%: the lawyer approves a structure already chosen. The modest cost step is the enabler: it creates the script data Iteration 3 renders from. Strategic KPI: ≥ 25 labelled training examples per 10 videos.
 INCREMENTAL VS CUMULATIVE: vs Iteration 1 the change is in staff time; vs baseline it adds to the fewer loops of Iteration 1.
