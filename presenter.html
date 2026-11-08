@@ -83,7 +83,7 @@
   <button class="nav" id="btnPrev" type="button" aria-label="Previous slide">&#9664;</button>
   <div class="timer">
     <div class="clock" id="clock">00:00</div>
-    <div class="clock-sub" id="clockSub">of 15:00</div>
+    <div class="clock-sub" id="clockSub">of 17:00</div>
     <div class="t-btns">
       <button class="start paused" id="btnTimer" type="button">Start</button>
       <button id="btnReset" type="button">Reset</button>
@@ -105,7 +105,7 @@
 <script>
 (function () {
   'use strict';
-  var BUDGET = 15 * 60 * 1000;
+  var BUDGET = 17 * 60 * 1000;
   var $ = function (id) { return document.getElementById(id); };
   var slides = [], state = { slide: null, running: false, elapsed: 0, receivedAt: Date.now() }, link = null;
 
@@ -161,7 +161,8 @@
           if (!sec || sec.hasAttribute('hidden')) return;
           var aside = sec.querySelector('aside'), h = sec.querySelector('h1, h2');
           var notes = aside ? aside.textContent.trim() : '';
-          out.push({ id: id, chapter: sec.getAttribute('data-chapter'), title: h ? h.textContent.replace(/\s+/g, ' ').trim() : id, notes: notes, plan: planMs(notes) });
+          var sp = /SPEAKER:s*([^.]+)./.exec(notes);
+          out.push({ id: id, speaker: sp ? sp[1].trim() : '', chapter: sec.getAttribute('data-chapter'), title: h ? h.textContent.replace(/\s+/g, ' ').trim() : id, notes: notes, plan: planMs(notes) });
         });
         return out;
       });
@@ -192,13 +193,14 @@
     var el = DeckSync.elapsedOf(state);
     $('clock').textContent = fmt(el);
     $('clock').classList.toggle('over', el > BUDGET);
-    $('clockSub').textContent = el > BUDGET ? fmt(el - BUDGET) + ' over 15:00' : fmt(BUDGET - el) + ' left of 15:00';
+    $('clockSub').textContent = el > BUDGET ? fmt(el - BUDGET) + ' over 17:00' : fmt(BUDGET - el) + ' left of 17:00';
     $('btnTimer').textContent = state.running ? 'Pause' : (el > 0 ? 'Resume' : 'Start');
     $('btnTimer').classList.toggle('paused', !state.running);
     if (!slides.length) return;
     var i = index(), s = slides[i], before = 0;
     for (var k = 0; k < i; k++) before += slides[k].plan;
     var endPlan = before + s.plan, html = '';
+    if (s.speaker) html += '<span class="chip">Speaker <b>' + escapeHtml(s.speaker) + '</b></span>';
     if (s.plan) html += '<span class="chip">Slide time <b>' + fmt(s.plan) + '</b></span>';
     if (s.plan) html += '<span class="chip">Planned end <b>' + fmt(endPlan) + '</b></span>';
     if (el > 0 && s.plan) {
