@@ -1,6 +1,6 @@
 # Slide 4 — The most popular tier loses money on the first video
 
-**Speaker:** Augustin Dulon
+**Speaker:** Dedi Li
 **Time:** 1:00 (slide starts at 1:30, ends at 2:30)
 **Figures:** none — table slide
 **Related appendix:** A1 — costing (¥85/h build-up, ¥940 cost, per-customer bleed tables)
@@ -40,7 +40,7 @@
 
 ## Speaker notes
 
-**TIME:** 1:00 — starts 2:15, hands off to slide 5 (Dedi) at 3:15. Land the table in ~40 s, drain + thesis in ~20 s.
+**TIME:** 1:00 — starts 2:15 (Dedi takes over), ends 3:15. Land the table in ~40 s, drain + thesis in ~20 s.
 
 **MAIN MESSAGE:** The $100 tier is priced below the cost of delivering it — the loss starts on the first video, and the yearly burn is eating the resources that should build the moat.
 

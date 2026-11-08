@@ -1,6 +1,6 @@
 # Slide 7 — Waiting is mathematics
 
-**Speaker:** Dedi Li
+**Speaker:** Saeed Filizadeh
 **Time:** 1:15
 **Figures:** `../04 These are the wastes and root causes/queue/queue-cliff.svg` (THE chart — utilization cliff; place large)
 **Related appendix:** `A2-queue-model.md`
@@ -48,6 +48,6 @@
 - Walk the chart: ρ = 0.64–0.85 puts HiLegal on the cliff's steep part. Demand ×1.33 (15 → 20) multiplies the wait ×3.2 — that is the multiplier ρ/(1−ρ), and it is why "work harder" fails: near the wall, effort buys almost nothing.
 - The tail: waits are exponential — P90 ≈ 10 days, so 1 in 10 lawyers waits two weeks just to be looked at. The "workload-dependent" complaint [C] *is* this fat tail.
 - Make it falsifiable: the model says the inbox should hold ≈ 2–5 parked requests — HiLegal can simply count them. If the inbox never exceeds 1 while waits run 3–7 days, the delay is batch-review cadence, not queueing, and we model it differently.
-- Land the one-liner (on-slide quote), then hand off: "And on top of the queue, every failed gate adds rework — that's slide 7."
+- Land the one-liner (on-slide quote), then continue: "And on top of the queue, every failed gate adds rework — that's slide 7."
 
 **DATA STATUS:** Numbers from the queue model summary only. Company-reported [C]: demand 15–20/month, observed 3–7 d waits, ~10 h/video, 352 h/month available, "workload-dependent" complaint. Estimate [E]: μ = 23.5 calibrated, not measured. Calculated from the model: ρ 0.64–0.85, Wq 3.8–7.5 d, Lq 2.2–4.9 (the ≈2–5 inbox prediction), P(Wait > 7 d) = 19 %, P90 ≈ 10 d, ×3.2 multiplier. Validation: a 200k-order FIFO simulation reproduces the algebra at 0.7 % (λ = 17.5) / 1.2 % (λ = 20) — internal consistency only; real-world fit rests on the calibration, the 67 % / 65 % labour cross-check, and the falsifiable inbox count. Say "calibrated model", never "measured". Detail in appendix A2.

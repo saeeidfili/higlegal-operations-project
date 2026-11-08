@@ -1,6 +1,6 @@
 # Slide 8 — Rework adds 84 minutes of work and eleven days of waiting
 
-**Speaker:** Dedi Li
+**Speaker:** Saeed Filizadeh
 **Time:** 1:15
 **Figures:** `../04 These are the wastes and root causes/Rework/rework-impact.svg` (headline chart — lead + P90 per scenario vs hands-on work per video; place large)
 **Related appendix:** `A3-rework-simulation.md`
@@ -47,7 +47,7 @@
 
 ## Speaker notes
 
-**TIME:** 1:15 (Dedi Li) — ~15 s what we simulated, ~25 s chart + table, ~15 s the ~29× arithmetic, ~15 s the ceiling, ~10 s the demand sweep, ~5 s close into slide 8 (KPIs).
+**TIME:** 1:15 (Saeed Filizadeh) — ~15 s what we simulated, ~25 s chart + table, ~15 s the ~29× arithmetic, ~15 s the ceiling, ~10 s the demand sweep, ~5 s close into slide 8 (KPIs).
 
 **MAIN MESSAGE:** Rework looks like extra work but is mostly extra waiting — +84 minutes of hands-on work buys +10.8 days of lead time — and it moves the team's capacity ceiling, because the ceiling is a property of the team plus its rework.
 

@@ -1,6 +1,6 @@
 # Slide 5 — The current process: ~10 hours of work spread over 2–4 weeks
 
-- **Speaker:** Augustin Dulon
+- **Speaker:** Dedi Li
 - **Time:** 1:15
 - **Figures:** `../04 These are the wastes and root causes/queue/order-timeline.svg` — Lawyer Chen's order through the 12 steps: green = work, red = waiting; 18.8 d end-to-end, work ≈ 6%. Label: **company-reported / calculated**.
 - **Related appendix:** A2 (`appendix/A2-queue-model.md` — μ calibration, M/M/1 predictions, nonlinearity, 200k-order validation, 67/65% cross-check)

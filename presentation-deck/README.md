@@ -11,17 +11,17 @@ title, on-slide content, figure paths, layout tokens, and speaker notes.
 | 1 | Cover | Augustin Dulon | 0:30 |
 | 2 | What HiLegal told us — and what we suggest | Augustin Dulon | 0:45 |
 | 3 | The challenge — ¥940 vs ¥117 | Augustin Dulon | 1:00 |
-| 4 | The bleed — tier loses on video #1 | Augustin Dulon | 1:00 |
+| 4 | The bleed — tier loses on video #1 | Dedi Li | 1:00 |
 | 5 | Current process — 12 steps, 94% waiting | Dedi Li | 1:15 |
 | 6 | Wastes & root causes | Dedi Li | 1:00 |
-| 7 | Waiting is mathematics | Dedi Li | 1:15 |
-| 8 | Rework — +84 min buys +10.8 days | Dedi Li | 1:15 |
-| 9 | Our KPIs — how we measure success | Dedi Li | 0:45 |
+| 7 | Waiting is mathematics | Saeed Filizadeh | 1:15 |
+| 8 | Rework — +84 min buys +10.8 days | Saeed Filizadeh | 1:15 |
+| 9 | Our KPIs — how we measure success | Saeed Filizadeh | 0:45 |
 | 10 | Iteration 1 — standardize briefing & approvals | Saeed Filizadeh | 1:15 |
 | 11 | Iteration 2 — template-based AI scripting | Saeed Filizadeh | 1:00 |
 | 12 | Iteration 3 — single-render pipeline | Saeed Filizadeh | 1:15 |
 | 13 | The chain, simulated | Saeed Filizadeh | 0:45 |
-| 14 | Stress test — five scenarios | Joel Wirth | 1:15 |
+| 14 | Stress test — five scenarios | Saeed Filizadeh | 1:15 |
 | 15 | Organizational impact | Joel Wirth | 1:15 |
 | 16 | Implementation & payback | Joel Wirth | 1:00 |
 | 17 | Closing | Joel Wirth | 0:30 |

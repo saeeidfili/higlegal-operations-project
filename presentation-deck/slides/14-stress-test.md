@@ -1,6 +1,6 @@
 # Slide 14 — Stress test: the design holds under five scenarios
 
-- **Speaker:** Joel Wirth
+- **Speaker:** Saeed Filizadeh
 - **Time:** 1:15
 - **Figures:** `../07 Let's run and compare the processes/saturation.svg` — mean lead time (d) vs monthly demand λ (/mo), one curve per version (baseline · v1 · v2 · v3): baseline/v1/v2 bend upward off-scale, v3 stays flat. Place large — dominant, upper zone. Label: **calculated scenario**.
 - **Related appendix:** A5 (`appendix/A5-scenario-matrix.md` — S0–S5 full result tables; remaining Section-7 charts `wip-paths.svg`, `slow-lawyers.svg`, `rework-stress.svg`)
@@ -37,7 +37,7 @@
 
 ## Speaker notes
 
-**TIME** — 1:15 (Joel Wirth). Bridge ~5 s → figure ~20 s → strip walk ~35 s (≈7 s per scenario, read the v3 number, gesture at the baseline number) → honest finding ~10 s → hand-off ~5 s. If running long, drop S4 and S5 from the walk (the strip still shows them) and keep the honest finding.
+**TIME** — 1:15 (Saeed Filizadeh). Bridge ~5 s → figure ~20 s → strip walk ~35 s (≈7 s per scenario, read the v3 number, gesture at the baseline number) → honest finding ~10 s → hand-off ~5 s. If running long, drop S4 and S5 from the walk (the strip still shows them) and keep the honest finding.
 
 **MAIN MESSAGE** — Under five openly hostile scenarios the redesigned process keeps its numbers: robustness is structural, not lucky — and where the designs do bend, they bend exactly where queueing theory says they should.
 

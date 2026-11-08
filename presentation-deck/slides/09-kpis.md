@@ -1,6 +1,6 @@
 # Slide 9 — Our KPIs — how we measure success
 
-**Speaker:** Dedi Li
+**Speaker:** Saeed Filizadeh
 **Time:** 1:00
 **Figures:** none (scoreboard slide — no SVG from the manifest)
 **Related appendix:** `A6-assumptions-and-model-cards.md`
@@ -63,6 +63,6 @@
 - The auxiliaries show what changes inside the black box: human time ~10 h per video [C] — the labour waterfall behind cost; throughput — output 15–20 [C] against capacity ~19 [E], the scaling question; rework rate ~90% [E] — whether the loop families from slide 7 are dying; and QAR ~10% [E] — first-pass at every gate, the honesty check that catches "faster but worse."
 - Division of labour, in one phrase: primaries say *whether* an iteration worked; auxiliaries say *why*. If lead time falls while QAR falls too, we are not improving — we are shipping defects faster.
 - Measurement plan in one line: simulate first — each iteration's targets validated in the process simulation before anything is implemented — then pilot in the company; from Iteration 1 the order state machine timestamps every transition, so all KPIs are auto-computed per order. Gate rule: pass = both primaries hit target **and** no auxiliary regresses.
-- Handoff: "Scoreboard set. Saeed now shows the three iterations that move both numbers — starting with standardizing briefing and approvals."
+- Handoff: "Scoreboard set. Now the three iterations that move both numbers — starting with standardizing briefing and approvals."
 
 **DATA STATUS:** All numbers from the Section 5 summary (master numbers: `single source of truth/kpi-data.md`). Tag discipline per A6: Cost per Video ¥940 [E]; Lead Time 14–28 d [C] (~21); human time ~10 h [C]; throughput output 15–20 [C], capacity ~19 [E]; rework rate ~90% [E]; QAR ~10% [E]. Baselines only — targets are defined as ranges with mechanisms (justification table in `kpi-data.md`) and are shown on the iteration slides, not here. Nothing on this slide presents iterations as results; the pilot and simulation references are the *plan*, with simulation outputs belonging to Section 7 as *calculated scenario*.
