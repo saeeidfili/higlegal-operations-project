@@ -33,8 +33,18 @@
   .chip b { color: var(--text); }
   .chip.behind { border-color: var(--accent); color: #ffb4a6; }
   .chip.ahead { border-color: var(--ok); color: #a6e3bd; }
-  .notes { font-size: 19px; line-height: 1.6; white-space: normal; }
-  .notes b { color: var(--gold); font-weight: 700; }
+  .notes { font-size: 19px; line-height: 1.55; white-space: normal; --n-accent: #C9A86A; --n-ink: #FFFFFF; --n-muted: #99A1AF; }
+  .n-sec { margin: 0 0 18px; }
+  .n-sec p { margin: 0 0 6px; }
+  .n-label { display: block; margin-bottom: 4px; font-size: 13px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--n-accent); }
+  .n-sec ol, .n-sec ul { margin: 2px 0 6px; padding-left: 1.4em; }
+  .n-sec li { margin: 6px 0; }
+  .n-key-message p { font-weight: 600; color: var(--n-ink); }
+  .n-quote { color: var(--n-ink); }
+  .n-dir { color: var(--n-muted); }
+  .n-transition p { color: var(--n-ink); font-style: italic; }
+  .n-if-asked, .n-data, .n-sources { color: var(--n-muted); font-size: 16px; }
+  b.n-inline { font-weight: 700; color: var(--n-ink); }
   .next { margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--line); color: var(--muted); font-size: 15px; }
 
   footer { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: center; padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); background: #0f0f0f; }
@@ -102,6 +112,7 @@
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="runtime/sync.js?v=1"></script>
+<script src="runtime/notes.js?v=1"></script>
 <script>
 (function () {
   'use strict';
@@ -138,14 +149,10 @@
 
   function escapeHtml(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
-  // Puts each "LABEL:" section and each "(1)" point on its own line.
   function formatNotes(t) {
     if (!t) return '<span style="color:#99a1af">(no notes)</span>';
-    return escapeHtml(t)
-      .replace(/(^|\s)((?:[A-Z][A-Z\/&\-]+ ){0,3}[A-Z][A-Z\/&\-]{2,}):/g, function (m, pre, label) {
-        return (pre ? '<br><br>' : '') + '<b>' + label + ':</b>';
-      })
-      .replace(/\s\((\d{1,2})\)\s/g, '<br>($1) ');
+    // Speaker and time are shown as chips above, so the first notes line is skipped.
+    return DeckNotes.html(t.replace(/^SPEAKER:[^\n]*\n/, ''));
   }
 
   function loadDeck() {

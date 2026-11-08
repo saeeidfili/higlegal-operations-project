@@ -347,7 +347,7 @@
     $('slideNo').textContent = (s.chapter ? 'Chapter divider ' + s.chapter : (n === null ? 'Hidden slide' : 'Slide ' + n)) + ' | ' + s.title;
     $('slidePath').textContent = 'slides/' + s.id + '.html';
     $('hiddenBadge').hidden = !s.hidden;
-    $('notes').textContent = s.notes || '(no notes)';
+    $('notes').innerHTML = s.notes ? DeckNotes.html(s.notes) : '(no notes)';
     $('notes').scrollTop = 0;
     $('versionBadge').hidden = !state.view;
     if (state.view) $('versionBadge').textContent = 'Old version ' + state.view.sha.slice(0, 7) + ' | view only';
@@ -397,7 +397,7 @@
     var canvas = buildCanvas(s);
     stage.appendChild(canvas);
     fit(stage, canvas);
-    $('pnotes').textContent = s.notes || '';
+    $('pnotes').innerHTML = DeckNotes.html(s.notes || '');
     var total = state.slides.filter(isNumbered).length, n = slideNumber(state.index);
     $('pcount').textContent = n === null ? '' : n + ' / ' + total;
   }

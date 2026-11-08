@@ -93,11 +93,18 @@
 </div>
 <p style="position:absolute;left:64px;bottom:24px;width:1600px;font-size:18px;color:#6A7282">Simulated design with targets, not tested results | baseline calibrated to HiLegal figures | Appendix</p>
 <p style="position:absolute;left:1736px;bottom:24px;width:120px;text-align:right;font-size:24px;color:#6A7282">14</p>
-<aside>SPEAKER: Saeed Filizadeh. TIME: 1:15. SIMULATED (Saeed's iteration simulation, presentation-deck slide 10): lead 21.8 → 6.8 d (P90 9.9, target ~9 d), human time 600 → 438 min (target 435), cost ¥940 → ¥709 (target ¥705), rework 87% → 59% (target ~55%), first-pass quality ~13% → ~41% (target ~45%). Self-check: the baseline model gives ~20 videos a month, matching the reported 15–20. Lead time is gate-dominated: 5.1–8.2 d depending on how fast lawyers approve; even the slow case stays inside the 7–12 d target. Say: simulated design, not tested results. MAIN MESSAGE: The first change needs no new technology: standardize what enters the process and how lawyers approve, so fewer orders travel the rework loops back through the queue.
-CHANGED STEPS (thick red), in the confirmed As-Is order: the Video Request (1) becomes a structured request form with format previews; the Intake Queue (2) is removed because complete requests auto-route; an automatic completeness check replaces Clarification (3) and bounces incomplete requests back to the form; the Content Brief (4) is auto-filled from the form and the lawyer's profile; Approval (7) and Final Approval (12a) use a structured link with a 48-hour SLA and automatic reminders. Unchanged: script drafting, AI refinement and all production steps (5, 6, 8 to 12b). Rectangles are activities, the triangle is the removed queue, diamonds are decisions.
-MECHANISM → KPI: (1) Lead Time: the lawyer picks the format before anything is produced, so fewer briefs fail Clarification; each avoided loop avoids another pass through the 3–7-day queue. Structured approvals with an SLA cap the wait at each gate. Target ~21 d → ~9 d (7–12 d). (2) Rework Rate: fewer orders returned at Clarification. (3) Human time 10 h → 7 h 15 target (intake 60→15 min, brief 50→10, fewer redo rounds); cost ¥940 → ¥705 target (labour only at ¥85/h estimate; tools unchanged). (4) Capacity ~19 → ~26/month calculated (11,500 productive min ÷ 435 min); throughput rises only with demand. (5) Rework ~90% → ~55%, QAR ~10% → ~45% (targets). Standardization is also the basis for later Kaizen steps (lecture Session_1.2 slide 13: "stabilize first, then raise the bar"; Session-5 5S: Standardize).
-EVIDENCE AND ASSUMPTIONS: ≥4 brief rounds and the loop back to the intake queue are company-reported (proposal Table 1, Fig. 1). Plausibility (Appendix A): if each failed clarification re-waits the full queue, three extra loops cost 9–21 days. Pilot gate (10 videos): median lead ≤ 12 d, 0 clarification loops on ≥ 8/10, human time ≤ 8 h, rework ≤ 60%, QAR ≥ 35%, no quality drop.
-TRADE-OFFS: keep a route for non-standard requests; lawyers may still iterate heavily (proposal §5 risk) — mitigated by previews and structured change requests.
-REMAINING LIMITATION: ~6 h 40 of the 7 h 15 is the untouched manual middle (scripting, generation, sync, adaptation).
-STATUS: proposed design; not tested. All iteration figures are targets.</aside>
+<aside>SPEAKER: Saeed Filizadeh. TIME: 1:15.
+KEY MESSAGE: The cheapest step comes first: standardize the front door, with no new AI. It removes the intake queue and the clarification loop.
+SAY:
+(1) Map: "In red what changes: a structured request form with previews, an automatic completeness check instead of clarification, an auto-filled brief, and approvals with a 48-hour deadline. The intake queue disappears."
+(2) Tiles: "In our simulation lead time falls from 21.8 to 6.8 days, below the 9-day target. Human time 438 minutes, cost 709 yuan, rework 59%."
+(3) Right: "The same model reproduces today's 15 to 20 videos a month, so we trust it."
+(4) "The next constraint is manual scripting."
+TRANSITION: "So Iteration 2 targets the script."
+IF ASKED:
+- Lead time depends on lawyers: 5.1 to 8.2 days.
+- Pilot gate (10 videos): lead ≤ 12 d, 0 clarification loops on ≥ 8 of 10, human time ≤ 8 h, rework ≤ 60%, first-pass ≥ 35%.
+- Trade-off: keep a route for non-standard requests.
+- Targets vs simulated for all KPIs: Appendix H.
+DATA: simulated design with targets, not tested results.</aside>
 </section>

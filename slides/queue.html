@@ -38,10 +38,15 @@
 </div>
 <p style="position:absolute;left:64px;bottom:24px;width:1600px;font-size:18px;color:#6A7282">Source: HiLegal team (3–7 days, 15–20 per month); our M/M/1 intake queue model, capacity calibrated (Appendix D)</p>
 <p style="position:absolute;left:1736px;bottom:24px;width:120px;text-align:right;font-size:24px;color:#6A7282">10</p>
-<aside>SPEAKER: Saeed Filizadeh. TIME: 0:40. MAIN MESSAGE: The 3–7-day intake wait is not a people problem. It is what queues do when a team runs close to its capacity.
-SPEAKING POINTS: (1) The curve shows the expected intake wait against utilisation, that is demand divided by capacity (top axis: demand per month for the same team). It is flat at first and then rises steeply. (2) Today's demand of 15–20 requests per month puts HiLegal on the steep part: at 17.5 per month the model gives 3.8 days, at 20 per month 7.4 days. That matches the reported 3–7 days. +14% demand roughly doubles the wait. (3) At about 23.5 requests per month (modelled capacity) the queue never clears. So working harder or adding a few more requests is not the answer; the process has to need less work per order and fewer loops, which is what the iterations do.
-DATA STATUS: company-reported: 3–7-day intake wait (workload-dependent) and 15–20 requests per month. Modelled: M/M/1 aggregate intake surrogate with capacity μ ≈ 23.5 per month calibrated to that band; waits converted with 30.4 calendar days per 22 working days: 2.28 / 3.77 / 7.39 days at 15 / 17.5 / 20 per month. This is an approximate calibration, not a fit to paired observations. It covers the intake queue only; approval waits come on top and the queue and rework models must not be added together.
-FORMULA: utilisation ρ = λ ÷ μ; expected wait Wq = ρ ÷ (1 − ρ) × (1 ÷ μ). Congestion factor ρ ÷ (1 − ρ): 1.8 at 15, 2.9 at 17.5, 5.7 at 20 per month.
-NOTE: the 23.5 per month here is the calibrated effective limit of this model. The 35.2 per month on slide 5 is 100% of paid hours; the KPI frame uses about 19 at 60% utilisation (see the team questions).
-SOURCES: queue model in the project repository (Section 4, queue), Appendix D; lecture Session_8 (queueing, utilisation).</aside>
+<aside>SPEAKER: Saeed Filizadeh. TIME: 0:40.
+KEY MESSAGE: The 3–7-day wait is not a people problem. It is what queues do when a team runs close to its capacity.
+SAY:
+(1) "The curve shows the expected intake wait against utilisation, demand divided by capacity."
+(2) "Today's 15 to 20 requests a month put HiLegal on the steep part: about 4 days at 17.5 requests, about 7 days at 20. That matches the reported 3 to 7 days."
+(3) "Just 14% more demand doubles the wait. At about 23.5 requests a month the queue never clears."
+(4) "Working harder does not help. Less work per order and fewer loops do."
+TRANSITION: "And the loops make it worse."
+IF ASKED: M/M/1 model of the intake queue only; capacity 23.5 per month calibrated to the reported wait. P90 about 10 days. Falsifiable: the inbox should hold 2–5 requests. All numbers: Appendix D.
+DATA: 3–7 days and 15–20 per month company-reported; curve, points and capacity modelled.
+SOURCES: queue model, Section 4 on main; lecture Session 8.</aside>
 </section>
