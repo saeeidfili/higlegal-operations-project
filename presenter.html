@@ -111,14 +111,22 @@
   </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
-<script src="runtime/sync.js?v=1"></script>
+<script src="runtime/sync.js?v=2"></script>
 <script src="runtime/notes.js?v=1"></script>
 <script>
 (function () {
   'use strict';
   var BUDGET = 17 * 60 * 1000;
   var $ = function (id) { return document.getElementById(id); };
-  var slides = [], state = { slide: null, running: false, elapsed: 0, receivedAt: Date.now() }, link = null;
+  var allSlides = [], slides = [], state = { slide: null, running: false, elapsed: 0, receivedAt: Date.now() }, link = null;
+  // Show/hide overrides set with the eye buttons in the deck viewer, received through the room.
+  var vis = null;
+
+  function applyVisibility() {
+    slides = allSlides.filter(function (s) {
+      return !(vis && Object.prototype.hasOwnProperty.call(vis, s.id) ? vis[s.id] : s.fileHidden);
+    });
+  }
 
   var room = DeckSync.roomFromUrl();
   if (!room) {
@@ -165,11 +173,11 @@
           var tpl = document.createElement('template');
           tpl.innerHTML = texts[i].trim();
           var sec = tpl.content.querySelector('section');
-          if (!sec || sec.hasAttribute('hidden')) return;
+          if (!sec) return;
           var aside = sec.querySelector('aside'), h = sec.querySelector('h1, h2');
           var notes = aside ? aside.textContent.trim() : '';
           var sp = /SPEAKER:s*([^.]+)./.exec(notes);
-          out.push({ id: id, speaker: sp ? sp[1].trim() : '', chapter: sec.getAttribute('data-chapter'), title: h ? h.textContent.replace(/\s+/g, ' ').trim() : id, notes: notes, plan: planMs(notes) });
+          out.push({ id: id, fileHidden: sec.hasAttribute('hidden'), speaker: sp ? sp[1].trim() : '', chapter: sec.getAttribute('data-chapter'), title: h ? h.textContent.replace(/\s+/g, ' ').trim() : id, notes: notes, plan: planMs(notes) });
         });
         return out;
       });
@@ -222,6 +230,7 @@
 
   function publish(next) {
     next.receivedAt = Date.now();
+    if (vis) next.vis = vis;
     state = next;
     render();
     if (link) link.send(next);
@@ -278,11 +287,13 @@
   }
 
   loadDeck().then(function (list) {
-    slides = list;
+    allSlides = list;
+    applyVisibility();
     if (!state.slide) state.slide = slides[0].id;
     render();
     link = DeckSync.connect(room, function (st, own) {
       if (own) return;
+      if (st.vis) { vis = st.vis; applyVisibility(); }
       state = st;
       render();
     }, function (on) { $('dot').classList.toggle('on', on); $('dot').title = on ? 'Connected' : 'Reconnecting…'; });

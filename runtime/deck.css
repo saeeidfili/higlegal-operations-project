@@ -63,7 +63,11 @@ button:disabled, select:disabled { opacity: 0.45; cursor: default; }
 .section-slides { display: flex; flex-direction: column; gap: 10px; padding-top: 8px; }
 .thumb { display: flex; flex-direction: column; gap: 6px; padding: 6px; text-align: left; border: 2px solid transparent; background: transparent; }
 .thumb.active { border-color: var(--ui-accent); }
-.thumb.is-hidden .thumb-box { opacity: 0.55; }
+.thumb.is-hidden .thumb-box > .canvas { opacity: 0.45; }
+.thumb-eye { position: absolute; top: 4px; right: 4px; z-index: 2; width: 26px; height: 26px; border-radius: 6px; background: rgba(255,255,255,0.92); box-shadow: 0 0 0 1px var(--ui-line); display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; transition: opacity .15s; }
+.thumb-eye img { width: 16px; height: 16px; }
+.thumb:hover .thumb-eye, .thumb-eye:focus-visible, .thumb.is-hidden .thumb-eye, .thumb-eye.changed { opacity: 1; }
+.thumb-eye.changed { box-shadow: 0 0 0 2px var(--ui-accent); }
 .thumb-box { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 4px; background: #ffffff; box-shadow: 0 0 0 1px var(--ui-line); }
 .thumb-label { font-size: 12px; color: var(--ui-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 

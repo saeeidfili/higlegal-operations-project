@@ -19,6 +19,10 @@
   } catch (e) {}
   // Clear credentials left by the retired browser editor.
   try { localStorage.removeItem('gh-token'); } catch (e) {}
+  // Show/hide overrides from the eye buttons: { slideId: hidden }, only where they differ from the slide file.
+  var VIS_KEY = 'hilegal-visibility';
+  var overrides = {};
+  try { overrides = JSON.parse(localStorage.getItem(VIS_KEY) || '{}') || {}; } catch (e) {}
 
   function fetchText(url) {
     return fetch(url, { cache: 'no-store' }).then(function (r) {
@@ -52,6 +56,7 @@
       id: id,
       html: html,
       notes: aside ? aside.textContent.trim() : '',
+      fileHidden: !!(sec && sec.hasAttribute('hidden')),
       hidden: !!(sec && sec.hasAttribute('hidden')),
       chapter: sec ? sec.getAttribute('data-chapter') : null,
       title: heading ? heading.textContent.replace(/\s+/g, ' ').trim() : id
@@ -148,6 +153,37 @@
     canvas.style.transform = 'translate(' + (left + (availableWidth - 1920 * k) / 2) + 'px,' + (top + (availableHeight - 1080 * k) / 2) + 'px) scale(' + k + ')';
   }
 
+  function applyVisibility() {
+    state.slides.forEach(function (s) {
+      s.hidden = Object.prototype.hasOwnProperty.call(overrides, s.id) ? !!overrides[s.id] : s.fileHidden;
+    });
+  }
+
+  function saveOverrides() {
+    try { localStorage.setItem(VIS_KEY, JSON.stringify(overrides)); } catch (e) {}
+  }
+
+  // After a visibility change: renumber the rail and keep present mode on a visible slide.
+  function refreshVisibility() {
+    applyVisibility();
+    renderRail();
+    if (state.presenting) {
+      if (state.slides[state.index].hidden) {
+        var vis = visibleIndices();
+        state.index = vis.filter(function (i) { return i > state.index; })[0] || vis[vis.length - 1] || 0;
+      }
+      renderPresent();
+    } else renderStage();
+  }
+
+  function setHidden(i, hidden) {
+    var s = state.slides[i];
+    if (hidden === s.fileHidden) delete overrides[s.id]; else overrides[s.id] = hidden;
+    saveOverrides();
+    refreshVisibility();
+    syncSend();
+  }
+
   // Chapter dividers are not numbered, so the page numbers printed on the slides stay correct.
   function isNumbered(s) { return !s.hidden && !s.chapter; }
 
@@ -222,6 +258,19 @@
       item.title = s.title;
       item.appendChild(box);
       item.appendChild(label);
+      var eye = document.createElement('span');
+      eye.className = 'thumb-eye' + (s.hidden !== s.fileHidden ? ' changed' : '');
+      eye.setAttribute('role', 'button');
+      eye.tabIndex = 0;
+      var eyeLabel = (s.hidden ? 'Show slide' : 'Hide slide') + (s.hidden !== s.fileHidden ? ' (changed in this browser)' : '');
+      eye.title = eyeLabel;
+      eye.setAttribute('aria-label', eyeLabel);
+      eye.innerHTML = '<img src="assets/icons/' + (s.hidden ? 'eye-off' : 'eye') + '.svg" alt="">';
+      eye.addEventListener('click', function (e) { e.stopPropagation(); setHidden(i, !s.hidden); });
+      eye.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); setHidden(i, !s.hidden); }
+      });
+      box.appendChild(eye);
       item.addEventListener('click', function () { select(i); });
       target.appendChild(item);
       requestAnimationFrame(function () { fit(box, canvas); });
@@ -439,7 +488,7 @@
   function syncSend() {
     if (!state.sync) return;
     var s = state.slides[state.index], r = state.remote;
-    state.remote = { slide: s.id, running: !!(r && r.running), elapsed: DeckSync.elapsedOf(r), receivedAt: Date.now() };
+    state.remote = { slide: s.id, running: !!(r && r.running), elapsed: DeckSync.elapsedOf(r), receivedAt: Date.now(), vis: overrides };
     state.sync.send(state.remote);
   }
 
@@ -450,6 +499,11 @@
     state.sync = DeckSync.connect(room, function (st, own) {
       state.remote = st;
       if (own) return;
+      if (st.vis && JSON.stringify(st.vis) !== JSON.stringify(overrides)) {
+        overrides = st.vis;
+        saveOverrides();
+        refreshVisibility();
+      }
       var i = state.slides.findIndex(function (s) { return s.id === st.slide; });
       if (i < 0 || i === state.index) return;
       if (state.presenting) { state.index = i; renderPresent(); } else select(i);
@@ -463,6 +517,7 @@
     state.slides = data.deck.order.map(function (id, i) {
       return parseSlide(id, data.texts[i]);
     });
+    applyVisibility();
     document.title = data.deck.title || 'Deck';
     $('deckTitle').textContent = data.deck.title || 'Deck';
     var idx = keepId ? state.slides.findIndex(function (s) { return s.id === keepId; }) : -1;

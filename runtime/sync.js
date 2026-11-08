@@ -1,5 +1,5 @@
 // Room sync for Present mode and the presenter page. Uses the public relay ntfy.sh;
-// only the current slide id and the timer state are sent.
+// only the current slide id, the timer state and the show/hide overrides are sent.
 window.DeckSync = (function () {
   'use strict';
 
@@ -64,7 +64,7 @@ window.DeckSync = (function () {
 
     return {
       send: function (st) {
-        var body = JSON.stringify({ v: 1, by: me, seq: ++seq, slide: st.slide, running: !!st.running, elapsed: Math.round(st.elapsed || 0) });
+        var body = JSON.stringify({ v: 1, by: me, seq: ++seq, slide: st.slide, running: !!st.running, elapsed: Math.round(st.elapsed || 0), vis: st.vis || undefined });
         return fetch(BASE + t, { method: 'POST', body: body }).catch(function () { onStatus(false); });
       },
       close: function () { if (es) es.close(); clearInterval(pollTimer); }
