@@ -7,7 +7,7 @@
         "agenda",
         "visit",
         "scope",
-        "facts",
+        "scale",
         "challenge",
         "bleed",
         "chapter-1",
@@ -30,6 +30,7 @@
         "closing",
         "thanks",
         "appx-divider",
+        "appx-facts",
         "appx-a",
         "appx-e",
         "appx-f",
@@ -57,7 +58,7 @@
         },
         "s2": {
             "description": "The challenge",
-            "start": "facts"
+            "start": "scale"
         },
         "s3": {
             "description": "The current process",
