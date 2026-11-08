@@ -11,12 +11,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Momo+Trust+Display&family=Inter:wght@400;600;700;800&display=swap">
-<link rel="stylesheet" href="runtime/deck.css?v=10">
+<link rel="stylesheet" href="runtime/deck.css?v=11">
 </head>
 <body>
 <div id="app">
   <header class="bar">
-    <div class="bar-title"><img src="assets/hilegal-logo-white.png" alt="" class="bar-logo"><span id="deckTitle">Deck</span></div>
+    <div class="bar-title"><button id="btnSidebarToggle" type="button" class="icon-button" title="Hide slide overview" aria-label="Hide slide overview" aria-expanded="true" aria-controls="slideSidebar"><img id="sidebarToggleIcon" src="assets/icons/chevron-left.svg" alt=""></button><img src="assets/hilegal-logo-white.png" alt="" class="bar-logo"><span id="deckTitle">Deck</span></div>
     <div class="bar-actions">
       <label class="version" title="Earlier versions of this slide from the GitHub history">Version
         <select id="version"><option value="">Current file</option></select>
@@ -27,7 +27,7 @@
       <button id="btnPresent" type="button" class="primary" title="Present (P)">&#9654; Present</button>
     </div>
   </header>
-  <aside class="sidebar" aria-label="Slide navigation">
+  <aside class="sidebar" id="slideSidebar" aria-label="Slide navigation">
     <nav class="rail" id="rail" aria-label="Slides"></nav>
     <div class="rail-actions" aria-label="Chapter controls">
       <button id="btnExpandAll" type="button" aria-controls="rail">Expand all</button>
@@ -66,6 +66,6 @@
   <div class="pcount" id="pcount"></div>
 </div>
 <script src="runtime/sync.js?v=1"></script>
-<script src="runtime/deck.js?v=10"></script>
+<script src="runtime/deck.js?v=11"></script>
 </body>
 </html>

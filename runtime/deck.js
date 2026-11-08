@@ -8,6 +8,8 @@
   var $ = function (id) { return document.getElementById(id); };
   var sectionOpen = {};
   var notesPosition = 'bottom', notesCollapsed = false;
+  var sidebarCollapsed = false;
+  try { sidebarCollapsed = localStorage.getItem('hilegal-sidebar-collapsed') === 'true'; } catch (e) {}
   try {
     var savedNotes = JSON.parse(localStorage.getItem('hilegal-notes-layout') || 'null');
     if (savedNotes) {
@@ -463,6 +465,27 @@
 
   function setStatus(msg) { $('status').textContent = msg; }
 
+  function setSidebarCollapsed(collapsed) {
+    sidebarCollapsed = collapsed;
+    $('app').classList.toggle('sidebar-collapsed', collapsed);
+    $('slideSidebar').hidden = collapsed;
+    var toggle = $('btnSidebarToggle');
+    var label = collapsed ? 'Show slide overview' : 'Hide slide overview';
+    toggle.setAttribute('aria-expanded', String(!collapsed));
+    toggle.setAttribute('aria-label', label);
+    toggle.title = label;
+    $('sidebarToggleIcon').src = 'assets/icons/chevron-' + (collapsed ? 'right' : 'left') + '.svg';
+    try { localStorage.setItem('hilegal-sidebar-collapsed', String(collapsed)); } catch (e) {}
+    requestAnimationFrame(function () {
+      var canvas = $('stage').querySelector('.canvas');
+      if (canvas) fit($('stage'), canvas);
+      if (!collapsed) document.querySelectorAll('.thumb-box').forEach(function (box) {
+        var thumb = box.querySelector('.canvas');
+        if (thumb) fit(box, thumb);
+      });
+    });
+  }
+
   function setNotesLayout(position, collapsed) {
     notesPosition = position;
     notesCollapsed = collapsed;
@@ -481,6 +504,8 @@
   }
 
   function bind() {
+    setSidebarCollapsed(sidebarCollapsed);
+    $('btnSidebarToggle').addEventListener('click', function () { setSidebarCollapsed(!sidebarCollapsed); });
     setNotesLayout(notesPosition, notesCollapsed);
     $('btnNotesBottom').addEventListener('click', function () { setNotesLayout('bottom', false); });
     $('btnNotesRight').addEventListener('click', function () { setNotesLayout('right', false); });
