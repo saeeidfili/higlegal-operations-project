@@ -1,7 +1,6 @@
 {
     "title": "OM-Project_Presentation_HiLegal",
     "order": [
-        "team-questions",
         "review",
         "cover",
         "agenda",
@@ -45,8 +44,8 @@
     ],
     "sections": {
         "internal": {
-            "description": "Internal: open team questions and review checklist, hidden in Present mode",
-            "start": "team-questions"
+            "description": "Internal: review checklist, hidden in Present mode",
+            "start": "review"
         },
         "intro": {
             "description": "Title and agenda",
