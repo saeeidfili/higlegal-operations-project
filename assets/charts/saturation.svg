@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
   "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="697.695364pt" height="382.070906pt" viewBox="0 0 697.695364 382.070906" xmlns="http://www.w3.org/2000/svg" version="1.1">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="626pt" height="382.070906pt" viewBox="0 0 626 382.070906" xmlns="http://www.w3.org/2000/svg" version="1.1">
  <metadata>
   <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
    <cc:Work>
@@ -1119,7 +1119,7 @@ L 610.085781 22.318125
    </g>
    <g id="text_16">
     <!-- top of today's reported band [C] -->
-    <g style="fill: #d92605" transform="translate(545.323957 25.395168) scale(0.09 -0.09)">
+    <g style="fill: #d92605" transform="translate(459 54.5) scale(0.09 -0.09)">
      <defs>
       <path id="DejaVuSans-49" d="M 2375 4863
 L 2375 4384
