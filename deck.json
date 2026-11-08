@@ -1,7 +1,6 @@
 {
     "title": "OM-Project_Presentation_HiLegal",
     "order": [
-        "review",
         "cover",
         "agenda",
         "visit",
@@ -43,10 +42,6 @@
         "appx-b"
     ],
     "sections": {
-        "internal": {
-            "description": "Internal: review checklist, hidden in Present mode",
-            "start": "review"
-        },
         "intro": {
             "description": "Title and agenda",
             "start": "cover"
