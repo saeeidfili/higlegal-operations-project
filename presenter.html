@@ -23,7 +23,8 @@
   .room code { color: var(--text); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 3px 8px; letter-spacing: 1px; }
   .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
   .dot.on { background: var(--ok); }
-  .h-btn { padding: 6px 12px; font-size: 14px; }
+  .h-btn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; font-size: 14px; text-decoration: none; }
+  .ico { width: 18px; height: 18px; flex: none; }
 
   main { flex: 1; overflow-y: auto; padding: 16px; max-width: 980px; width: 100%; margin: 0 auto; }
   .eyebrow { font-size: 13px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
@@ -48,7 +49,17 @@
   .next { margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--line); color: var(--muted); font-size: 15px; }
 
   footer { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: center; padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); background: #0f0f0f; }
-  .nav { height: 64px; font-size: 28px; font-weight: 700; }
+  .nav { height: 64px; display: flex; align-items: center; justify-content: center; }
+  @media (max-width: 640px) {
+    header { flex-wrap: nowrap; gap: 8px; padding: 6px 10px; }
+    header img { height: 20px; }
+    .h-title { display: none; }
+    .room { margin-right: auto; font-size: 13px; }
+    .room code { padding: 2px 6px; }
+    .h-btn { padding: 7px; }
+    .h-btn .lbl, .h-btn.proj { display: none; }
+    .ico { width: 20px; height: 20px; }
+  }
   .nav:active { background: #222; }
   .timer { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 150px; }
   .clock { font-size: 34px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1; }
@@ -78,9 +89,9 @@
   <img src="assets/hilegal-logo-white.png" alt="HiLegal">
   <span class="h-title">Presenter notes</span>
   <span class="room"><span class="dot" id="dot" title="Connection"></span>Room <code id="roomCode">…</code></span>
-  <button class="h-btn" id="btnQr" type="button">Show QR</button>
-  <button class="h-btn" id="btnShare" type="button">Copy link for others</button>
-  <a class="h-btn" id="lnkProjector" target="_blank" rel="noopener">Open on projector</a>
+  <button class="h-btn" id="btnQr" type="button" aria-label="Show QR"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/></svg><span class="lbl">Show QR</span></button>
+  <button class="h-btn" id="btnShare" type="button" aria-label="Copy link for others"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg><span class="lbl">Copy link for others</span></button>
+  <a class="h-btn proj" id="lnkProjector" target="_blank" rel="noopener" aria-label="Open on projector"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg><span class="lbl">Open on projector</span></a>
 </header>
 <main id="main">
   <div class="eyebrow" id="slideNo">Loading…</div>
@@ -90,7 +101,7 @@
   <div class="next" id="next"></div>
 </main>
 <footer>
-  <button class="nav" id="btnPrev" type="button" aria-label="Previous slide">&#9664;</button>
+  <button class="nav" id="btnPrev" type="button" aria-label="Previous slide"><svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
   <div class="timer">
     <div class="clock" id="clock">00:00</div>
     <div class="clock-sub" id="clockSub">of 17:00</div>
@@ -99,7 +110,7 @@
       <button id="btnReset" type="button">Reset</button>
     </div>
   </div>
-  <button class="nav" id="btnNext" type="button" aria-label="Next slide">&#9654;</button>
+  <button class="nav" id="btnNext" type="button" aria-label="Next slide"><svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
 </footer>
 <div class="toast" id="toast"></div>
 <div class="qr" id="qr" hidden>
@@ -175,6 +186,7 @@
           var sec = tpl.content.querySelector('section');
           if (!sec) return;
           var aside = sec.querySelector('aside'), h = sec.querySelector('h1, h2');
+          if (h) h.querySelectorAll('br').forEach(function (b) { b.replaceWith(' '); });
           var notes = aside ? aside.textContent.trim() : '';
           var sp = /SPEAKER:s*([^.]+)./.exec(notes);
           out.push({ id: id, fileHidden: sec.hasAttribute('hidden'), speaker: sp ? sp[1].trim() : '', chapter: sec.getAttribute('data-chapter'), title: h ? h.textContent.replace(/\s+/g, ' ').trim() : id, notes: notes, plan: planMs(notes) });

@@ -52,6 +52,7 @@
     var sec = tpl.content.querySelector('section');
     var aside = sec && sec.querySelector('aside');
     var heading = sec && sec.querySelector('h1, h2');
+    if (heading) heading.querySelectorAll('br').forEach(function (b) { b.replaceWith(' '); });
     return {
       id: id,
       html: html,
