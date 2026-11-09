@@ -14,7 +14,6 @@
         "wastes",
         "queue",
         "rework",
-        "current-kpi",
         "kpis",
         "chapter-3",
         "strategy",
@@ -41,7 +40,8 @@
         "appx-h",
         "appx-c",
         "appx-i",
-        "appx-b"
+        "appx-b",
+        "appx-m"
     ],
     "sections": {
         "intro": {
@@ -66,7 +66,7 @@
         },
         "s5": {
             "description": "Operational KPIs",
-            "start": "current-kpi"
+            "start": "kpis"
         },
         "s6": {
             "description": "Three improvement iterations",

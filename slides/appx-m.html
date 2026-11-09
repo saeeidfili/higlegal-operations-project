@@ -1,0 +1,33 @@
+<section id="appx-m" data-transition="fade" style="background:#FFFFFF;color:#101010;font-family:'Inter', Arial, sans-serif;padding:128px 64px 96px;display:flex;flex-direction:column">
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:184px;background:#0A0A0A"></div>
+<div style="position:absolute;left:0px;top:184px;width:1920px;height:2px;background:#C9A86A"></div>
+<p style="position:absolute;left:64px;top:45px;width:1550.769px;font-size:24px;letter-spacing:2px;text-transform:uppercase;color:#99A1AF;font-family:'Inter', Arial, sans-serif;font-weight:600">Appendix M | Models and files</p>
+<h2 style="position:absolute;left:64px;top:85px;width:1550.769px;font-size:52px;font-family:'Momo Trust Display', Arial, sans-serif;font-weight:400;line-height:1.15;color:#FFFFFF;white-space:nowrap">Model assumptions and where to find them</h2>
+<img src="assets/hilegal-logo-white.png" alt="HiLegal logo" style="position:absolute;left:1726px;top:52px;width:130px;height:80px;object-fit:contain">
+<a href="#back:appx-b" style="position:absolute;left:1216px;bottom:24px;width:496px;text-align:right;font-size:18px;font-weight:600;color:#6A7282">← Back to Appendix L</a>
+<div style="position:absolute;left:64px;top:222px;width:1000px;display:flex;flex-direction:column;gap:18px">
+<div style="background:#F3F4F6;border:1px solid #E5E7EB;border-radius:8px;padding:16px 22px"><p style="font-size:24px;font-weight:600;color:#101010">Queue model (M/M/1, intake queue only)</p><p style="font-size:22px;line-height:1.35;color:#4A5565">Capacity μ ≈ 23.5 per month, calibrated to the reported 3–7-day wait at 15–20 requests per month. Poisson arrivals, steady state. Approval waits come on top.</p></div>
+<div style="background:#F3F4F6;border:1px solid #E5E7EB;border-radius:8px;padding:16px 22px"><p style="font-size:24px;font-weight:600;color:#101010">Process simulation (12 steps, all versions)</p><p style="font-size:22px;line-height:1.35;color:#4A5565">Per-task minutes are our split of the reported ~10 h. Loop chance per gate in the baseline 0.75 / 0.20 / 0.40. 36-month runs, 3 seeds, 20 requests per month. Rework does not rise with congestion, so results are conservative.</p></div>
+<div style="background:#F3F4F6;border:1px solid #E5E7EB;border-radius:8px;padding:16px 22px"><p style="font-size:24px;font-weight:600;color:#101010">Two capacity budgets, never mixed</p><p style="font-size:22px;line-height:1.35;color:#4A5565">KPI math: 2 × 160 h × 60% ≈ 11,500 min per month ≈ 19 videos. Simulation: 67% dedication ≈ 14,150 min per month.</p></div>
+<div style="background:#F3F4F6;border:1px solid #E5E7EB;border-radius:8px;padding:16px 22px"><p style="font-size:24px;font-weight:600;color:#101010">Validation and limits</p><p style="font-size:22px;line-height:1.35;color:#4A5565">The baseline reproduces the reported 15–20 videos per month and the 3–7-day wait. One company, partly self-reported data, no controlled test: a pilot replaces the estimates.</p></div>
+</div>
+<div style="position:absolute;left:1112px;top:222px;width:744px;display:flex;flex-direction:column;gap:10px">
+<p style="font-size:22px;font-weight:600;letter-spacing:2px;color:#A8823F">FILES IN THE SUBMISSION ZIP</p>
+<table style="width:744px;border-collapse:collapse;font-size:20px;line-height:1.3">
+<tr style="border-bottom:2px solid #101010"><th style="text-align:left;padding:6px 8px;color:#6A7282;font-weight:600">File</th><th style="text-align:left;padding:6px 8px;color:#6A7282;font-weight:600">Used for</th></tr>
+<tr style="border-bottom:1px solid #E5E7EB"><td style="padding:6px 8px;font-family:Consolas, monospace">queue_model.py, calibrate_mu.py</td><td style="padding:6px 8px;color:#4A5565">Queue curve, μ (slide 10, App. E)</td></tr>
+<tr style="border-bottom:1px solid #E5E7EB"><td style="padding:6px 8px;font-family:Consolas, monospace">rework_simulation.py, calibrate_loops.py, run_report.py</td><td style="padding:6px 8px;color:#4A5565">Rework (slide 11, App. F, G)</td></tr>
+<tr style="border-bottom:1px solid #E5E7EB"><td style="padding:6px 8px;font-family:Consolas, monospace">iteration1_sim.py … iteration3_sim.py</td><td style="padding:6px 8px;color:#4A5565">Iterations (slides 14–16, App. I)</td></tr>
+<tr style="border-bottom:1px solid #E5E7EB"><td style="padding:6px 8px;font-family:Consolas, monospace">compare_sim.py</td><td style="padding:6px 8px;color:#4A5565">Chain, stress test (slides 17–18, App. J, K)</td></tr>
+<tr style="border-bottom:1px solid #E5E7EB"><td style="padding:6px 8px;font-family:Consolas, monospace">simulation_metrics.py, verify_analysis.py</td><td style="padding:6px 8px;color:#4A5565">Shared metrics, checks</td></tr>
+<tr style="border-bottom:1px solid #E5E7EB"><td style="padding:6px 8px;font-family:Consolas, monospace">model-results.json, scenario-results.md, rework-demand-results.json</td><td style="padding:6px 8px;color:#4A5565">Simulation results</td></tr>
+<tr style="border-bottom:2px solid #101010"><td style="padding:6px 8px;font-family:Consolas, monospace">company-facts.md, assumptions.md, kpi-data.md</td><td style="padding:6px 8px;color:#4A5565">Inputs and assumptions</td></tr>
+</table>
+<p style="font-size:20px;line-height:1.35;color:#6A7282">Folder "code_and_data", same structure as our project repository. Python 3; the README lists how to run each model.</p>
+</div>
+<p style="position:absolute;left:64px;bottom:24px;width:1120px;font-size:18px;color:#6A7282">Source: our model documentation and assumption register | [C] company-reported, [E] estimate</p>
+<p style="position:absolute;left:1736px;bottom:24px;width:120px;text-align:right;font-size:24px;color:#6A7282">M</p>
+<aside>Backup for questions. MAIN MESSAGE: every model states its assumptions and limits, and all code and data are in the submission ZIP, so every number in the deck can be reproduced.
+IF ASKED: Why 60% and 67%: the same concept at two levels of detail, never mixed in one calculation. Worst case: rework rising with congestion is not modelled, and churn or overtime would make reality worse than the model.
+DATA: assumptions as documented in the project's assumption register and model cards.</aside>
+</section>
