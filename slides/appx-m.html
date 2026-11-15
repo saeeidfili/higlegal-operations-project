@@ -20,12 +20,12 @@
 <tr style="border-bottom:1px solid #E5E7EB"><td style="padding:6px 8px;font-family:Consolas, monospace">iteration1_sim.py … iteration3_sim.py</td><td style="padding:6px 8px;color:#4A5565">Iterations (slides 14–16, App. I)</td></tr>
 <tr style="border-bottom:1px solid #E5E7EB"><td style="padding:6px 8px;font-family:Consolas, monospace">compare_sim.py</td><td style="padding:6px 8px;color:#4A5565">Chain, stress test (slides 17–18, App. J, K)</td></tr>
 <tr style="border-bottom:1px solid #E5E7EB"><td style="padding:6px 8px;font-family:Consolas, monospace">simulation_metrics.py, verify_analysis.py</td><td style="padding:6px 8px;color:#4A5565">Shared metrics, checks</td></tr>
-<tr style="border-bottom:1px solid #E5E7EB"><td style="padding:6px 8px;font-family:Consolas, monospace">model-results.json, scenario-results.md, rework-demand-results.json</td><td style="padding:6px 8px;color:#4A5565">Simulation results</td></tr>
-<tr style="border-bottom:2px solid #101010"><td style="padding:6px 8px;font-family:Consolas, monospace">company-facts.md, assumptions.md, kpi-data.md</td><td style="padding:6px 8px;color:#4A5565">Inputs and assumptions</td></tr>
+<tr style="border-bottom:1px solid #E5E7EB"><td style="padding:6px 8px;font-family:Consolas, monospace">model-results.json, rework-demand-results.json, measurement-diagnostics.json</td><td style="padding:6px 8px;color:#4A5565">Simulation results</td></tr>
+<tr style="border-bottom:2px solid #101010"><td style="padding:6px 8px;font-family:Consolas, monospace">brief-form.html, *.svg</td><td style="padding:6px 8px;color:#4A5565">Iteration 1 form prototype, model charts</td></tr>
 </table>
-<p style="font-size:20px;line-height:1.35;color:#6A7282">Folder "code_and_data", same structure as our project repository. Python 3; the README lists how to run each model.</p>
+<p style="font-size:20px;line-height:1.35;color:#6A7282">Folder "code_and_data", same structure as our project repository. Python 3 with numpy and matplotlib; the README lists how to run each model. Inputs and assumptions are in Appendix A, B and this slide.</p>
 </div>
-<p style="position:absolute;left:64px;bottom:24px;width:1120px;font-size:18px;color:#6A7282">Source: our model documentation and assumption register | [C] company-reported, [E] estimate</p>
+<p style="position:absolute;left:64px;bottom:24px;width:1120px;font-size:18px;color:#6A7282">Inputs company-reported by HiLegal [C] (Appendix A) | assumptions our estimates [E], calibrated to these inputs | results from our simulation models</p>
 <p style="position:absolute;left:1736px;bottom:24px;width:120px;text-align:right;font-size:24px;color:#6A7282">M</p>
 <aside>Backup for questions. MAIN MESSAGE: every model states its assumptions and limits, and all code and data are in the submission ZIP, so every number in the deck can be reproduced.
 IF ASKED: Why 60% and 67%: the same concept at two levels of detail, never mixed in one calculation. Worst case: rework rising with congestion is not modelled, and churn or overtime would make reality worse than the model.
