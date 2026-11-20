@@ -30,10 +30,10 @@
 <text x="768" y="450" fill="#D92605" font-weight="700" text-anchor="end">20 / month: 7.4 days</text>
 </svg>
 <div style="position:absolute;left:1200px;top:232px;width:656px;display:flex;flex-direction:column;gap:28px">
-<div style="border-top:2px solid #101010;padding-top:12px;display:flex;flex-direction:column;gap:6px"><p style="font-size:24px;font-weight:600;color:#D92605">Small change, big effect</p><p style="font-size:24px;line-height:1.35;color:#262626">Demand 17.5 → 20 per month (+14%) roughly doubles the expected wait: 3.8 → 7.4 days.</p></div>
-<div style="border-top:2px solid #101010;padding-top:12px;display:flex;flex-direction:column;gap:6px"><p style="font-size:24px;font-weight:600;color:#D92605">1 in 10 lawyers waits about 10 days</p><p style="font-size:24px;line-height:1.35;color:#262626">just to be looked at (P90, modelled). Working harder does not move the curve; less work per order and fewer loops do.</p></div>
+<div style="border-top:2px solid #101010;padding-top:12px;display:flex;flex-direction:column;gap:6px"><p style="font-size:24px;font-weight:600;color:#D92605">+14% demand, twice the wait</p><p style="font-size:24px;line-height:1.35;color:#262626">Demand 17.5 → 20 per month (+14%) roughly doubles the expected wait: 3.8 → 7.4 days.</p></div>
+<div style="border-top:2px solid #101010;padding-top:12px;display:flex;flex-direction:column;gap:6px"><p style="font-size:24px;font-weight:600;color:#D92605">1 in 10 lawyers waits about 10 days</p><p style="font-size:24px;line-height:1.35;color:#262626">just to be looked at (P90, modelled). Working harder does not shorten it; less work per order and fewer loops do.</p></div>
 <div style="background:#FFFFFF;border-top:2px solid #D92605;padding:14px 20px;display:flex;flex-direction:column;gap:6px"><p style="font-size:24px;line-height:1.35;color:#262626"><b>Company-reported:</b> 3–7-day intake wait, demand 15–20 per month.</p><p style="font-size:24px;line-height:1.35;color:#262626"><b>Modelled:</b> curve, points and the ≈ 23.5 / month limit (calibrated).</p></div>
-<div style="background:#F6EEDF;border-left:4px solid #A8823F;padding:12px 18px"><p style="font-size:24px;line-height:1.35;color:#6B5223"><b>Falsifiable:</b> the inbox should hold about 2–5 parked requests. HiLegal can count them.</p></div>
+<div style="background:#F6EEDF;border-left:4px solid #A8823F;padding:12px 18px"><p style="font-size:24px;line-height:1.35;color:#6B5223"><b>Check:</b> the inbox should hold about 2–5 waiting requests. HiLegal can count them.</p></div>
 <p style="font-size:24px;line-height:1.35;color:#6A7282">Simplified M/M/1 model of the intake queue only, not the whole production process. Approval waits come on top.</p>
 </div>
 <p style="position:absolute;left:64px;bottom:24px;width:1120px;font-size:18px;color:#6A7282">Source: HiLegal team (3–7 days, 15–20 per month); our M/M/1 intake queue model, capacity calibrated (Appendix E)</p>
@@ -48,7 +48,7 @@ SAY:
 - Closest to reported 3 to 7 days
 - Same process: max 23.5 per month, theoretical
 TRANSITION: "And the loops make it worse."
-IF ASKED: M/M/1 model of the intake queue only; capacity 23.5 per month calibrated to the reported wait. P90 about 10 days. Falsifiable: the inbox should hold 2–5 requests. All numbers: Appendix E.
+IF ASKED: M/M/1 model of the intake queue only; capacity 23.5 per month calibrated to the reported wait. P90 about 10 days. Check: the inbox should hold 2–5 waiting requests. All numbers: Appendix E.
 DATA: 3–7 days and 15–20 per month company-reported; curve, points and capacity modelled.
 SOURCES: queue model, Section 4 on main; lecture Session 8.</aside>
 </section>
